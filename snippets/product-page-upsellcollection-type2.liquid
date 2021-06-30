@@ -1,0 +1,14 @@
+{%- for block in section.blocks -%}
+{%- if block.type == 'related_products_type2' -%}
+<div class="container-indent"
+     data-fullscreen="{{ block.settings.fullscreen }}"
+     data-titleposition="{% if block.settings.titleincenter %}text-center{% else %}text-left{% endif %}"
+     data-title="{{ block.settings.title }}"
+     data-product-id="{{ product.id }}"
+     data-section-id="{{ section.id }}"
+     data-limit="{{ block.settings.product_upsell_collection_count }}"
+     data-section-type="product-recommendations"
+     data-sectionname="product-recommendations"
+     data-slickshow="{{ block.settings.slickdesktoptoshow }}"></div>
+{%- endif -%}
+{%- endfor -%}

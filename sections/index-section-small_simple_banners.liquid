@@ -1,0 +1,541 @@
+{%- assign item = section.settings -%}
+
+{%- capture grid -%}
+{% case item.items %}
+  {% when '2' %}col-12 col-sm-6 col-md-6
+  {% when '3' %}col-12 col-sm-4 col-md-4
+  {% when '4' %}col-6 col-sm-4 col-md-3
+  {% when '5' %}col-6 col-sm-4 col-5-inrow-lg
+  {% when '6' %}col-6 col-sm-4 col-md-2
+  {% when '8' %}col-6 col-sm-3 col-md-2 col-8-inrow-lg
+  {% when '9' %}col-4 col-5-inrow-sm col-7-inrow-md col-9-inrow-lg
+  {% when '12' %}col-4 col-sm-2 col-md-1
+  {% else %}
+{% endcase %}
+{%- endcapture -%}
+
+<div class="{% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent {{ item.custom_classes }} smbsection{{ section.id }}{% if item.usebgcolor %} layout-box01-wrapper{% endif %}">
+  <div class="container{% if item.fullwidth %}-fluid-custom{% endif %}">
+    {%- if item.show_title -%}
+    <div class="tt-block-title{% if item.title_to_left %} text-left{% endif %}{% if item.boxed_title and item.fullwidth %} container{% endif %}">
+      <h2 class="tt-title">{{ item.text1 }}</h2>
+      {%- unless item.text2 == '' -%}<div class="tt-description">{{ item.text2 }}</div>{%- endunless -%}
+    </div>
+    {%- endif -%}
+    <div class="row minus20marg">
+      {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+      
+      <div class="{{ grid }}">
+        <a href="{{ b_i.link }}" class="small-info-bn small-info-bn{{ block.id }}{% if b_i.image != blank %} small-info-bn-img{% endif %}">
+          <div>{{ b_i.text }}</div>
+        </a>
+      </div>
+      
+      {%- endfor -%}
+      {%- else -%}
+      <span style="display: flex; justify-content: center;">This section doesn’t currently include any content. Add content to this section using the sidebar.</span>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<style>
+  {% if item.fontfamily != '' %}
+  .smbsection{{ section.id }} .small-info-bn {
+    font-family: {{ item.fontfamily }};
+  }
+  {% endif %}
+  
+  {% if item.center_bottom %}
+  {% if item.center_bottom_top %}
+  .smbsection{{ section.id }} .small-info-bn {
+    align-items: flex-start;
+  }
+  .smbsection{{ section.id }} .small-info-bn > div {
+    padding-top: {{ item.center_bottom_pad }}px;
+  }
+  {% else %}
+  .smbsection{{ section.id }} .small-info-bn {
+    align-items: flex-end;
+  }
+  .smbsection{{ section.id }} .small-info-bn > div {
+    padding-bottom: {{ item.center_bottom_pad }}px;
+  }
+  {% endif %}
+  {% endif %}
+  
+  .smbsection{{ section.id }} .small-info-bn{
+    border-radius: {{ item.roundness }}px;
+    height: {{ item.banner_height }}px;
+    font-size: {{ item.fontsize }}px;
+    font-weight: {{ item.font_weight }};
+    line-height: {{ item.lineheight }}px;
+  }
+  .smbsection{{ section.id }} .small-info-bn:after{
+    border-radius: {{ item.roundness }}px;
+  }
+  @media (max-width: 1024px){
+    .smbsection{{ section.id }} .small-info-bn{
+      font-size: {{ item.fontsize_mobile }}px;
+      line-height: {{ item.lineheight_m }}px;
+    }
+  }
+  {%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+  .smbsection{{ section.id }} .small-info-bn{{ block.id }}{
+    background: {{ b_i.bgc }};
+    color: {{ b_i.textc }};
+  }
+  .smbsection{{ section.id }} .small-info-bn{{ block.id }}:hover{
+    background: {{ b_i.bgac }};
+    color: {{ b_i.textac }};
+  }
+  .smbsection{{ section.id }} .small-info-bn.small-info-bn{{ block.id }}:after{
+    border: {{ b_i.border_width }}px solid {{ b_i.borderc }};
+  }
+  .smbsection{{ section.id }} .small-info-bn:hover.small-info-bn{{ block.id }}:after{
+    border: {{ b_i.border_width_a }}px solid {{ b_i.borderac }};
+  }
+  {% if b_i.image != blank %}
+  .smbsection{{ section.id }} .small-info-bn{{ block.id }}.small-info-bn-img:before{
+    {% assign size2 = item.banner_height | times: 2 %}
+    {% assign size = 'x' | append: size2 %}
+    background-image: url('{{ b_i.image | img_url: size }}');
+    opacity: {{ b_i.image_opacity | divided_by: 100.00 }};
+  }
+  .smbsection{{ section.id }} .small-info-bn{{ block.id }}:hover.small-info-bn-img:before{
+    opacity: {{ b_i.image_opacity_a | divided_by: 100.00 }};
+  }
+  {% endif %}
+  {%- endfor -%}
+  
+  {% if item.changeimagesize %}
+  .smbsection{{ section.id }} .small-info-bn-img:before{
+    top: 0;
+    height: {{ item.desktopimageheight }}px;
+  }
+  @media (max-width: 1024px){
+    .smbsection{{ section.id }} .small-info-bn-img:before{
+      height: {{ item.mobileimageheight }}px;
+    }
+  }
+  {% endif %}
+  
+  {% if item.usebgcolor %}
+  .smbsection{{ section.id }}.layout-box01-wrapper{
+    background-color: {{ item.bgco }};
+  }
+  @media (min-width: 1025px){
+    .smbsection{{ section.id }}.layout-box01-wrapper{
+      padding-top: {{ item.bgdepad }}px;
+      padding-bottom: {{ item.bgdepad_2 }}px;
+    }
+  }
+  @media (max-width: 1024px){
+    .smbsection{{ section.id }}.layout-box01-wrapper{
+      padding-top: {{ item.bgmopad }}px;
+      padding-bottom: {{ item.bgmopad_2 }}px;
+    }
+  }
+  {% endif %}
+</style>
+
+
+{% schema %}
+{
+  "name": "Small Simple Banners",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "top_offset",
+      "label": "Top Offset",
+      "default": "normal",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "custom_classes",
+      "label": "Custom css classes",
+      "info": "For the custom styles. Add your styles in the theme.css.liquid"
+    },
+    {
+      "type": "checkbox",
+      "id": "fullwidth",
+      "label": "Fullwidth size",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "items",
+      "label": "Items In Line",
+      "default": "4",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "6",
+          "label": "6"
+        },
+        {
+          "value": "8",
+          "label": "8"
+        },
+        {
+          "value": "9",
+          "label": "9"
+        },
+        {
+          "value": "12",
+          "label": "12"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "fontfamily",
+      "label": "Font Name"
+    },
+    {
+      "type":      "range",
+      "id":        "fontsize",
+      "min":       14,
+      "max":       30,
+      "step":      1,
+      "unit":      "px",
+      "label":     "Font size",
+      "default":   22
+    },
+    {
+      "type":      "range",
+      "id":        "lineheight",
+      "min":       14,
+      "max":       90,
+      "step":      1,
+      "unit":      "px",
+      "label":     "Line height",
+      "default":   22
+    },
+    {
+      "type":      "range",
+      "id":        "fontsize_mobile",
+      "min":       14,
+      "max":       30,
+      "step":      1,
+      "unit":      "px",
+      "label":     "Font size mobile",
+      "default":   16
+    },
+    {
+      "type":      "range",
+      "id":        "lineheight_m",
+      "min":       14,
+      "max":       90,
+      "step":      1,
+      "unit":      "px",
+      "label":     "Line height mobile",
+      "default":   22
+    },
+    {
+      "type":      "range",
+      "id":        "roundness",
+      "min":       0,
+      "max":       20,
+      "step":      1,
+      "unit":      "px",
+      "label":     "Roundness",
+      "default":   6
+    },
+    {
+      "type":      "range",
+      "id":        "banner_height",
+      "min":       20,
+      "max":       800,
+      "step":      10,
+      "unit":      "px",
+      "label":     "Banners height",
+      "default":   100
+    },
+    {
+      "type":      "range",
+      "id":        "font_weight",
+      "min":       300,
+      "max":       900,
+      "step":      100,
+      "label":     "Font weight",
+      "default":   700
+    },
+    {
+      "type": "checkbox",
+      "id": "changeimagesize",
+      "label": "Change image size",
+      "default": false
+    },
+    {
+      "type":      "range",
+      "id":        "desktopimageheight",
+      "min":       20,
+      "max":       800,
+      "step":      10,
+      "unit":      "px",
+      "label":     "Image height on desktop",
+      "default":   100
+    },
+    {
+      "type":      "range",
+      "id":        "mobileimageheight",
+      "min":       20,
+      "max":       800,
+      "step":      10,
+      "unit":      "px",
+      "label":     "Image height on mobile",
+      "default":   100
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "checkbox",
+      "id": "title_to_left",
+      "label": "Title to left",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "boxed_title",
+      "label": "Boxed title when fullwidth",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show title",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "text1",
+      "label": "Title",
+      "default": "POPULAR"
+    },
+    {
+      "type": "textarea",
+      "id": "text2",
+      "label": "Description",
+      "default": "CLOTHING BRANDS"
+    },
+    {
+      "type": "header",
+      "content": "Position"
+    },
+    {
+      "type": "checkbox",
+      "id": "center_bottom",
+      "label": "Center bottom",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "center_bottom_top",
+      "label": "Padding from top",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "center_bottom_pad",
+      "label": "Bottom padding",
+      "default": "22",
+	  "info": "Integer"
+    },
+    {
+      "type": "header",
+      "content": "Background color"
+    },
+    {
+      "type": "checkbox",
+      "id": "usebgcolor",
+      "label": "Use background color",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bgco",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "bgdepad",
+      "label": "Vertical top padding desktop",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgdepad_2",
+      "label": "Vertical bottom padding desktop",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgmopad",
+      "label": "Vertical top padding mobile",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgmopad_2",
+      "label": "Vertical bottom padding mobile",
+      "default": "80",
+      "info": "integer, in px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Optional"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Birth - 24 Months"
+        },
+        {
+          "type":      "range",
+          "id":        "border_width",
+          "min":       0,
+          "max":       8,
+          "step":      1,
+          "unit":      "px",
+          "label":     "Border base width",
+          "default":   4
+        },
+        {
+          "type":      "range",
+          "id":        "border_width_a",
+          "min":       0,
+          "max":       8,
+          "step":      1,
+          "unit":      "px",
+          "label":     "Border active width",
+          "default":   4
+        },
+        {
+          "type":      "range",
+          "id":        "image_opacity",
+          "min":       0,
+          "max":       100,
+          "step":      1,
+          "unit":      "%",
+          "label":     "Image opacity",
+          "default":   100
+        },
+        {
+          "type":      "range",
+          "id":        "image_opacity_a",
+          "min":       0,
+          "max":       100,
+          "step":      1,
+          "unit":      "%",
+          "label":     "Image active opacity",
+          "default":   100
+        },
+        {
+          "type": "header",
+          "content": "Base Colors"
+        },
+        {
+          "type": "color",
+          "id": "textc",
+          "label": "Text color",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "bgc",
+          "label": "Background color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "borderc",
+          "label": "Border color",
+          "default": "#191919"
+        },
+        {
+          "type": "header",
+          "content": "Active Colors"
+        },
+        {
+          "type": "color",
+          "id": "textac",
+          "label": "Text active color",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "bgac",
+          "label": "Background color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "borderac",
+          "label": "Border active color",
+          "default": "#191919"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Small Simple Banners",
+      "category": "Banner",
+      "blocks": [
+      ]
+    }
+  ]
+}
+{% endschema %}

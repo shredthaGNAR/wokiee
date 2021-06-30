@@ -1,0 +1,85 @@
+<!-- tt-mobile-header -->
+<div class="tt-mobile-header tt-mobile-header-inline tt-mobile-header-inline-stuck{% unless item.header_sticky_header %} disabled{% endunless %}">
+  <div class="container-fluid">
+    <div class="tt-header-row">
+      <div class="tt-mobile-parent-menu">
+        <div class="tt-menu-toggle mainmenumob-js">
+          {% include "svg-mobile-menu-inline" %}
+        </div>
+      </div>
+      
+      <div class="tt-logo-container">
+        <a class="tt-logo tt-logo-alignment" href="/">
+          {%- if headerlogomobile contains "title_" -%}<h2>{{ headerlogomobile | split:"title_" | last }}</h2>
+          {%- else -%}<img src="{{ headerlogomobile }}"
+                           srcset="{{ headerlogomobile }} 1x, {{ headerlogomobileretina }} 2x"
+                           alt="{{ headerlogomobilealt }}"
+                           class="tt-retina">
+          {%- endif -%}
+        </a>
+      </div>
+      
+      <div class="tt-mobile-parent-menu-icons">
+        <!-- search -->
+        <div class="tt-mobile-parent-search tt-parent-box">
+          {%- if settings.header_design != "header_type_1" and settings.header_design != "header_type_5" -%}
+          <!-- tt-search -->
+          <div class="tt-search tt-dropdown-obj">
+            <button class="tt-dropdown-toggle"
+                    data-tooltip="{{ 'general.tooltip_texts.header_search' | t }}"
+                    data-tposition="bottom"
+                    >
+              <i class="icon-f-85"></i>
+            </button>
+            <div class="tt-dropdown-menu">
+              <div class="container">
+                <form action="/search" method="get" role="search">
+                  <div class="tt-col">
+                    <input type="hidden" name="type" value="product" />
+                    <input class="tt-search-input"
+                           type="search"
+                           name="q"
+                           placeholder="{{ 'general.search.place_holder' | t }}"
+                           aria-label="{{ 'general.search.place_holder' | t }}">
+                    <button type="submit" class="tt-btn-search"></button>
+                  </div>
+                  <div class="tt-col">
+                    <button class="tt-btn-close icon-f-84"></button>
+                  </div>
+                  <div class="tt-info-text">{{ 'general.search.header_message' | t }}</div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- /tt-search -->
+          {%- endif -%}
+        </div>
+        <!-- /search -->
+        
+        {%- unless settings.catalogue_mode -%}
+        {%- if template != "cart" -%}
+        <!-- cart -->
+        <div class="tt-mobile-parent-cart tt-parent-box"></div>
+        <!-- /cart -->
+        {%- endif -%}
+        {%- endunless -%}
+      </div>
+
+      {% comment %}
+      
+      {%- if item.show_customer_links -%}
+      <!-- account -->
+      <div class="tt-mobile-parent-account tt-parent-box"></div>
+      <!-- /account -->
+      {%- endif -%}
+      {%- if item.show_options_links -%}
+      <!-- currency -->
+      <div class="tt-mobile-parent-multi tt-parent-box"></div>
+      <!-- /currency -->
+      {%- endif -%}
+      
+      {% endcomment %}
+      
+    </div>
+  </div>
+</div>

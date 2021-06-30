@@ -1,0 +1,40 @@
+{%- if section.settings.show_product_recommendations -%}
+  {%- if recommendations.performed -%}
+    {%- if recommendations.products_count > 0 -%}
+	  {%- assign slider_mode = true -%}
+      <div class="container container-fluid-custom-mobile-padding">
+        <div class="tt-block-title">
+          {%- if section.settings.heading != blank -%}<h2 class="tt-title-small">{{ section.settings.heading }}</h2>{%- endif -%}
+        </div>
+        <div class="tt-carousel-products row arrow-location-right-top tt-alignment-img tt-layout-product-item">
+          {%- for product in recommendations.products -%}
+          <div class="col-2 col-md-4 col-lg-3">{%- include 'product-grid-item' -%}</div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+  {%- else  -%}
+	<div class="container-indent" data-product-id="{{ product.id }}" data-section-id="{{ section.id }}" data-limit="8" data-section-type="product-recommendations" data-sectionname="product-recommendations"></div>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product recommendations",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_product_recommendations",
+      "label": "Show dynamic recommendations",
+      "info": "Dynamic recommendations change and improve over time. [Learn more](https://help.shopify.com/en/themes/development/recommended-products)",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "You may also like"
+    }
+  ]
+}
+{% endschema %}

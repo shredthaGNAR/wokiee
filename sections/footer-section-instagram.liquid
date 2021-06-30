@@ -1,0 +1,87 @@
+{%- assign item = section.settings -%}
+<div class="container{% if item.fullwidth %}-fluid{% endif %} footer-instagram-section" data-sectionname="index_instagram">
+  <div class="row">
+    <div id="instafeed-{{ section.id }}" class="{% if item.containerpadding %}inscontainerpadding {% endif %}{% if item.gridnopadding %}gridnopadding {% endif %}{% if item.in_line %}instafeed-fluid{% else %}instafeed-col{% if item.grid_5 == "small" %} instafeed-col-item-06{% elsif item.grid_5 == "normal5" %} instafeed-col-item-05{% elsif item.grid_5 == "normal" %} instafeed-col-item-08{% endif %}{% endif %}" data-username="{{ section.settings.username }}" data-hashtag="{{ item.hashtag }}" data-count="{{ section.settings.count }}"></div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Footer Instagram",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "You can disable this section in the customizer in settings tab: \"Show footer instagram section\""
+    },
+    {
+      "type": "checkbox",
+      "id": "in_line",
+      "label": "Design in line",
+      "default": true,
+	  "info": "Not work with \"Grid\""
+    },
+    {
+      "type": "select",
+      "id": "grid_5",
+      "label": "Grid",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "Grid view. 4 in row"
+        },
+        {
+          "value": "normal5",
+          "label": "Grid view. 5 in row"
+        },
+        {
+          "value": "small",
+          "label": "Grid view. 6 in row"
+        },
+        {
+          "value": "normal",
+          "label": "Grid view. 8 in row"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "gridnopadding",
+      "label": "Grid no paddins in images",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "containerpadding",
+      "label": "Grid paddings left/right",
+      "default": true,
+	  "info": "Work with \"Fullwidth size\""
+    },
+    {
+      "type": "checkbox",
+      "id": "fullwidth",
+      "label": "Fullwidth size",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "username",
+      "label": "Username",
+      "default": "wokieeshop"
+    },
+    {
+      "type": "text",
+      "id": "hashtag",
+      "label": "Hashtag",
+      "info": "Will work if \"Username\" is empty"
+    },
+    {
+      "type": "text",
+      "id": "count",
+      "label": "Images Count",
+      "default": "6",
+	  "info": "Integer"
+    }
+  ]
+}
+{% endschema %}

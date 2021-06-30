@@ -1,0 +1,1540 @@
+{%- assign item = section.settings -%}
+
+{%- capture image_size -%}{{ item.logo_max_width }}x{%- endcapture -%}
+{%- capture image_size_retina -%}{{ item.logo_max_width | times: 2 }}x{%- endcapture -%}
+{%- capture headerlogo -%}{%- if item.logo != blank -%}{{ item.logo | img_url: image_size }}{%- else -%}title_{{ item.logo_text }}{%- endif -%}{%- endcapture -%}
+{%- capture headerlogoretina -%}{%- if item.logo != blank -%}{{ item.logo | img_url: image_size_retina }}{%- endif -%}{%- endcapture -%}
+{%- capture headerlogoalt -%}{{ item.logo.alt }}{%- endcapture -%}
+
+{%- if template == "index" and settings.header_position -%}
+{%- capture headerlogo -%}{%- if settings.show_static_logo -%}{{ 'staticlogo.png' | asset_img_url: image_size }}{%- else -%}title_{{ item.logo_text }}{%- endif -%}{%- endcapture -%}
+{%- capture headerlogoretina -%}{%- if settings.show_static_logo -%}{{ 'staticlogo.png' | asset_img_url: image_size_retina }}{%- else -%}title_{{ item.logo_text }}{%- endif -%}{%- endcapture -%}
+{%- endif -%}
+
+{%- capture image_size -%}{{ item.logo_max_mobile_width }}x{%- endcapture -%}
+{%- capture image_size_retina -%}{{ item.logo_max_mobile_width | times: 2 }}x{%- endcapture -%}
+{%- capture headerlogomobile -%}{%- if item.logomobile != blank -%}{{ item.logomobile | img_url: image_size }}{%- else -%}title_{{ item.logo_text }}{%- endif -%}{%- endcapture -%}
+{%- capture headerlogomobileretina -%}{%- if item.logomobile != blank -%}{{ item.logomobile | img_url: image_size_retina }}{%- endif -%}{%- endcapture -%}
+{%- capture headerlogomobilealt -%}{{ item.logomobile.alt }}{%- endcapture -%}
+
+{%- capture image_size -%}{{ item.logo_max_width_d }}x{%- endcapture -%}
+{%- capture image_size_retina -%}{{ item.logo_max_width_d | times: 2 }}x{%- endcapture -%}
+{%- capture sheaderlogo -%}{%- if item.logo != blank -%}{{ item.logo | img_url: image_size }}{%- else -%}title_{{ item.logo_text }}{%- endif -%}{%- endcapture -%}
+{%- capture sheaderlogoretina -%}{%- if item.logo != blank -%}{{ item.logo | img_url: image_size_retina }}{%- endif -%}{%- endcapture -%}
+
+{%- capture image_size -%}{{ item.logo_max_width_m }}x{%- endcapture -%}
+{%- capture image_size_retina -%}{{ item.logo_max_width_m | times: 2 }}x{%- endcapture -%}
+{%- capture sheaderlogomobile -%}{%- if item.logomobile != blank -%}{{ item.logomobile | img_url: image_size }}{%- else -%}title_{{ item.logo_text }}{%- endif -%}{%- endcapture -%}
+{%- capture sheaderlogomobileretina -%}{%- if item.logomobile != blank -%}{{ item.logomobile | img_url: image_size_retina }}{%- endif -%}{%- endcapture -%}
+
+{%- assign str_blocks_title = '|' -%}
+{%- assign str_blocks_title_drag = '|' -%}
+{%- for block in section.blocks -%}
+{%- assign str_blocks_title = str_blocks_title | append: block.settings.linklist | append: '_' | append: forloop.index0 -%}
+{%- unless forloop.last -%}{%- assign str_blocks_title = str_blocks_title | append: '|' -%}{%- endunless -%}
+{%- endfor -%}
+{%- for block in section.blocks -%}
+{%- assign str_blocks_title_drag = str_blocks_title_drag | append: block.settings.newnavigation_item | append: '_' | append: forloop.index0 -%}
+{%- unless forloop.last -%}{%- assign str_blocks_title_drag = str_blocks_title_drag | append: '|' -%}{%- endunless -%}
+{%- endfor -%}
+
+
+{%- assign menu_currency = '' -%}
+{%- assign menu_language = '' -%}
+{%- assign infobar = '' -%}
+{%- assign topbar = '' -%}
+{%- assign svgicons = '' -%}
+{%- for block in section.blocks -%}
+{%- if block.type == 'menu_currency' -%}{%- assign menu_currency = block.settings -%}{%- endif -%}
+{%- if block.type == 'menu_language' -%}{%- assign menu_language = block.settings -%}{%- endif -%}
+{%- if block.type == 'infobar' -%}{%- assign infobar = block -%}{%- endif -%}
+{%- if block.type == 'topbar' -%}{%- assign topbar = block -%}{%- endif -%}
+{%- if block.type == 'svgicons' -%}{%- assign svgicons = block -%}{%- endif -%}
+{%- endfor -%}
+
+{%- capture logoposition -%}{%- case item.logo_bar -%}
+{%- when 'allinline' -%}tt-col-obj tt-obj-logo
+{%- else -%}tt-obj-logo
+{%- endcase -%}{%- endcapture -%}
+
+{%- capture optionsposition -%}{%- case item.logo_bar -%}
+{%- when 'allinline' -%}tt-col-obj tt-obj-options obj-move-right
+{%- else -%}tt-obj-options obj-move-right tt-position-absolute
+{%- endcase -%}{%- endcapture -%}
+
+<header class="{% if item.logo_bar =="allinlinelogocenter" %} parentallinlinelogocenter{% endif %} header-template-5">
+  {%- include "main-menu-mobile" mm: item.main_menu_selected -%}
+  {%- include "header_infobar" -%}
+  {%- include "header_topbar" -%}
+
+  {% if settings.use_header_inline %}{%- include "header_mobile_inline" -%}
+  {% else %}{%- include "header_mobile" -%}
+  {% endif %}
+  
+  <!-- tt-desktop-header -->
+  <div class="tt-desktop-header{% if settings.header_position and template == 'index' %} tt-header-static{% endif %}">
+
+    
+    
+    <div class="container{% if item.header_fullwidth %}-fluid{% endif %}">
+      <div class="tt-header-holder{% if item.logo_bar =="allinlinelogocenter" %} forcartrltallinline{% endif %}"{% if item.logo_bar =="allinlinelogocenter" %} style="height: {{ item.headerheightcenter }}px"{% endif %}>
+
+        {% if item.logo_bar =="allinlinelogocenter" %}
+        <div class="tt-desctop-parent-menu tt-parent-box tt-obj-menu">
+          <div class="tt-desctop-menu">
+            <div class="tt-menu02{% if item.showmenu %} active{% endif %}" id="js-init-menu02">
+
+              <button class="tt-dropdown-toggle">
+                <span class="tt-icon">
+                  <svg viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0.0703125 0.0429688H16.0664V3.05078H0.0703125V0.0429688ZM0.0703125 6.05859H16.0664V9.04688H0.0703125V6.05859ZM0.0703125 12.0547H16.0664V15.043H0.0703125V12.0547Z" fill="currentColor"></path>
+                  </svg>
+                </span>
+                {% if item.menu_button_text != '' %}<span class="tt-text">{{ item.menu_button_text }}</span>{% endif %}
+              </button>
+              <button class="tt-close-modal">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M8.54311 10L0 1.45688L1.45688 0L10 8.54311L18.5431 0L20 1.45688L11.4569 10L20 18.5431L18.5431 20L10 11.4569L1.45688 20L0 18.5431L8.54311 10Z" fill="currentColor"/>
+                </svg>
+              </button>
+              
+              {% include "menu-header-template-5" %}
+
+            </div>
+          </div>
+        </div>
+        
+        <div class="allinlinelogocenter" itemscope itemtype="http://schema.org/Organization">
+          {%- include "header_logo" -%}
+        </div>
+        {% else %}
+        <div class="{{ logoposition }}" itemscope itemtype="http://schema.org/Organization">
+          {%- include "header_logo" -%}
+        </div>
+
+        {%- if item.logo_bar == 'allinline' -%}
+        <div class="tt-col-obj"><!--tt-obj-menu-->
+          <!-- tt-menu -->
+          <div class="tt-desctop-parent-menu tt-parent-box">
+            <div class="tt-desctop-menu tt-menu02{% if item.showmenu %} active{% endif %}" id="js-init-menu02">
+             
+              <button class="tt-dropdown-toggle">
+                <span class="tt-icon">
+                  <svg viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0.0703125 0.0429688H16.0664V3.05078H0.0703125V0.0429688ZM0.0703125 6.05859H16.0664V9.04688H0.0703125V6.05859ZM0.0703125 12.0547H16.0664V15.043H0.0703125V12.0547Z" fill="currentColor"></path>
+                  </svg>
+                </span>
+                {% if item.menu_button_text != '' %}<span class="tt-text">{{ item.menu_button_text }}</span>{% endif %}
+              </button>
+              <button class="tt-close-modal">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M8.54311 10L0 1.45688L1.45688 0L10 8.54311L18.5431 0L20 1.45688L11.4569 10L20 18.5431L18.5431 20L10 11.4569L1.45688 20L0 18.5431L8.54311 10Z" fill="currentColor"/>
+                </svg>
+              </button>
+
+              {% include "menu-header-template-5" %}
+
+            </div>
+          </div>
+        </div>
+
+        <div class="tt-col-obj openedsearch-fullscreen">
+          
+          <div class="tt-parent-box tt-desctop-parent-headtype1">
+            <div class="tt-search-opened-headtype1 headerformplaceholderstyles">
+              <form action="/search" method="get" role="search">
+                <button type="submit" class="tt-btn-search">
+                  <i class="icon-f-85"></i>
+                </button>
+                <input class="tt-search-input"
+                       type="search"
+                       name="q"
+                       placeholder="{{ 'general.search.place_holder' | t }}">
+                <input type="hidden" name="type" value="product" />
+              </form>
+            </div>
+          </div>
+          
+        </div>
+
+        {%- endif -%}
+        {% endif %}
+        
+        {%- unless settings.catalogue_mode -%}
+        <div class="{{ optionsposition }}">
+          {%- include "header_options" -%}
+        </div>
+        {%- endunless -%}
+
+      </div>
+    </div>
+
+  </div>
+  <!-- stuck nav -->
+  <div class="tt-stuck-nav{% unless item.header_sticky_header %} disabled{% endunless %}{% if settings.use_header_inline %} notshowinmobile{% endif %}">
+    <div class="container{% if item.header_fullwidth %}-fluid{% endif %}">
+      <div class="tt-header-row ">
+        {%- if item.showsucklogodesktop -%}
+        <div class="tt-stuck-parent-logo{% if item.logo_bar =="allinlinelogocenter" %} allinlinelogocenter{% endif %}">
+          <a href="/" class="tt-logo" itemprop="url">
+            {%- if headerlogo contains "title_" -%}<h2 class="tt-title">{{ headerlogo | split:"title_" | last }}</h2>
+            {%- else -%}<img src="{{ sheaderlogo }}"
+                             srcset="{{ sheaderlogo }} 1x, {{ sheaderlogoretina }} 2x"
+                             alt="{{ headerlogoalt }}"
+                             class="tt-retina" itemprop="logo" style="top:{{ item.logo_margin_top }}px"/>
+            {%- endif -%}
+          </a>
+        </div>
+        {%- endif -%}
+        <div class="tt-stuck-parent-menu"></div>
+        <div class="tt-stuck-parent-search tt-parent-box"></div>
+        {%- unless settings.catalogue_mode -%}
+        {%- if template != "cart" -%}
+        <div class="tt-stuck-parent-cart tt-parent-box"></div>
+        {%- endif -%}
+        {%- endunless -%}
+        {%- if item.show_customer_links -%}
+        <div class="tt-stuck-parent-account tt-parent-box"></div>
+        {%- endif -%}
+        {%- if item.show_options_links -%}
+        <div class="tt-stuck-parent-multi tt-parent-box"></div>
+        {%- endif -%}
+      </div>
+    </div>
+    {%- if item.showsucklogomobile and settings.use_header_inline == false -%}
+    <div class="tt-mobile-header">
+      <div class="container-fluid tt-top-line">
+        <div class="row">
+          <div class="tt-logo-container">
+            <a class="tt-logo tt-logo-alignment" href="/">
+              {%- if headerlogomobile contains "title_" -%}<h2>{{ headerlogomobile | split:"title_" | last }}</h2>
+              {%- else -%}<img src="{{ sheaderlogomobile }}"
+                               srcset="{{ sheaderlogomobile }} 1x, {{ sheaderlogomobileretina }} 2x"
+                               alt="{{ headerlogomobilealt }}"
+                               class="tt-retina">
+              {%- endif -%}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {%- endif -%}
+  </div>
+</header>
+
+<style>
+  {% if item.showmenu %}
+  .tt-menu02.active .tt-close-modal{
+    display: flex;
+  }
+  {% endif %}
+  .multilevel-wpap-col li a:hover > img{
+    display: none !important;
+  }
+  .header-template-5 .tt-stuck-parent-menu .tt-menu02 .tt-dropdown-toggle,
+  .header-template-5 .tt-parent-box .tt-menu02 .tt-dropdown-toggle{
+    color: {{ item.menu_button_text_color }};
+    background-color: {{ item.menu_button_color }};
+    {{ item.menu_button_custom_styles }}
+  }
+  .header-template-5 .tt-stuck-parent-menu .tt-menu02 .tt-dropdown-toggle .tt-text,
+  .header-template-5 .tt-parent-box .tt-menu02 .tt-dropdown-toggle .tt-text{
+    font-size: {{ item.btntext_fs }}px;
+    line-height: {{ item.btntext_lh }}px;
+  }
+  .tt-menu02 .tt-dropdown-toggle .tt-icon{
+    top: {{ item.btntext_icon }}px;
+  }
+  .header-template-5 .tt-stuck-parent-menu .tt-menu02 .tt-dropdown-toggle:hover,
+  .header-template-5 .tt-parent-box .tt-menu02 .tt-dropdown-toggle:hover{
+    color: {{ item.menu_button_text_color_hover }};
+    background-color: {{ item.menu_button_color_hover }};
+    {{ item.menu_button_custom_styles_hover }}
+  }
+  .header-template-5 .tt-stuck-parent-menu .tt-menu02 .tt-dropdown-toggle .tt-icon svg path,
+  .header-template-5 .tt-parent-box .tt-menu02 .tt-dropdown-toggle .tt-icon svg path{
+    fill: {{ item.menu_button_icon_color }};
+  }
+  .header-template-5 .tt-stuck-parent-menu .tt-menu02 .tt-dropdown-toggle:hover .tt-icon svg path,
+  .header-template-5 .tt-parent-box .tt-menu02 .tt-dropdown-toggle:hover .tt-icon svg path{
+    fill: {{ item.menu_button_icon_color_hover }};
+  }
+  {%- if item.search_custom_styles != "" -%}
+  .header-template-5 .tt-search-opened-headtype1 .tt-search-input{
+    {{ item.search_custom_styles }}
+  }
+  {%- endif -%}
+  {%- if item.search_custom_styles_hover != "" -%}
+  .tt-search-opened-headtype1 .tt-search-input:hover,
+  .tt-search-opened-headtype1 .tt-search-input:focus{
+    {{ item.search_custom_styles_hover }}
+  }
+  {%- endif -%}
+  
+  header .tt-dropdown-obj .tt-dropdown-toggle .tt-icon-box-header{
+    position: relative;
+    pointer-events: none;
+  }
+  header .tt-cart .tt-dropdown-toggle .tt-badge-cart{
+    top: -14px;
+    right: -11px;
+  }
+  @media (min-width: 1025px){
+    {% if item.header_show_shadow %}
+    header:not(.tt-header-static) .tt-desktop-header{
+      {{ item.header_shadow }}
+    }
+    {% endif %}
+    .tt-desktop-header .tt-obj-options > *{% unless item.logo_bar =="allinlinelogocenter" %}:not(:nth-child(2)){% endunless %}{
+      margin-left: 6px;
+    }
+    header .tt-stuck-nav .tt-parent-box{
+      margin-left: 10px;
+    }
+    header .tt-dropdown-obj .tt-dropdown-toggle > *:nth-child(2){
+      padding-left: 5px;
+    }
+    header .tt-parent-box:first-child .tt-dropdown-toggle {
+      padding: 0 10px;
+    }
+    header .tt-parent-box:last-child .tt-dropdown-toggle{
+      padding: 0 10px;
+    }
+
+
+    header .tt-dropdown-obj.tt-search .tt-dropdown-toggle{
+      color: {{ item.search_icon_color }};
+    }
+    header .tt-dropdown-obj.tt-search .tt-dropdown-toggle:hover{
+      color: {{ item.search_icon_color_hover }};
+    }
+    {%- if item.search_icon_custom_style -%}
+    header .tt-dropdown-obj.tt-search .tt-dropdown-toggle{
+      {{ item.search_icon_custom_style }}
+    }{%- endif -%}
+    {%- if item.search_icon_custom_style_hover -%}
+    header .tt-dropdown-obj.tt-search .tt-dropdown-toggle:hover{
+      {{ item.search_icon_custom_style_hover }}
+    }{%- endif -%}
+    
+    
+    header .tt-dropdown-obj.tt-cart .tt-dropdown-toggle{
+      color: {{ item.cart_icon_color }};
+    }
+    header .tt-dropdown-obj.tt-cart .tt-dropdown-toggle:hover{
+      color: {{ item.cart_icon_color_hover }};
+    }
+    header .tt-dropdown-obj.tt-cart .tt-dropdown-toggle .tt-icon svg path{
+      fill: {{ item.cart_icon_color }};
+    }
+    header .tt-dropdown-obj.tt-cart .tt-dropdown-toggle:hover .tt-icon svg path{
+      fill: {{ item.cart_icon_color }};
+    }
+    
+    header .tt-dropdown-obj.tt-cart .tt-dropdown-toggle .tt-dropdown-toggle__text{
+      color: {{ item.cart_icon_text_color }};
+    }
+    header .tt-dropdown-obj.tt-cart .tt-dropdown-toggle:hover .tt-dropdown-toggle__text{
+      color: {{ item.cart_icon_text_color_hover }};
+    }
+    header .tt-cart .tt-dropdown-toggle .tt-badge-cart{
+      color: {{ item.cart_icon_bagde_text_color }};
+      background: {{ item.cart_icon_bagde_color }};
+    }
+    {%- if item.cart_icon_custom_style -%}
+    header .tt-dropdown-obj.tt-cart .tt-dropdown-toggle{
+      {{ item.cart_icon_custom_style }}
+    }{%- endif -%}
+    {%- if item.cart_icon_custom_style_hover -%}
+    header .tt-dropdown-obj.tt-cart .tt-dropdown-toggle:hover{
+      {{ item.cart_icon_custom_style_hover }}
+    }{%- endif -%}
+    {%- if item.cart_icon_custom_style_t -%}
+    header .tt-dropdown-obj.tt-cart .tt-dropdown-toggle .tt-dropdown-toggle__text{
+      {{ item.cart_icon_custom_style_t }}
+    }{%- endif -%}
+    {%- if item.cart_icon_custom_style_hover_t -%}
+    header .tt-dropdown-obj.tt-cart .tt-dropdown-toggle:hover .tt-dropdown-toggle__text{
+      {{ item.cart_icon_custom_style_hover_t }}
+    }{%- endif -%}
+    
+
+    header .tt-dropdown-obj.tt-account .tt-dropdown-toggle{
+      color: {{ item.account_icon_color }};
+    }
+    header .tt-dropdown-obj.tt-account .tt-dropdown-toggle:hover{
+      color: {{ item.account_icon_color_hover }};
+    }
+    header .tt-dropdown-obj.tt-account .tt-dropdown-toggle .tt-dropdown-toggle__text{
+      color: {{ item.account_icon_text_color }};
+    }
+    header .tt-dropdown-obj.tt-account .tt-dropdown-toggle:hover .tt-dropdown-toggle__text{
+      color: {{ item.account_icon_text_color_hover }};
+    }
+    {%- if item.account_icon_custom_style -%}
+    header .tt-dropdown-obj.tt-account .tt-dropdown-toggle{
+      {{ item.account_icon_custom_style }}
+    }{%- endif -%}
+    {%- if item.account_icon_custom_style_hover -%}
+    header .tt-dropdown-obj.tt-account .tt-dropdown-toggle:hover{
+      {{ item.account_icon_custom_style_hover }}
+    }{%- endif -%}
+    {%- if item.account_icon_custom_style_t -%}
+    header .tt-dropdown-obj.tt-account .tt-dropdown-toggle .tt-dropdown-toggle__text{
+      {{ item.account_icon_custom_style_t }}
+    }{%- endif -%}
+    {%- if item.account_icon_custom_style_hover_t -%}
+    header .tt-dropdown-obj.tt-account .tt-dropdown-toggle:hover .tt-dropdown-toggle__text{
+      {{ item.account_icon_custom_style_hover_t }}
+    }{%- endif -%}
+    
+
+    header .tt-dropdown-obj.tt-multi-obj .tt-dropdown-toggle{
+      color: {{ item.options_icon_color }};
+    }
+    header .tt-dropdown-obj.tt-multi-obj .tt-dropdown-toggle:hover{
+      color: {{ item.options_icon_color_hover }};
+    }
+    {%- if item.options_icon_custom_style -%}
+    header .tt-dropdown-obj.tt-multi-obj .tt-dropdown-toggle{
+      {{ item.options_icon_custom_style }}
+    }{%- endif -%}
+    {%- if item.options_icon_custom_style_hover -%}
+    header .tt-dropdown-obj.tt-multi-obj .tt-dropdown-toggle:hover{
+      {{ item.options_icon_custom_style_hover }}
+    }{%- endif -%}
+
+    .tt-menu02:before{
+      background-color: {{ item.openedmenu_bg_color }};
+    }
+    .tt-menu02 .tt-close-modal{
+      color: {{ item.closebtn_icon_color }};
+      background: {{ item.closebtn_bg_color }};
+    }
+    .tt-menu02 .tt-close-modal:hover{
+      color: {{ item.closebtn_icon_color_hover }};
+      background: {{ item.closebtn_bg_color_hover }};
+    }
+    .nav-multilevel .nav-multilevel__icon svg path{
+      fill: {{ item.svgiconcolor }};
+    }
+    .nav-multilevel .nav-multilevel__title a{
+      color: {{ item.menu_link_color }};
+      {% if item.fontname1 != "" %}font-family: {{ item.fontname1 }};{% endif %}
+    }
+    .nav-multilevel.active .nav-multilevel__title a,
+    .nav-multilevel .nav-multilevel__title a:hover{
+      color: {{ item.menu_link_color_hover }};
+    }
+    .nav-multilevel .nav-multilevel__layout ul>li>a{
+      color: {{ item.sub_menu_link_color }};
+    }
+    .nav-multilevel .nav-multilevel__layout ul>li.active>a,
+    .nav-multilevel .nav-multilevel__layout ul>li>a:hover{
+      color: {{ item.sub_menu_link_color_hover }};
+    }
+    .nav-multilevel .nav-multilevel__layout ul>li ul li a{
+      color: {{ item.sub_sub_menu_link_color }};
+    }
+    .nav-multilevel .nav-multilevel__layout ul>li ul li.active > a,
+    .nav-multilevel .nav-multilevel__layout ul>li ul li a:hover{
+      color: {{ item.sub_sub_menu_link_color_hover }};
+    }
+    .nav-multilevel .nav-multilevel__layout ul ul{
+      background: {{ item.subsubmenu_bg }};
+      {% if item.submenu_bg_show_shadow %}
+      {{ item.submenu_bg_show }}
+      {% endif %}
+    }
+    {% if item.submenu_bg_show_shadow %}
+    .nav-multilevel .nav-multilevel__layout ul>li ul{
+      {{ item.submenu_bg_show }}
+    }
+    {% endif %}
+  }
+  @media (max-width: 1024px){
+    header .tt-dropdown-obj .tt-dropdown-toggle .tt-dropdown-toggle__text{
+      display: none;
+    }
+  }
+  .nav-multilevel .nav-multilevel__title{
+    font-size: {{ item.fontsize1 }}px;
+    line-height: {{ item.lineheight1 }}px;
+    font-weight: {{ item.fontweight1 }};
+  }
+  .nav-multilevel .nav-multilevel__layout ul>li{
+    font-size: {{ item.fontsize2 }}px;
+    line-height: {{ item.lineheight2 }}px;
+    font-weight: {{ item.fontweight2 }};
+  }
+  .nav-multilevel .nav-multilevel__layout ul li li>a{
+    font-size: {{ item.fontsize3 }}px;
+    line-height: {{ item.lineheight3 }}px;
+    font-weight: {{ item.fontweight3 }};
+  }
+  .nav-multilevel .nav-multilevel__layout ul li>a:not(:only-child):after{
+    font-size: {{ item.arrowfontsize2 }}px;
+    top: {{ item.arrowfontsize21 }}px;
+  }
+  .nav-multilevel .nav-multilevel__layout ul li>ul li>a:not(:only-child):after{
+    font-size: {{ item.arrowfontsize3 }}px;
+    top: {{ item.arrowfontsize31 }}px;
+  }
+</style>
+
+
+{% schema %}
+  {
+    "name": "Header type 5",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "header_sticky_header",
+        "label": "Enable sticky header",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Main Menu"
+      },
+      {
+        "type": "link_list",
+        "id": "main_menu_selected",
+        "label": "Menu Menu",
+        "default": "main-menu",
+		"info": "Main menu is general menu. From main menu items we can create megamenu and other drop-downs"
+      },
+      {
+        "type": "header",
+        "content": "Header width"
+      },
+      {
+        "type": "checkbox",
+        "id": "header_fullwidth",
+        "label": "Header fullwidth",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "checkbox",
+        "id": "showsucklogodesktop",
+        "label": "Show sticky logo on desktop",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "logo_max_width_d",
+        "label": "Width of the sticky logo on desktop (in pixels)",
+        "default": "95"
+      },
+      {
+        "type": "checkbox",
+        "id": "showsucklogomobile",
+        "label": "Show sticky logo on mobile",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "logo_max_width_m",
+        "label": "Width of the sticky logo on mobile (in pixels)",
+        "default": "95"
+      },
+      {
+        "type": "text",
+        "id": "logo_text",
+        "label": "Logo Text",
+        "default": "Wokiee",
+		"info": "Work when logo image is empty."
+      },
+      {
+        "type": "text",
+        "id": "logo_margin_top",
+        "label": "Desktop logo top offset",
+        "default": "0",
+		"info": "Integer in px"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo Main",
+		"info": "95x19px"
+      },
+      {
+        "type": "text",
+        "id": "logo_max_width",
+        "label": "Logo Main width (in pixels)",
+        "default": "95"
+      },
+      {
+        "type": "checkbox",
+        "id": "showlogo_opened",
+        "label": "Show logo in opened menu",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_opened",
+        "label": "Logo on opened menu",
+		"info": "95x19px"
+      },
+      {
+        "type": "text",
+        "id": "logo_max_width_opened",
+        "label": "Logo on opened menu Main width (in pixels)",
+        "default": "95"
+      },
+      {
+        "type": "image_picker",
+        "id": "logomobile",
+        "label": "Logo Mobile",
+		"info": "95x19px"
+      },
+      {
+        "type": "text",
+        "id": "logo_max_mobile_width",
+        "label": "Logo Mobile width (in pixels)",
+        "default": "95"
+      },
+      {
+        "type": "header",
+        "content": "Header Design"
+      },
+      {
+        "type": "select",
+        "id": "logo_bar",
+        "label": "Logo bar",
+        "options": [
+          {
+            "value": "allinline",
+            "label": "All in line with menu"
+          },
+          {
+            "value": "allinlinelogocenter",
+            "label": "All in line logo in center"
+          }
+        ],
+        "default": "allinline"
+      },
+      {
+        "type": "text",
+        "id": "headerheightcenter",
+        "label": "Header height for logo in center",
+        "default": "50",
+		"info": "Integer in px. Can work only with option All in line logo in center"
+      },
+      {
+        "type": "header",
+        "content": "Options in logo bar"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_customer_links",
+        "label": "Show customer links",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_options_links",
+        "label": "Show options links",
+        "default": true,
+		"info": "Language menu. Currency menu"
+      },
+	  {
+        "type": "header",
+        "content": "Header some desktop styles"
+      },
+      {
+        "type": "checkbox",
+        "id": "header_show_shadow",
+        "label": "Show header shadow",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "header_shadow",
+        "label": "Shadow",
+		"default": "box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.1);"
+      },
+      {
+        "type": "header",
+        "content": "Main menu button"
+      },
+      {
+        "type": "text",
+        "id": "menu_button_text",
+        "label": "Menu text",
+		"info": "Not work in mobile",
+		"default": "MENU"
+      },
+      {
+        "type": "color",
+        "id": "menu_button_text_color",
+        "label": "Menu button text color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "menu_button_icon_color",
+        "label": "Menu button icon color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "menu_button_color",
+        "label": "Menu button background color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "menu_button_text_color_hover",
+        "label": "Menu button text color hover",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "menu_button_icon_color_hover",
+        "label": "Menu button icon color hover",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "menu_button_color_hover",
+        "label": "Menu button background color hover",
+        "default": "#191919"
+      },
+	  {
+		"type":      "range",
+		"id":        "btntext_icon",
+		"min":       -20,
+		"max":       20,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Button icon correct vertical position",
+		"default":   4
+	  },
+	  {
+		"type":      "range",
+		"id":        "btntext_fs",
+		"min":       10,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Button font size",
+		"default":   14
+	  },
+	  {
+		"type":      "range",
+		"id":        "btntext_lh",
+		"min":       10,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Button line height",
+		"default":   17
+	  },
+      {
+        "type": "textarea",
+        "id": "menu_button_custom_styles",
+        "label": "Menu button custom styles"
+      },
+      {
+        "type": "textarea",
+        "id": "menu_button_custom_styles_hover",
+        "label": "Menu button custom styles hover"
+      },
+      {
+        "type": "header",
+        "content": "Opened search custom styles"
+      },
+      {
+        "type": "textarea",
+        "id": "search_custom_styles",
+        "label": "Search custom styles"
+      },
+      {
+        "type": "textarea",
+        "id": "search_custom_styles_hover",
+        "label": "Search custom styles hover"
+      },
+      {
+        "type": "header",
+        "content": "Icon search. State closed and stuck header"
+      },
+      {
+        "type": "color",
+        "id": "search_icon_color",
+        "label": "Search icon color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "search_icon_color_hover",
+        "label": "Search icon color hover",
+        "default": "#2879fe"
+      },
+      {
+        "type": "textarea",
+        "id": "search_icon_custom_style",
+        "label": "Search icon custom styles"
+      },
+      {
+        "type": "textarea",
+        "id": "search_icon_custom_style_hover",
+        "label": "Search icon custom styles hover"
+      },
+      {
+        "type": "header",
+        "content": "Cart icon"
+      },
+      {
+        "type": "color",
+        "id": "cart_icon_color",
+        "label": "Cart icon color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "cart_icon_color_hover",
+        "label": "Cart icon color hover",
+        "default": "#2879fe"
+      },
+      {
+        "type": "text",
+        "id": "cart_icon_text",
+        "label": "Cart icon text",
+		"info": "Not work in mobile",
+		"default": "Cart"
+      },
+      {
+        "type": "color",
+        "id": "cart_icon_text_color",
+        "label": "Cart icon text color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "cart_icon_text_color_hover",
+        "label": "Cart icon text color hover",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "cart_icon_bagde_color",
+        "label": "Cart icon number badge background color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "cart_icon_bagde_text_color",
+        "label": "Cart icon number badge text color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "textarea",
+        "id": "cart_icon_custom_style",
+        "label": "Cart main custom styles"
+      },
+      {
+        "type": "textarea",
+        "id": "cart_icon_custom_style_hover",
+        "label": "Cart main custom styles hover"
+      },
+      {
+        "type": "textarea",
+        "id": "cart_icon_custom_style_t",
+        "label": "Cart text custom styles"
+      },
+      {
+        "type": "textarea",
+        "id": "cart_icon_custom_style_hover_t",
+        "label": "Cart text custom styles hover"
+      },
+      {
+        "type": "header",
+        "content": "Account icon"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_account_icon",
+        "label": "Show account icon",
+        "default": true,
+		"info": "Work only in desktop screen"
+      },
+      {
+        "type": "color",
+        "id": "account_icon_color",
+        "label": "Account icon color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "account_icon_color_hover",
+        "label": "Account icon color hover",
+        "default": "#2879fe"
+      },
+      {
+        "type": "text",
+        "id": "account_icon_text",
+        "label": "Account icon text",
+		"info": "Not work in mobile",
+		"default": "My Account"
+      },
+      {
+        "type": "color",
+        "id": "account_icon_text_color",
+        "label": "Account icon text color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "account_icon_text_color_hover",
+        "label": "Account icon text color hover",
+        "default": "#2879fe"
+      },
+      {
+        "type": "textarea",
+        "id": "account_icon_custom_style",
+        "label": "Account main custom styles"
+      },
+      {
+        "type": "textarea",
+        "id": "account_icon_custom_style_hover",
+        "label": "Account main custom styles hover"
+      },
+      {
+        "type": "textarea",
+        "id": "account_icon_custom_style_t",
+        "label": "Account text custom styles"
+      },
+      {
+        "type": "textarea",
+        "id": "account_icon_custom_style_hover_t",
+        "label": "Account text custom styles hover"
+      },
+      {
+        "type": "header",
+        "content": "Icon options"
+      },
+      {
+        "type": "color",
+        "id": "options_icon_color",
+        "label": "Options icon color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "options_icon_color_hover",
+        "label": "Options icon color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "textarea",
+        "id": "options_icon_custom_style",
+        "label": "Options icon custom styles"
+      },
+      {
+        "type": "textarea",
+        "id": "options_icon_custom_style_hover",
+        "label": "Options icon custom styles hover"
+      },
+      {
+        "type": "header",
+        "content": "Opened menu colors"
+      },
+      {
+        "type": "checkbox",
+        "id": "showmenu",
+        "label": "Show main menu for customization",
+        "default": false,
+        "info": "Please use this option only for admin panel"
+      },
+      {
+        "type": "color",
+        "id": "openedmenu_bg_color",
+        "label": "Background color",
+        "default": "#F7F8FA"
+      },
+      {
+        "type": "color",
+        "id": "closebtn_icon_color",
+        "label": "Close button icon color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "closebtn_bg_color",
+        "label": "Close button background color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "closebtn_icon_color_hover",
+        "label": "Close button icon color. Hover",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "closebtn_bg_color_hover",
+        "label": "Close button background color. Hover",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "svgiconcolor",
+        "label": "Svg icon color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "menu_link_color",
+        "label": "Main menu link color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "menu_link_color_hover",
+        "label": "Main menu link color hover",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "sub_menu_link_color",
+        "label": "Submenus link color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "sub_menu_link_color_hover",
+        "label": "Submenus link color hover",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "subsubmenu_bg",
+        "label": "Subsubmenus background color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "checkbox",
+        "id": "submenu_bg_show_shadow",
+        "label": "Show shadow",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "submenu_bg_show",
+        "label": "Shadow",
+		"default": "box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2);"
+      },
+      {
+        "type": "color",
+        "id": "sub_sub_menu_link_color",
+        "label": "Subsubmenus link color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "sub_sub_menu_link_color_hover",
+        "label": "Subsubmenus link color hover",
+        "default": "#2879fe"
+      },
+      {
+        "type": "header",
+        "content": "Opened menu font styles"
+      },
+      {
+        "type": "text",
+        "id": "fontname1",
+        "label": "Menu level 1 Font name"
+      },
+	  {
+		"type":      "range",
+		"id":        "fontsize1",
+		"min":       10,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Menu level 1",
+		"default":   24
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheight1",
+		"min":       10,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Menu level 1",
+		"default":   28
+	  },
+      {
+        "type":      "range",
+        "id":        "fontweight1",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Font weight Menu level 1",
+        "default":   500
+      },
+	  {
+		"type":      "range",
+		"id":        "fontsize2",
+		"min":       10,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Menu level 2",
+		"default":   18
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheight2",
+		"min":       10,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Menu level 2",
+		"default":   31
+	  },
+      {
+        "type":      "range",
+        "id":        "fontweight2",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Font weight Menu level 2",
+        "default":   300
+      },
+	  {
+		"type":      "range",
+		"id":        "fontsize3",
+		"min":       10,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Menu levels other",
+		"default":   14
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheight3",
+		"min":       10,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Menu levels other",
+		"default":   18
+	  },
+      {
+        "type":      "range",
+        "id":        "fontweight3",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Font size Menu levels other",
+        "default":   300
+      },
+      {
+        "type": "header",
+        "content": "Opened menu dropdown arrows"
+      },
+	  {
+		"type":      "range",
+		"id":        "arrowfontsize21",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Correct arrow top position 2",
+		"default":   1
+	  },
+	  {
+		"type":      "range",
+		"id":        "arrowfontsize2",
+		"min":       10,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Arrow font size level 2",
+		"default":   12
+	  },
+	  {
+		"type":      "range",
+		"id":        "arrowfontsize31",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Correct arrow top position other",
+		"default":   1
+	  },
+	  {
+		"type":      "range",
+		"id":        "arrowfontsize3",
+		"min":       10,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Arrow font size other",
+		"default":   12
+	  }
+	],
+	"blocks": [
+      {
+        "type": "menu_language",
+        "name": "Languages menu",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "select",
+            "id": "language_menu_settings",
+            "label": "Languages menu settings",
+            "options": [
+              {
+                "value": "default",
+                "label": "Menu with external links"
+              },
+              {
+                "value": "weglot",
+                "label": "Weglot Translate APP. Default APP design"
+              },
+              {
+                "value": "weglot_theme",
+                "label": "Weglot Translate APP. Theme design"
+              }
+            ],
+            "default": "default"
+          },
+          {
+            "type": "paragraph",
+            "content": "Menu with external links"
+          },
+          {
+            "type": "text",
+            "id": "default_language",
+            "label": "Default language name",
+            "default": "English"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Mini Menu Link List"
+          }
+        ]
+      },
+      {
+        "type": "menu_currency",
+        "name": "Multiple Currencies",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Explain to your customers what is happening at the checkout[Click here](https:\/\/help.shopify.com\/themes\/customization\/currencies\/show-multiple-currencies#explain-to-your-customers-what-happens-at-checkout)."
+          },
+          {
+            "type": "paragraph",
+            "content": "Write ISO 4217 Currency Codes [Click here](http:\/\/www.xe.com\/iso4217.php). Your currencies name: icon [Click here](http:\/\/character-code.com\/currency-html-codes.php), text."
+          },
+          {
+            "type": "textarea",
+            "id": "supported_currencies",
+            "label": "Currencies you wish to support",
+            "default": "USD, $&nbsp;&nbsp;US Dollars | EUR, €&nbsp;&nbsp;Euro | GBP, &pound;&nbsp;&nbsp;British Pounds",
+            "info": "Example: USD, $ US Dollars | EUR, € Euro | GBP, &pound; British Pounds"
+          },
+          {
+            "type": "paragraph",
+            "content": "&nbsp; - space"
+          },
+          {
+            "type": "header",
+            "content": "Use shopify multiple currencies from admin panel"
+          },
+          {
+            "type": "paragraph",
+            "content": "How to enable [shopify multiple currencies](https:\/\/help.shopify.com\/en\/manual\/payments\/shopify-payments\/multi-currency\/setup)?"
+          },
+          {
+            "type": "paragraph",
+            "content": "Currency must be greater than 1"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_multiple_currencies",
+            "label": "Show shopify multiple currencies",
+            "default": false,
+			"info": "The theme of the pre-built currency selector will not work"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_symbol",
+            "label": "Show in the name currency Symbol",
+            "default": false,
+			"info": "The theme of the pre-built currency selector will not work"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_iso_code",
+            "label": "Show in the name Iso Code",
+            "default": false,
+			"info": "The theme of the pre-built currency selector will not work"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_name",
+            "label": "Show currency full name",
+            "default": true,
+			"info": "The theme of the pre-built currency selector will not work"
+          }
+        ]
+      },
+      {
+        "type": "infobar",
+        "name": "Information bar",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_content",
+            "label": "Show content",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_content_index",
+            "label": "Show content only in the index",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "show_button_close",
+            "label": "Show button close",
+            "default": true
+          },
+          {
+            "type":      "range",
+            "id":        "fontsize",
+            "min":       10,
+            "max":       100,
+            "step":      1,
+            "label":     "Font size",
+            "default":   18,
+			"unit":      "px"
+          },
+          {
+            "type":      "range",
+            "id":        "fontweight",
+            "min":       300,
+            "max":       900,
+            "step":      100,
+            "label":     "Font weight",
+            "default":   400
+          },
+          {
+            "type":      "range",
+            "id":        "toppadding",
+            "min":       0,
+            "max":       100,
+            "step":      1,
+            "label":     "Text top padding",
+            "default":   24,
+			"unit":      "px"
+          },
+          {
+            "type":      "range",
+            "id":        "minimalheight",
+            "min":       0,
+            "max":       100,
+            "step":      1,
+            "label":     "Bar minimal height",
+            "default":   40,
+			"unit":      "px"
+          },
+          {
+            "type":      "range",
+            "id":        "btnpos",
+            "min":       -50,
+            "max":       50,
+            "step":      1,
+            "label":     "Button close. Correct vertical position",
+            "default":   -2,
+			"unit":      "px"
+          },
+          {
+            "type": "textarea",
+            "id": "text",
+            "label": "Html Text",
+            "default": "STUDENT DISCOUNT 20%, OPTIONAL DELIVERY NEXT DAY, EXCLUSIVE SALE. <a href=\"#\">DETAILS<\/a>"
+          },
+          {
+            "type": "checkbox",
+            "id": "background_image",
+            "label": "Use background image",
+            "default": false
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Background image",
+            "info": "Image size max height 150px. Use *.png image. Image always in center and not responsive"
+          }
+        ]
+      },
+      {
+        "type": "topbar",
+        "name": "Top bar",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_content",
+            "label": "Show content",
+            "default": true
+          },
+          {
+            "type": "textarea",
+            "id": "text",
+            "label": "Html Text",
+            "default": "<div class=\"tt-box-info\">\n<ul>\n<li>\n<i class=\"icon-f-93\"><\/i>+566 4774 9930; +566 4774 9940\n<\/li>\n<li>\n<i class=\"icon-f-92\"><\/i>ALL WEEK FROM 9 AM TO 9 PM <\/li>\n<\/ul>\n<\/div>"
+          },
+          {
+            "type": "header",
+            "content": "Social Buttons"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_socials",
+            "label": "Show social buttons",
+            "default": true
+          },
+          {
+            "type": "url",
+            "id": "facebook_url",
+            "label": "Facebook",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "twitter_url",
+            "label": "Twitter",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "gmail_url",
+            "label": "Gmail",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "instagram_url",
+            "label": "Instagram",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "pinterest_url",
+            "label": "Pinterest",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "whatsapp_url",
+            "label": "Whatsapp",
+            "info": "If url is empty? Link will be hidden"
+          }
+        ]
+      },
+      {
+        "type": "svgicons",
+        "name": "Svg icons",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "textarea",
+            "id": "text1",
+            "label": "Svg icon 1"
+          },
+          {
+            "type": "textarea",
+            "id": "text2",
+            "label": "Svg icon 2"
+          },
+          {
+            "type": "textarea",
+            "id": "text3",
+            "label": "Svg icon 3"
+          },
+          {
+            "type": "textarea",
+            "id": "text4",
+            "label": "Svg icon 4"
+          },
+          {
+            "type": "textarea",
+            "id": "text5",
+            "label": "Svg icon 5"
+          },
+          {
+            "type": "textarea",
+            "id": "text6",
+            "label": "Svg icon 6"
+          },
+          {
+            "type": "textarea",
+            "id": "text7",
+            "label": "Svg icon 7"
+          },
+          {
+            "type": "textarea",
+            "id": "text8",
+            "label": "Svg icon 8"
+          },
+          {
+            "type": "textarea",
+            "id": "text9",
+            "label": "Svg icon 9"
+          },
+          {
+            "type": "textarea",
+            "id": "text10",
+            "label": "Svg icon 10"
+          },
+          {
+            "type": "textarea",
+            "id": "text11",
+            "label": "Svg icon 11"
+          },
+          {
+            "type": "textarea",
+            "id": "text12",
+            "label": "Svg icon 12"
+          },
+          {
+            "type": "textarea",
+            "id": "text13",
+            "label": "Svg icon 13"
+          },
+          {
+            "type": "textarea",
+            "id": "text14",
+            "label": "Svg icon 14"
+          },
+          {
+            "type": "textarea",
+            "id": "text15",
+            "label": "Svg icon 15"
+          },
+          {
+            "type": "textarea",
+            "id": "text16",
+            "label": "Svg icon 16"
+          }
+        ]
+      }
+	]
+  }
+{% endschema %}

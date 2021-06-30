@@ -1,0 +1,41 @@
+<script src="{{ 'vendor.min.js' | asset_url }}" defer="defer"></script>
+
+{%- if content_for_layout contains 'revolution' -%}
+<div class="revolution_included"></div>
+<script src="{{ 'jquery.themepunch.revolution_full.min.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- if content_for_layout contains 'masonry' -%}
+<div class="isotope_included"></div>
+<script src="{{ 'isotope_full.pkgd.min.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+{%- if content_for_layout contains 'tt-portfolio-content' or content_for_layout contains 'tt-btn-zomm-product-page' -%}
+<script src="{{ 'jquery.magnific-popup.min.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- if template contains 'product' -%}
+<script src="{{ 'jquery.elevatezoom.js' | asset_url }}" defer="defer"></script>
+{%- if content_for_layout contains 'recently_view_products_wokiee' -%}
+<script src="{{ 'jquery.relproducts.min.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+{%- if content_for_layout contains 'class="airSticky"' -%}
+<script src="{{ 'air-sticky-block.min.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+{%- endif -%}
+
+{%- if template contains 'collection' -%}
+<script src="{{ 'collections-filtres.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- if content_for_layout contains "index_sectiontabs" or content_for_layout contains "countdown" or template contains 'collection' or settings.home_page_layout == "home-page_layout-2" and template == "index" -%}
+  {%- if settings.use_countdown_timezone -%}
+  <script src="{{ 'moment-momenttimezone.min.js' | asset_url }}" defer="defer"></script>
+  {%- endif -%}
+  <script src="{{ 'jquery.countdown.min.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- if content_for_layout contains 'id="instafeed-' or settings.show_footer_instagram_section -%}
+<script src="{{ 'jquery.instagramFeed.min.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+<script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>

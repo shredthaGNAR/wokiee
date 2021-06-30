@@ -1,0 +1,491 @@
+{% assign item = section.settings %}
+
+{%- capture bgco =  -%}
+{% if section.settings.usebgcolor %}
+style="background: {{ section.settings.bgco }};
+{% if section.settings.usebgimage %}
+background-image: url('{{ section.settings.image | img_url: '1980x' }}');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+{% endif %}
+"{% endif %}
+{%- endcapture -%}
+
+<style>
+  {% if section.settings.usebgcolor %}
+  .testimonials{{ section.id }} .testimonials-bg-pad{
+    padding-top: {{ section.settings.bgdepad }}px;
+    padding-bottom: {{ section.settings.bgdepad_2 }}px;
+  }
+  @media (max-width: 768px){
+    .testimonials{{ section.id }} .testimonials-bg-pad{
+      padding-top: {{ section.settings.bgmopad }}px;
+      padding-bottom: {{ section.settings.bgmopad_2 }}px;
+    }
+  }
+  {% if section.settings.usebgminheight %}
+  .testimonials{{ section.id }}{
+    display: flex;
+    align-items: center;
+  }
+  @media (min-width: 769px){
+    .testimonials{{ section.id }}{
+      min-height: {{ section.settings.bgminheight }}px;
+    }
+  }
+  @media (max-width: 768px){
+    .testimonials{{ section.id }}{
+      min-height: {{ section.settings.bgminheight_m }}px;
+    }
+  }
+  @media (max-width: 1024px){
+    .testimonials{{ section.id }} .testimonials-mob-pad {
+      margin-bottom: 0;
+    }
+  }
+  {% endif %}
+  {% endif %}
+
+  {%- for block in section.blocks -%}
+  {%- assign b_i = block.settings -%}
+  .testimonials{{ section.id }} .tt-content-info.obj-data02{{ block.id }} .obj-data02__rating .tt-trim {
+    width: {{ b_i.rating | times: 100 | divided_by: 5 }}%;
+  }
+  {%- endfor -%}
+  .testimonials{{ section.id }} svg.basestarscolor path{
+    fill: {{ item.colorstarsreview }};
+  }
+  .testimonials{{ section.id }} svg.activestarscolor path{
+    fill: {{ item.colorstarsreviewa }};
+  }
+  .testimonials{{ section.id }} svg.basestarscolor rect{
+    fill: {{ item.colorreview }};
+  }
+  .testimonials{{ section.id }} svg.activestarscolor rect{
+    fill: {{ item.colorreviewa }};
+  }
+</style>
+
+<div class="{% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent testimonials{{ section.id }}"{% if section.settings.boxedbg == false %} {{ bgco }}{% endif %}>
+  <div class="container{% if section.settings.usebgcolor and section.settings.boxedbg == false %} testimonials-bg-pad{% if section.settings.mobpad %} testimonials-mob-pad{% endif %}{% endif %}" data-sectionname="index_testimonials">
+    {% if section.settings.boxedbg %}<div class="col-12{% if section.settings.usebgcolor and section.settings.boxedbg %} testimonials-bg-pad{% if section.settings.mobpad %} testimonials-mob-pad{% endif %}{% endif %}" {{ bgco }}>{% endif %}
+    {%- if section.settings.text1 != "" -%}
+    <div class="tt-block-title">
+      <h2 class="tt-title" style="color: {{ section.settings.titleco }};">{{ section.settings.text1 }}</h2>
+    </div>
+    {%- endif -%}
+    {%- if section.blocks.size > 0 -%}
+    <div class="tt-slider-fullwidth arrow-location-center-02 slick-animated-show-js" data-slick='{"slidesToShow": 1, "slidesToScroll": 1, "autoplay": {{ item.module_autoplay }}, "autoplaySpeed": {{ item.delay_time }}}'>
+      {%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+      <div class="item" {{ block.shopify_attributes }}>
+        <a href="{{ block.settings.link }}" class="tt-content-info obj-data02{{ block.id }}">
+          
+          {% if b_i.showstars %}
+          <div class="obj-data02__rating">
+            <svg width="118" height="22" viewBox="0 0 118 22" fill="none" class="basestarscolor">
+              <rect width="22" height="22" fill="#D4D4D4"/>
+              <path d="M11 1L13.3607 8.25735H21L14.8197 12.7426L17.1803 20L11 15.5147L4.81966 20L7.18034 12.7426L1 8.25735H8.63932L11 1Z" fill="white"/>
+              <rect x="24" width="22" height="22" fill="#D4D4D4"/>
+              <path d="M35 1L37.3607 8.25735H45L38.8197 12.7426L41.1803 20L35 15.5147L28.8197 20L31.1803 12.7426L25 8.25735H32.6393L35 1Z" fill="white"/>
+              <rect x="48" width="22" height="22" fill="#D4D4D4"/>
+              <path d="M59 1L61.3607 8.25735H69L62.8197 12.7426L65.1803 20L59 15.5147L52.8197 20L55.1803 12.7426L49 8.25735H56.6393L59 1Z" fill="white"/>
+              <rect x="72" width="22" height="22" fill="#D4D4D4"/>
+              <rect x="72" width="11" height="22" fill="#D4D4D4"/>
+              <path d="M83 1L85.3607 8.25735H93L86.8197 12.7426L89.1803 20L83 15.5147L76.8197 20L79.1803 12.7426L73 8.25735H80.6393L83 1Z" fill="white"/>
+              <rect x="96" width="22" height="22" fill="#D4D4D4"/>
+              <path d="M107 1L109.361 8.25735H117L110.82 12.7426L113.18 20L107 15.5147L100.82 20L103.18 12.7426L97 8.25735H104.639L107 1Z" fill="white"/>
+            </svg>
+            <div class="tt-trim">
+              <svg width="118" height="22" viewBox="0 0 118 22" fill="none" class="activestarscolor">
+                <rect width="22" height="22" fill="#FFBA2E"/>
+                <path d="M11 1L13.3607 8.25735H21L14.8197 12.7426L17.1803 20L11 15.5147L4.81966 20L7.18034 12.7426L1 8.25735H8.63932L11 1Z" fill="white"/>
+                <rect x="24" width="22" height="22" fill="#FFBA2E"/>
+                <path d="M35 1L37.3607 8.25735H45L38.8197 12.7426L41.1803 20L35 15.5147L28.8197 20L31.1803 12.7426L25 8.25735H32.6393L35 1Z" fill="white"/>
+                <rect x="48" width="22" height="22" fill="#FFBA2E"/>
+                <path d="M59 1L61.3607 8.25735H69L62.8197 12.7426L65.1803 20L59 15.5147L52.8197 20L55.1803 12.7426L49 8.25735H56.6393L59 1Z" fill="white"/>
+                <rect x="72" width="22" height="22" fill="#FFBA2E"/>
+                <rect x="72" width="11" height="22" fill="#FFBA2E"/>
+                <path d="M83 1L85.3607 8.25735H93L86.8197 12.7426L89.1803 20L83 15.5147L76.8197 20L79.1803 12.7426L73 8.25735H80.6393L83 1Z" fill="white"/>
+                <rect x="96" width="22" height="22" fill="#FFBA2E"/>
+                <path d="M107 1L109.361 8.25735H117L110.82 12.7426L113.18 20L107 15.5147L100.82 20L103.18 12.7426L97 8.25735H104.639L107 1Z" fill="white"/>
+              </svg>
+            </div>
+          </div>
+          {% endif %}
+          
+          {% unless b_i.text1 == '' %}<h3 class="tt-title" style="color: {{ section.settings.rtitleco }};">{{ b_i.text1 }}</h3>{% endunless %}
+          {% unless b_i.text2 == '' %}<p style="color: {{ section.settings.descco }};">{{ b_i.text2 }}</p>{% endunless %}
+          {% if b_i.text3 != '' or b_i.text4 != '' or b_i.usemedia %}
+          <div class="tt-subscription">
+            {%- if b_i.usemedia -%}
+            <div class="obj-data02__img">
+              {%- assign useimagesize = "64x64" | append: "px" -%}
+              {%- assign retina = "64x64" | split: 'x' | last | times: 2 -%}
+              {%- assign retina = retina | append: 'x' | append: retina -%}
+              {%- if b_i.image == blank -%}{%- include "get_svg" type:'image' size:useimagesize -%}
+              {%- else -%}
+              <img src="{{ b_i.image | img_url: retina }}"
+                   alt="{{ b_i.image.alt }}">
+              {%- endif -%}
+            </div>
+            {%- endif -%}
+
+            {% unless b_i.text3 == '' %}<div class="tt-text-lage" style="color: {{ section.settings.authco }};">{{ b_i.text3 }}</div>{% endunless %}
+            {% unless b_i.text4 == '' %}<div class="tt-text-small" style="color: {{ section.settings.hobbyco }};">{{ b_i.text4 }}</div>{% endunless %}
+          </div>
+          {%- endif -%}
+        </a>
+      </div>
+      {%- endfor -%}
+    </div>
+    {%- else -%}
+    <span style="display: flex; justify-content: center;">This section doesn’t currently include any content. Add content to this section using the sidebar.</span>
+    {%- endif -%}
+    {% if section.settings.boxedbg %}</div>{% endif %}
+  </div>
+  {% if section.settings.changebntcolor %}
+  <style>
+    .testimonials{{ section.id }} button{
+      background: {{ section.settings.bgbaseco }} !important;
+      color: {{ section.settings.arrbaseco }} !important;
+    }
+    .testimonials{{ section.id }} button:hover{
+      background: {{ section.settings.bgactiveco }} !important;
+      color: {{ section.settings.arractiveco }} !important;
+    }
+    .arrow-location-center-02 .slick-arrow, .arrow-location-center-02 .slick-arrow:active {
+      top: {{ section.settings.btnsposition }}% !important;
+    }
+  </style>
+  {% endif %}
+</div>
+
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "class": "index-section",
+  "settings": [
+      {
+        "type": "select",
+        "id": "top_offset",
+        "label": "Top Offset",
+        "default": "normal",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "normal",
+            "label": "Normal"
+          }
+        ]
+      },
+    {
+      "type": "textarea",
+      "id": "text1",
+      "label": "Title",
+      "default": "WHAT THEY’RE SAYING"
+    },
+    {
+      "type": "checkbox",
+      "id": "module_autoplay",
+      "label": "Auto-rotate slides",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "delay_time",
+      "label": "Change slides every",
+      "options": [
+        { "value": "5000", "label": "5 seconds" },
+        { "value": "6000", "label": "6 seconds" },
+        { "value": "7000", "label": "7 seconds" },
+        { "value": "8000", "label": "8 seconds" },
+        { "value": "9000", "label": "9 seconds" },
+        { "value": "10000", "label": "10 seconds" }
+      ],
+      "default": "7000"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "titleco",
+      "label": "Title color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "rtitleco",
+      "label": "Review title color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "descco",
+      "label": "Description color",
+      "default": "#777777"
+    },
+    {
+      "type": "color",
+      "id": "authco",
+      "label": "Author color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "hobbyco",
+      "label": "Hobby color",
+      "default": "#999999"
+    },
+    {
+      "type": "paragraph",
+      "content": "Starts color"
+    },
+    {
+      "type": "color",
+      "id": "colorstarsreview",
+      "label": "Base stars review color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "colorstarsreviewa",
+      "label": "Active stars review color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "colorreview",
+      "label": "Base background review color",
+      "default": "#D4D4D4"
+    },
+    {
+      "type": "color",
+      "id": "colorreviewa",
+      "label": "Active background review color",
+      "default": "#FFBA2E"
+    },
+    {
+      "type": "paragraph",
+      "content": "Slider arrows color"
+    },
+    {
+      "type": "checkbox",
+      "id": "changebntcolor",
+      "label": "Change buttons settings",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bgbaseco",
+      "label": "Background base color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "arrbaseco",
+      "label": "Arrow base color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "bgactiveco",
+      "label": "Background active color",
+      "default": "#191919"
+    },
+    {
+      "type": "color",
+      "id": "arractiveco",
+      "label": "Arrow active color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "btnsposition",
+      "label": "Buttons vertical aligment. In percent",
+      "default": "50",
+	  "info": "Range = 0 - 100"
+    },
+    {
+      "type": "header",
+      "content": "Background color"
+    },
+    {
+      "type": "checkbox",
+      "id": "usebgcolor",
+      "label": "Use background color",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "boxedbg",
+      "label": "Boxed background",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "mobpad",
+      "label": "Mobile bottom padding",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "bgco",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "bgdepad",
+      "label": "Vertical top padding desktop",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgdepad_2",
+      "label": "Vertical bottom padding desktop",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgmopad",
+      "label": "Vertical top padding mobile",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgmopad_2",
+      "label": "Vertical bottom padding mobile",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "checkbox",
+      "id": "usebgimage",
+      "label": "Use background image",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+	  "info": "Recommended image size 1920x750px"
+    },
+    {
+      "type": "checkbox",
+      "id": "usebgminheight",
+      "label": "Use background minimal height",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "bgminheight",
+      "label": "Background minimal height in px. Desktop",
+      "default": "700"
+    },
+    {
+      "type": "text",
+      "id": "bgminheight_m",
+      "label": "Background minimal height in px. Mobile",
+      "default": "300"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "showstars",
+          "label": "Show rating",
+          "default": true
+        },
+        {
+          "type":      "range",
+          "id":        "rating",
+          "min":       1,
+          "max":       5,
+          "step":      0.1,
+          "label":     "Item rating",
+          "default":   5
+        },
+        {
+          "type": "textarea",
+          "id": "text1",
+          "label": "Title",
+          "default": "Title review",
+		  "info": "If you want to delete the text from the screen you need to clear the field"
+        },
+        {
+          "type": "textarea",
+          "id": "text2",
+          "label": "Description",
+          "default": "Lorem ipsum dolor sit amet conse ctetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse.",
+		  "info": "If you want to delete the text from the screen you need to clear the field"
+        },
+        {
+          "type": "checkbox",
+          "id": "usemedia",
+          "label": "Use image",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "textarea",
+          "id": "text3",
+          "label": "Author",
+          "default": "ADRIAN PARKER",
+		  "info": "If you want to delete the text from the screen you need to clear the field"
+        },
+        {
+          "type": "textarea",
+          "id": "text4",
+          "label": "Hobby",
+          "default": "Developer",
+		  "info": "If you want to delete the text from the screen you need to clear the field. Field does not work with the slider mode"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "category": "Sliders",
+      "blocks": [
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

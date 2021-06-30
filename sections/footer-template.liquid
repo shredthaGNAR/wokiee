@@ -1,0 +1,777 @@
+{%- assign item = section.settings -%}
+
+{%- capture image_size -%}{{ item.logo_max_width }}x{%- endcapture -%}
+{%- capture image_size_retina -%}{{ item.logo_max_width | times: 2 }}x{%- endcapture -%}
+{%- capture footerlogo -%}{%- if item.logo != blank -%}{{ item.logo | img_url: image_size }}{%- else -%}title_{{ item.logo_text }}{%- endif -%}{%- endcapture -%}
+{%- capture footerlogoretina -%}{%- if item.logo != blank -%}{{ item.logo | img_url: image_size_retina }}{%- endif -%}{%- endcapture -%}
+{%- assign footerlogoalt = item.logo.alt -%}
+
+{%- assign pay_icons = '' -%}
+{%- assign subscribe_form = '' -%}
+{%- assign footer_links = '' -%}
+{%- assign footer_links2 = '' -%}
+
+{%- assign flp = 10 -%}
+{%- assign flp2 = 10 -%}
+
+{%- for block in section.blocks -%}
+{%- if block.type == 'pay_icons' -%}{%- assign pay_icons = block -%}{%- endif -%}
+{%- if block.type == 'subscribe_form' -%}{%- assign subscribe_form = block -%}{%- endif -%}
+{%- if block.type == 'footer_links' -%}{%- assign footer_links = block -%}{%- assign flp = forloop.index -%}{%- endif -%}
+{%- if block.type == 'footer_links_des2' -%}{%- assign footer_links_2 = block -%}{%- assign flp2 = forloop.index -%}{%- endif -%}
+{%- endfor -%}
+
+<footer class="for-footer-blocks {% if template == 'index' %} {{ item.top_offset }}{% else %} {{ item.top_offset_normal }}{% endif %}">
+  
+  {%- include "footer_subscribe" -%}
+  {%- if flp < flp2 -%}
+  {%- include "footer_links" -%}
+  {%- include "footer_links_des2" -%}
+  {%- else -%}
+  {%- include "footer_links_des2" -%}
+  {%- include "footer_links" -%}
+  {%- endif -%}
+  {%- include "footer_copyright" -%}
+
+</footer>
+{% if item.show_topfooterline %}
+<style>
+  footer{
+    border-top: {{ item.toplinesize }}px solid {{ item.line_color }};
+  }
+  @media (min-width: 790px){
+    footer{
+      padding-top: {{ item.topfooterline_offset }}px;
+    }
+  }
+  @media (max-width: 789px){
+    footer{
+      padding-top: {{ item.topfooterline_offset_mobile }}px;
+    }
+  }
+</style>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "select",
+        "id": "top_offset",
+        "label": "Top Offset. Only for index page",
+        "default": "tt-offset-normal",
+		"info": "Only for index page",
+        "options": [
+          {
+            "value": "nomargin",
+            "label": "None"
+          },
+          {
+            "value": "tt-offset-small",
+            "label": "Small"
+          },
+          {
+            "value": "tt-offset-normal",
+            "label": "Normal"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "top_offset_normal",
+        "label": "Top Offset",
+        "default": "tt-offset-normal_base",
+        "options": [
+          {
+            "value": "nomargin_base",
+            "label": "None"
+          },
+          {
+            "value": "tt-offset-small_base",
+            "label": "Small"
+          },
+          {
+            "value": "tt-offset-normal_base",
+            "label": "Normal"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "fullwidth",
+        "label": "Fullwidth size",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Top footer line"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_topfooterline",
+        "label": "Show top footer line",
+        "default": false
+      },
+      {
+        "type":      "range",
+        "id":        "toplinesize",
+        "min":       1,
+        "max":       12,
+        "step":      1,
+		"unit": 	 "px",
+        "label":     "Top line size",
+        "default":   2
+      },
+      {
+        "type": "text",
+        "id": "topfooterline_offset",
+        "label": "Desktop .Top footer line offset from footer content",
+        "default": "70",
+		"info": "Integer in px"
+      },
+      {
+        "type": "text",
+        "id": "topfooterline_offset_mobile",
+        "label": "Mobile .Top footer line offset from footer content",
+        "default": "40",
+		"info": "Integer in px"
+      },
+      {
+        "type": "color",
+        "id": "line_color",
+        "label": "Footer top line color",
+        "default": "#E9E7E7"
+      },
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_logoblock",
+        "label": "Show logo",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "logo_text",
+        "label": "Logo text",
+        "default": "Wokiee",
+		"info": "Works when the logo image is empty."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo main",
+		"info": "95x19px"
+      },
+      {
+        "type": "text",
+        "id": "logo_max_width",
+        "label": "Logo main width (in pixels)",
+        "default": "95"
+      },
+      {
+        "type": "header",
+        "content": "Footer address field"
+	  },
+      {
+        "type": "textarea",
+        "id": "footer_address",
+        "label": "Copyright",
+		"default": "&copy; Wokiee 2018. All Rights Reserved"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_col",
+        "label": "Create grid 6/6 for copyright and payment icons",
+		"info": "Copyright to left, payment icons to left",
+		"default": false
+      }
+	],
+    "blocks": [
+      {
+        "type": "subscribe_form",
+        "name": "Subscribe Form",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_content",
+            "label": "Show content",
+            "default": true
+          },
+          {
+            "type": "textarea",
+            "id": "text1",
+            "label": "Title",
+            "default": "NEWSLETTER SIGNUP:"
+          },
+          {
+            "type": "text",
+            "id": "text3",
+            "label": "Button",
+            "default": "SUBSCRIBE"
+          },
+          {
+            "type": "textarea",
+            "id": "text4",
+            "label": "Form Message",
+            "default": "Enter your e-mail"
+          },
+          {
+            "type": "header",
+            "content": "Social Buttons"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_socials",
+            "label": "Show social buttons",
+            "default": true
+          },
+          {
+            "type": "url",
+            "id": "facebook_url",
+            "label": "Facebook",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "twitter_url",
+            "label": "Twitter",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "gmail_url",
+            "label": "Gmail",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "instagram_url",
+            "label": "Instagram",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "pinterest_url",
+            "label": "Pinterest",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "youtube_url",
+            "label": "Youtube",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "whatsapp_url",
+            "label": "Whatsapp",
+            "info": "If url is empty? Link will be hidden"
+          }
+        ]
+      },
+      {
+        "type": "pay_icons",
+        "name": "Payment Icons",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_content",
+            "label": "Show Content",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "payments_icons_max_height",
+            "label": "Set payments icons height",
+            "default": "21",
+			"info": "In pixels"
+          },
+          {
+            "type": "image_picker",
+            "id": "pay_icon_1",
+            "label": "Payment Icon 1",
+            "info": "32x21px"
+          },
+          {
+            "type": "url",
+            "id": "pay_url_1",
+            "label": "Payment Link 1"
+          },
+          {
+            "type": "image_picker",
+            "id": "pay_icon_2",
+            "label": "Payment Icon 2",
+            "info": "32x21px"
+          },
+          {
+            "type": "url",
+            "id": "pay_url_2",
+            "label": "Payment Link 2"
+          },
+          {
+            "type": "image_picker",
+            "id": "pay_icon_3",
+            "label": "Payment Icon 3",
+            "info": "32x21px"
+          },
+          {
+            "type": "url",
+            "id": "pay_url_3",
+            "label": "Payment Link 3"
+          },
+          {
+            "type": "image_picker",
+            "id": "pay_icon_4",
+            "label": "Payment Icon 4",
+            "info": "32x21px"
+          },
+          {
+            "type": "url",
+            "id": "pay_url_4",
+            "label": "Payment Link 4"
+          },
+          {
+            "type": "image_picker",
+            "id": "pay_icon_5",
+            "label": "Payment Icon 5",
+            "info": "32x21px"
+          },
+          {
+            "type": "url",
+            "id": "pay_url_5",
+            "label": "Payment Link 5"
+          },
+          {
+            "type": "image_picker",
+            "id": "pay_icon_6",
+            "label": "Payment Icon 6",
+            "info": "32x21px"
+          },
+          {
+            "type": "url",
+            "id": "pay_url_6",
+            "label": "Payment Link 6"
+          },
+          {
+            "type": "image_picker",
+            "id": "pay_icon_7",
+            "label": "Payment Icon 7",
+            "info": "32x21px"
+          },
+          {
+            "type": "url",
+            "id": "pay_url_7",
+            "label": "Payment Link 7"
+          },
+          {
+            "type": "image_picker",
+            "id": "pay_icon_8",
+            "label": "Payment Icon 8",
+            "info": "32x21px"
+          },
+          {
+            "type": "url",
+            "id": "pay_url_8",
+            "label": "Payment Link 8"
+          }
+        ]
+      },
+      {
+        "type": "footer_links",
+        "name": "Footer Links",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_content",
+            "label": "Show Content",
+            "default": true
+          },
+          {
+            "type": "header",
+            "content": "Footer Links"
+          },
+          {
+            "type": "text",
+            "id": "linklist_t1",
+			"label": "Title 1",
+            "default": "Title 1"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist1",
+            "label": "Navigation Link List 1"
+          },
+          {
+            "type": "checkbox",
+            "id": "linklist_showhtml1",
+            "label": "Block 1 Custom Html",
+            "default": false
+          },
+          {
+            "type": "textarea",
+            "id": "linklist_html1",
+            "label": "Block 1 Custom Html"
+          },
+          {
+            "type": "text",
+            "id": "linklist_t2",
+			"label": "Title 2",
+            "default": "Title 2"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist2",
+            "label": "Navigation Link List 2"
+          },
+          {
+            "type": "checkbox",
+            "id": "linklist_showhtml2",
+            "label": "Block 2 Custom Html",
+            "default": false
+          },
+          {
+            "type": "textarea",
+            "id": "linklist_html2",
+            "label": "Block 2 Custom Html"
+          },
+          {
+            "type": "text",
+            "id": "linklist_t3",
+			"label": "Title 3",
+            "default": "Title 3"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist3",
+            "label": "Navigation Link List 3"
+          },
+          {
+            "type": "checkbox",
+            "id": "linklist_showhtml3",
+            "label": "Block 3 Custom Html",
+            "default": false
+          },
+          {
+            "type": "textarea",
+            "id": "linklist_html3",
+            "label": "Block 3 Custom Html"
+          },
+          {
+            "type": "text",
+            "id": "linklist_t4",
+			"label": "Title 4",
+            "default": "Title 4"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist4",
+            "label": "Navigation Link List 4"
+          },
+          {
+            "type": "checkbox",
+            "id": "linklist_showhtml4",
+            "label": "Block 4 Custom Html",
+            "default": true
+          },
+          {
+            "type": "textarea",
+            "id": "linklist_html4",
+            "label": "Block 4 Custom Html",
+			"default": "<address>\n\t<p><span>Address:<\/span> 2548 Broaddus Maple Court Avenue, Madisonville KY 4783, United States of America<\/p>\n\t<p><span>Phone:<\/span> +777 2345 7885;  +777 2345 7886<\/p>\n\t<p><span>Hours:<\/span> 7 Days a week from 10 am to 6 pm<\/p>\n\t<p><span>E-mail:<\/span> <a href=\"mailto:info@mydomain.com\">info@mydomain.com<\/a><\/p>\n<\/address>"
+          },
+          {
+            "type": "header",
+            "content": "Subscribe form (Block 4 will be replace)"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_subsribe_form",
+            "label": "Show subscribe form",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "id": "show_subsribe_form_social_only",
+            "label": "Show only social",
+            "default": false
+          },
+          {
+            "type": "textarea",
+            "id": "text1",
+            "label": "Title",
+            "default": "NEWSLETTER SIGNUP"
+          },
+          {
+            "type": "textarea",
+            "id": "text2",
+            "label": "Description",
+            "default": "Subscribe to our email and be the first to know about our special offers! In addition, we will give you a 15% discount on the next order after registration."
+          },
+          {
+            "type": "text",
+            "id": "text3",
+            "label": "Button",
+            "default": "GET!"
+          },
+          {
+            "type": "textarea",
+            "id": "text4",
+            "label": "Form Message",
+            "default": "Enter your e-mail"
+          },
+          {
+            "type": "header",
+            "content": "Social Buttons"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_socials",
+            "label": "Show social buttons",
+            "default": true
+          },
+          {
+            "type": "url",
+            "id": "facebook_url",
+            "label": "Facebook",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "twitter_url",
+            "label": "Twitter",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "gmail_url",
+            "label": "Gmail",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "instagram_url",
+            "label": "Instagram",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "pinterest_url",
+            "label": "Pinterest",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "youtube_url",
+            "label": "Youtube",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "whatsapp_url",
+            "label": "Whatsapp",
+            "info": "If url is empty? Link will be hidden"
+          }
+        ]
+      },
+      {
+        "type": "footer_links_des2",
+        "name": "Footer Links Design 2",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_content",
+            "label": "Show Content",
+            "default": true
+          },
+          {
+            "type": "header",
+            "content": "Text column"
+          },
+          {
+            "type": "paragraph",
+            "content": "Logo"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_logoblock",
+            "label": "Show logo",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "logo_text",
+            "label": "Logo text",
+            "default": "Wokiee",
+            "info": "Works when the logo image is empty."
+          },
+          {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Logo main",
+            "info": "95x19px"
+          },
+          {
+            "type": "text",
+            "id": "logo_max_width",
+            "label": "Logo main width (in pixels)",
+            "default": "95"
+          },
+          {
+            "type": "textarea",
+            "id": "coltext1",
+            "label": "Text 1",
+ 			"default": "An excellent \"about us\" block helps build trust between you and your customers. The more information you provide about yourself and your business, the more people will be confident in their purchases in your store."
+          },
+          {
+            "type": "textarea",
+            "id": "coltext2",
+            "label": "Custom Html",
+            "default": "<address class=\"tt-address01\">\n<span class=\"tt-text-large\">\n  <span class=\"tt-icon\">\n\t<svg width=\"26\" height=\"25\" viewbox=\"0 0 26 25\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n\t  <path d=\"M20.625 24.8125C19.25 24.8125 17.9062 24.6875 16.5938 24.4375C15.3021 24.1667 14.0521 23.7604 12.8438 23.2188C11.6146 22.6979 10.4688 22.0833 9.40625 21.375C8.36458 20.6667 7.38542 19.8542 6.46875 18.9375C5.57292 18.0417 4.76042 17.0625 4.03125 16C3.32292 14.9375 2.70833 13.8021 2.1875 12.5938C1.66667 11.3646 1.27083 10.1042 1 8.8125C0.75 7.52083 0.625 6.1875 0.625 4.8125C0.625 4.77083 0.625 4.72917 0.625 4.6875C0.645833 4.625 0.666667 4.5625 0.6875 4.5C0.708333 4.45833 0.729167 4.41667 0.75 4.375C0.770833 4.3125 0.802083 4.26042 0.84375 4.21875L4.84375 0.21875C4.92708 0.15625 5.01042 0.104167 5.09375 0.0625C5.19792 0.0208333 5.30208 0 5.40625 0C5.51042 0 5.61458 0.0208333 5.71875 0.0625C5.82292 0.104167 5.91667 0.15625 6 0.21875L11.5938 5.84375C11.6562 5.92708 11.7083 6.02083 11.75 6.125C11.7917 6.20833 11.8125 6.30208 11.8125 6.40625C11.8125 6.51042 11.7917 6.61458 11.75 6.71875C11.7083 6.80208 11.6562 6.88542 11.5938 6.96875L8.125 10.4062L15 17.2812L18.4375 13.8438C18.5208 13.7604 18.6042 13.6979 18.6875 13.6562C18.7917 13.6146 18.8958 13.5938 19 13.5938C19.125 13.5938 19.2292 13.6146 19.3125 13.6562C19.4167 13.6979 19.5104 13.7604 19.5938 13.8438L25.1875 19.4375C25.2708 19.5208 25.3229 19.6146 25.3438 19.7188C25.3854 19.8021 25.4062 19.8958 25.4062 20C25.4062 20.1042 25.3854 20.2083 25.3438 20.3125C25.3229 20.4167 25.2708 20.5104 25.1875 20.5938L21.1875 24.5938C21.1458 24.6146 21.1042 24.6458 21.0625 24.6875C21.0208 24.7083 20.9688 24.7292 20.9062 24.75C20.8646 24.7708 20.8125 24.7917 20.75 24.8125C20.7083 24.8125 20.6667 24.8125 20.625 24.8125ZM5.40625 1.9375L2.21875 5.125C2.23958 6.35417 2.375 7.55208 2.625 8.71875C2.875 9.88542 3.23958 11.0104 3.71875 12.0938C4.19792 13.1771 4.76042 14.1979 5.40625 15.1562C6.05208 16.1146 6.79167 17 7.625 17.8125C8.4375 18.625 9.3125 19.3542 10.25 20C11.2083 20.6458 12.2292 21.2083 13.3125 21.6875C14.4167 22.1667 15.5417 22.5312 16.6875 22.7812C17.8542 23.0312 19.0521 23.1771 20.2812 23.2188L23.5 20L19 15.5312L15.5938 18.9688C15.5104 19.0521 15.4167 19.1146 15.3125 19.1562C15.2292 19.1979 15.125 19.2188 15 19.2188C14.8958 19.2188 14.7917 19.1979 14.6875 19.1562C14.6042 19.1146 14.5208 19.0521 14.4375 18.9688L6.4375 10.9688C6.35417 10.8854 6.29167 10.8021 6.25 10.7188C6.22917 10.6146 6.21875 10.5104 6.21875 10.4062C6.21875 10.3021 6.22917 10.2083 6.25 10.125C6.29167 10.0208 6.35417 9.92708 6.4375 9.84375L9.875 6.40625L5.40625 1.9375Z\" fill=\"currentColor\"><\/path>\n\t<\/svg>\n  <\/span>\n  +566 4774 9930\n<\/span>\nAll week from 9 am to 9 pm\n<\/address>\n<address class=\"tt-address02\">\nAddress: 7895 Piermont Dr NE Albuquerque, NM 198866, United States of America\n<p>\n  <a href=\"mailto:info@mydomain.com\" class=\"tt-link-icon\">                \n\t<span class=\"tt-icon\">\n\t  <i class=\"icon-f-72\"><\/i>\n\t<\/span>\n\t<span class=\"tt-text\">info@mydomain.com<\/span>\n  <\/a>\n<\/p>\n<\/address>"
+          },
+          {
+            "type": "paragraph",
+            "content": "Social Buttons"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_socials",
+            "label": "Show social buttons",
+            "default": true
+          },
+          {
+            "type": "url",
+            "id": "facebook_url",
+            "label": "Facebook",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "twitter_url",
+            "label": "Twitter",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "gmail_url",
+            "label": "Gmail",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "instagram_url",
+            "label": "Instagram",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "pinterest_url",
+            "label": "Pinterest",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "youtube_url",
+            "label": "Youtube",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "url",
+            "id": "whatsapp_url",
+            "label": "Whatsapp",
+            "info": "If url is empty? Link will be hidden"
+          },
+          {
+            "type": "header",
+            "content": "Subscribe form"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_subsribe_form",
+            "label": "Show subscribe form",
+            "default": true
+          },
+          {
+            "type": "textarea",
+            "id": "text1",
+            "label": "Title",
+            "default": "NEWSLETTER SIGNUP"
+          },
+          {
+            "type": "textarea",
+            "id": "text2",
+            "label": "Description",
+            "default": "Subscribe to our email and be the first to know about our special offers! In addition, we will give you a 15% discount on the next order after registration."
+          },
+          {
+            "type": "text",
+            "id": "text3",
+            "label": "Button",
+            "default": "GET!"
+          },
+          {
+            "type": "textarea",
+            "id": "text4",
+            "label": "Form Message",
+            "default": "Enter your e-mail"
+          },
+          {
+            "type": "header",
+            "content": "Footer Links"
+          },
+          {
+            "type": "text",
+            "id": "linklist_t1",
+			"label": "Title 1",
+            "default": "Title 1"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist1",
+            "label": "Navigation Link List 1"
+          },
+          {
+            "type": "checkbox",
+            "id": "linklist_showhtml1",
+            "label": "Block 1 Custom Html",
+            "default": false
+          },
+          {
+            "type": "textarea",
+            "id": "linklist_html1",
+            "label": "Block 1 Custom Html"
+          },
+          {
+            "type": "text",
+            "id": "linklist_t2",
+			"label": "Title 2",
+            "default": "Title 2"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist2",
+            "label": "Navigation Link List 2"
+          },
+          {
+            "type": "checkbox",
+            "id": "linklist_showhtml2",
+            "label": "Block 2 Custom Html",
+            "default": false
+          },
+          {
+            "type": "textarea",
+            "id": "linklist_html2",
+            "label": "Block 2 Custom Html"
+          }
+        ]
+      }
+	]
+  }
+{% endschema %}

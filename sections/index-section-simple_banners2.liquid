@@ -1,0 +1,508 @@
+{%- assign item = section.settings -%}
+
+{%- assign grid = section.settings.items -%}
+{%- capture info_image_size -%}
+{%- case grid -%}
+{%- when '3 col-8-inrow-lg' -%}218x218px
+{%- when '6' -%}{%- if item.fullwidth -%}1024x400px{%- else -%}600x300px{%- endif -%}
+{%- when '4' -%}{%- if item.fullwidth -%}800x800px{%- else -%}400x400px{%- endif -%}
+{%- when '2' -%}{%- if item.fullwidth -%}360x400px{%- else -%}180x200px{%- endif -%}
+{%- else -%}{%- if item.fullwidth -%}600x600px{%- else -%}300x300px{%- endif -%}
+{%- endcase -%}
+{%- endcapture -%}
+
+{%- assign img_size = info_image_size | split: 'x' | first | append: 'x' -%}
+<div class="{% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent {{ item.custom_classes }} ttlayoutpromo02{{ section.id }}">
+  {% if item.usebgcolor %}<div>{% endif %}
+  <div class="container{% if item.fullwidth %}-fluid-custom{% endif %} container-fluid-custom-mobile-padding">
+    {%- if item.show_title -%}
+    <div class="tt-block-title{% if item.title_to_left %} text-left{% endif %}{% if item.boxed_title and item.fullwidth %} container{% endif %}">
+      <h2 class="tt-title">{{ item.text1 }}</h2>
+      {%- unless item.text2 == '' -%}<div class="tt-description">{{ item.text2 }}</div>{%- endunless -%}
+    </div>
+    {%- endif -%}
+    <div class="row tt-layout-promo02">
+      {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+      <div class="col-sm-6 col-md-{{ item.items }} {% if item.twoinmobile %}col-6{% else %}col-12-440width{% endif %} blid{{ block.id }}" {{ block.shopify_attributes }}>
+        <div class="respimgsize tt-promo02{% if b_i.center_texts %} text-center{% endif %}" data-hovercolors>
+          <a href="{{ b_i.link }}" class="image-box"
+             {% if item.images_circle or item.use_img_width %} style="{% if item.images_circle %}border-radius: 50%;{% endif %}{% if item.use_img_width %} max-width: {{ item.img_width }}px;{% endif %}"{% endif %}
+             >
+            {%- if b_i.image == blank -%}{%- include "get_svg" type:'image' size:info_image_size -%}
+            {%- else -%}
+            {%- assign scale_numbers = '_' | append: img_size -%}
+            <img class="lazyload"
+                 data-mainimageratio = '{{ b_i.image.aspect_ratio }}'
+                 data-mainimage="{{ b_i.image | img_url: '100x100' | replace: '100x100', 'respimgsize' }}"
+                 alt="{{ b_i.image.alt }}">
+            {%- endif -%}
+          </a>
+          <div class="tt-description">
+            {% if b_i.text1 != '' or b_i.text2 != '' %}
+            <a href="{{ b_i.link }}" class="tt-title">
+              {% if b_i.text1 != '' %}<div class="tt-title-small"
+                                           style="color:{{ b_i.text1c }};"
+                                           data-c="{{ b_i.text1c }}"
+                                           data-ac="{{ b_i.text1ca }}"
+                                           >{{ b_i.text1 }}</div>{% endif %}
+              {% if b_i.text2 != '' %}<div class="tt-title-large"
+                                           style="color:{{ b_i.text2c }};"
+                                           data-c="{{ b_i.text2c }}"
+                                           data-ac="{{ b_i.text2ca }}"
+                                           >{{ b_i.text2 }}</div>{% endif %}
+            </a>
+            {% endif %}
+            {% if b_i.text3 != '' %}<p class="promo2-text3" style="color:{{ b_i.text3c }};">{{ b_i.text3 }}</p>{% endif %}
+            {% if b_i.show_button %}<a href="{{ b_i.link }}"
+                                       class="btn"
+                                       >{{ b_i.button_name }}</a>{% endif %}
+          </div>
+        </div>
+      </div>
+      {%- endfor -%}
+      {%- else -%}
+      <span style="display: flex; justify-content: center;">This section doesn’t currently include any content. Add content to this section using the sidebar.</span>
+      {%- endif -%}
+    </div>
+  </div>
+  {% if item.usebgcolor %}</div>{% endif %}
+</div>
+<style>
+  .ttlayoutpromo02{{ section.id }} .tt-promo02 .tt-description:not(:empty) {
+    padding-top: {{ item.image_bottompadding }}px;
+  }
+  {% if item.usebgcolor %}
+  .ttlayoutpromo02{{ section.id }} > div{
+    background-color: {{ item.bgco }};
+  }
+  @media (min-width: 1025px){
+    .ttlayoutpromo02{{ section.id }} > div{
+      padding-top: {{ item.bgdepad }}px;
+      padding-bottom: {{ item.bgdepad_2 }}px;
+    }
+  }
+  @media (max-width: 1024px){
+    .ttlayoutpromo02{{ section.id }} > div{
+      padding-top: {{ item.bgmopad }}px;
+      padding-bottom: {{ item.bgmopad_2 }}px;
+    }
+  }
+  {% endif %}
+  {%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+  {% if b_i.text1 != '' %}
+  .ttlayoutpromo02{{ section.id }} .blid{{ block.id }} .tt-promo02 .tt-description .tt-title-small{
+    color: {{ b_i.text1c }};
+    {{ b_i.custom_styles_text_1 }}
+  }
+  .ttlayoutpromo02{{ section.id }} .blid{{ block.id }} .tt-promo02:hover .tt-description .tt-title-small{
+    color: {{ b_i.text1ca }};
+  }
+  @media (max-width: 1024px){
+    .ttlayoutpromo02{{ section.id }} .blid{{ block.id }} .tt-promo02 .tt-description .tt-title-small{
+      {{ b_i.custom_styles_text_1_mobile }}
+    }
+  }
+  {% endif %}
+  {% if b_i.text2 != '' %}
+  .ttlayoutpromo02{{ section.id }} .blid{{ block.id }} .tt-promo02 .tt-description .tt-title-large{
+    color: {{ b_i.text2c }};
+    {{ b_i.custom_styles_text_2 }}
+  }
+  .ttlayoutpromo02{{ section.id }} .blid{{ block.id }} .tt-promo02:hover .tt-description .tt-title-large{
+    color: {{ b_i.text2ca }};
+  }
+  @media (max-width: 1024px){
+    .ttlayoutpromo02{{ section.id }} .blid{{ block.id }} .tt-promo02 .tt-description .tt-title-large{
+      {{ b_i.custom_styles_text_2_mobile }}
+    }
+  }
+  {% endif %}
+  {% if b_i.text3 != '' %}
+  .ttlayoutpromo02{{ section.id }} .blid{{ block.id }} .tt-promo02 .tt-description .promo2-text3{
+    color: {{ b_i.text3c }};
+    {{ b_i.custom_styles_text_3 }}
+  }
+  @media (max-width: 1024px){
+    .ttlayoutpromo02{{ section.id }} .blid{{ block.id }} .tt-promo02 .tt-description .promo2-text3{
+      {{ b_i.custom_styles_text_3_mobile }}
+    }
+  }
+  {% endif %}
+  
+  {%- if b_i.show_button -%}
+  .ttlayoutpromo02{{ section.id }} .blid{{ block.id }} .tt-promo02 .btn{
+    background:{{ b_i.btn_bgc }};
+    color: {{ b_i.btn_textc }};
+    {{ b_i.btn_custom_styles }}   
+  }
+  .ttlayoutpromo02{{ section.id }} .blid{{ block.id }} .tt-promo02 .btn:hover{
+    background:{{ b_i.btn_bgca }};
+    color: {{ b_i.btn_textca }};
+    {{ b_i.btn_custom_styles_hover }}
+  {%- endif -%}
+  {%- endfor -%}
+</style>
+
+{% schema %}
+{
+  "name": "Simple Banners with Texts",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "top_offset",
+      "label": "Top Offset",
+      "default": "normal",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "custom_classes",
+      "label": "Custom css classes",
+      "info": "For the custom styles. Add your styles in the theme.css.liquid"
+    },
+    {
+      "type": "checkbox",
+      "id": "fullwidth",
+      "label": "Fullwidth size",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "items",
+      "label": "Items In Line",
+      "default": "4",
+      "options": [
+        {
+          "value": "6",
+          "label": "2"
+        },
+        {
+          "value": "4",
+          "label": "3"
+        },
+        {
+          "value": "3",
+          "label": "4"
+        },
+        {
+          "value": "2",
+          "label": "6"
+        },
+        {
+          "value": "3 col-8-inrow-lg",
+          "label": "8"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "twoinmobile",
+      "label": "Two in line in mobile",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "checkbox",
+      "id": "title_to_left",
+      "label": "Title to left",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "boxed_title",
+      "label": "Boxed title when fullwidth",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show title",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "text1",
+      "label": "Title",
+      "default": "POPULAR"
+    },
+    {
+      "type": "textarea",
+      "id": "text2",
+      "label": "Description",
+      "default": "CLOTHING BRANDS"
+    },
+    {
+        "type":      "range",
+        "id":        "image_bottompadding",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Image bottom padding for texts",
+        "default":   14
+    },
+    {
+      "type": "checkbox",
+      "id": "images_circle",
+      "label": "Show images as circle",
+      "default": false,
+	  "info": "For this option please use rectangle images"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_img_width",
+      "label": "Use image maximum width",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "img_width",
+      "label": "Image maximum width",
+      "default": "280",
+	  "info": "Integer. In pixel"
+    },
+    {
+      "type": "header",
+      "content": "Background Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "usebgcolor",
+      "label": "Use background color or padding",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bgco",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "bgdepad",
+      "label": "Vertical top padding desktop",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgdepad_2",
+      "label": "Vertical bottom padding desktop",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgmopad",
+      "label": "Vertical top padding mobile",
+      "default": "80",
+      "info": "integer, in px"
+    },
+    {
+      "type": "text",
+      "id": "bgmopad_2",
+      "label": "Vertical bottom padding mobile",
+      "default": "80",
+      "info": "integer, in px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "center_texts",
+          "label": "Center description",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Optional"
+        },
+        {
+          "type": "header",
+          "content": "Texts"
+        },
+        {
+          "type": "textarea",
+          "id": "text1",
+          "label": "Small Text",
+          "default": "FALL-WINTER CLEARANCE SALES",
+		  "info": "New line = <br>"
+        },
+        {
+          "type": "textarea",
+          "id": "text2",
+          "label": "Big Text",
+          "default": "GET UP TO <span style=\"color: #2879fe\">50% OFF<\/span>",
+		  "info": "New line = <br>"
+        },
+        {
+          "type": "textarea",
+          "id": "text3",
+          "label": "Description Text",
+          "default": "Lorem ipsum dolor sit amet conse ctetur adipisicing elit",
+		  "info": "New line = <br>"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_button",
+          "label": "Show button",
+          "default": true
+        },
+        {
+          "type": "textarea",
+          "id": "button_name",
+          "label": "Button name",
+          "default": "SHOP NOW!"
+        },
+        {
+          "type": "header",
+          "content": "Texts Base Color"
+        },
+        {
+          "type": "color",
+          "id": "text1c",
+          "label": "Text 1 color",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "text2c",
+          "label": "Text 2 color",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "text3c",
+          "label": "Text 3 color",
+          "default": "#777777"
+        },
+        {
+          "type": "header",
+          "content": "Texts Active Color"
+        },
+        {
+          "type": "color",
+          "id": "text1ca",
+          "label": "Text 1 active color",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "text2ca",
+          "label": "Text 2 active color",
+          "default": "#2879fe"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_1",
+          "label": "Сustom styles text 1"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_2",
+          "label": "Сustom styles text 2"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_3",
+          "label": "Сustom styles text 3"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_1_mobile",
+          "label": "MOBILE. Сustom styles text 1"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_2_mobile",
+          "label": "MOBILE. Сustom styles text 2"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_3_mobile",
+          "label": "MOBILE. Сustom styles text 3"
+        },
+        {
+          "type": "header",
+          "content": "Button Color"
+        },
+        {
+          "type": "color",
+          "id": "btn_bgc",
+          "label": "Background color",
+          "default": "#2879fe"
+        },
+        {
+          "type": "color",
+          "id": "btn_textc",
+          "label": "Text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "btn_bgca",
+          "label": "Background active color",
+          "default": "#2267d8"
+        },
+        {
+          "type": "color",
+          "id": "btn_textca",
+          "label": "Text active color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "textarea",
+          "id": "btn_custom_styles",
+          "label": "Button custom styles"
+        },
+        {
+          "type": "textarea",
+          "id": "btn_custom_styles_hover",
+          "label": "HOVER. Button custom styles"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Simple Banners 2",
+      "category": "Banner",
+      "blocks": [
+      ]
+    }
+  ]
+}
+{% endschema %}

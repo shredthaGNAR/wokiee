@@ -1,0 +1,1222 @@
+{%- assign item = section.settings -%}
+
+{%- assign grid = section.settings.items -%}
+{%- capture info_image_size -%}
+{%- case grid -%}
+{%- when '12' -%}{%- if item.fullwidth -%}1920x800px{%- else -%}1170x600px{%- endif -%}
+{%- when '6' -%}{%- if item.fullwidth -%}1024x400px{%- else -%}600x300px{%- endif -%}
+{%- when '4' -%}{%- if item.fullwidth -%}800x800px{%- else -%}400x400px{%- endif -%}
+{%- else -%}{%- if item.fullwidth -%}600x600px{%- else -%}300x300px{%- endif -%}
+{%- endcase -%}
+{%- endcapture -%}
+
+{%- assign img_size = info_image_size | split: 'x' | first | append: 'x' -%}
+
+<div class="{% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent {{ item.custom_classes }} simplebanners{{ section.id }}">
+  {% if item.nopaddings %}<div class="nopaddings bannopaddings">{% endif %}
+  <div class="container{% if item.fullwidth %}-fluid-custom{% endif %}{% if item.minus20 %} minus20marg{% endif %}">
+    {%- if item.show_title -%}
+    <div class="tt-block-title{% if item.title_to_left %} text-left{% endif %}{% if item.boxed_title and item.fullwidth %} container{% endif %}">
+      <h2 class="tt-title">{{ item.text1 }}</h2>
+      {%- unless item.text2 == '' -%}<div class="tt-description">{{ item.text2 }}</div>{%- endunless -%}
+    </div>
+    {%- endif -%}
+    <div class="row{% if item.top_offset == 'none' or item.top_offset == 'small' or item.show_title %} tt-layout-promo-box{% endif %}">
+      {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+      <div class="promoitem{{ block.id }} {% if item.items == "12" %}col-12{% else %}col-sm-6 col-md-{{ item.items }}{% endif %} col-12-440width" {{ block.shopify_attributes }}>
+        {%- include 'section-banner-item' -%}
+      </div>
+      {%- endfor -%}
+      {%- else -%}
+      <span style="display: flex; justify-content: center;">This section doesn’t currently include any content. Add content to this section using the sidebar.</span>
+      {%- endif -%}
+    </div>
+  </div>
+  {% if item.nopaddings %}</div>{% endif %}
+</div>
+<style>
+  .simplebanners{{ section.id }} .tt-description-wrapper-main .custom-buttons{
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  {%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+  {%- if b_i.use_main_bg_color -%}
+  .simplebanners{{ section.id }} .promoitem{{ block.id }}{
+    background-color: {{ b_i.main_bg_color }};
+  }
+  {%- endif -%}
+  {%- if b_i.textbackgroundstyles != "" -%}
+  .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box.tt-one-child .tt-description .tt-description-wrapper,
+  .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box:not(.tt-one-child) .tt-description .tt-description-wrapper {
+    {{ b_i.textbackgroundstyles }}
+  }
+  {%- endif -%}
+  {%- if b_i.textbackgroundstyles_medium != "" -%}
+  @media{% if b_i.textbackgroundstyles_medium != "" %}(min-width: 1025px) and{% endif %} (max-width: 1601px){
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box.tt-one-child .tt-description .tt-description-wrapper,
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box:not(.tt-one-child) .tt-description .tt-description-wrapper {
+      {{ b_i.textbackgroundstyles_medium }}
+    }
+  }
+  {%- endif -%}
+  {%- if b_i.textbackgroundstyles_mobile != "" -%}
+  @media{% if b_i.textbackgroundstyles_mobile_2 != "" %}(min-width: 769px) and{% endif %} (max-width: 1024px){
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box.tt-one-child .tt-description .tt-description-wrapper,
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box:not(.tt-one-child) .tt-description .tt-description-wrapper {
+      {{ b_i.textbackgroundstyles_mobile }}
+    }
+  }
+  {%- endif -%}
+  {%- if b_i.textbackgroundstyles_mobile_2 != "" -%}
+  @media (max-width: 768px){
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box.tt-one-child .tt-description .tt-description-wrapper,
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box:not(.tt-one-child) .tt-description .tt-description-wrapper {
+      {{ b_i.textbackgroundstyles_mobile }}
+    }
+  }
+  {%- endif -%}
+  
+  {%- if b_i.image2 != blank -%}
+  .simplebanners{{ section.id }} .promoitem{{ block.id }} .promoimagemobile{display: none;}
+  @media (max-width: {{ b_i.responsivepoint_image }}px){
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .promoimagemain{display: none;}
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .promoimagemobile{display: block;}
+  }
+  {%- endif -%}
+  
+  {%- if b_i.custom_styles_text_1 != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-small{ {{ b_i.custom_styles_text_1 }} }{%- endif -%}
+  {%- if b_i.custom_styles_text_2 != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-large{ {{ b_i.custom_styles_text_2 }} }{%- endif -%}
+  {%- if b_i.custom_styles_text_3 != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-small-3{ {{ b_i.custom_styles_text_3 }} }{%- endif -%}
+  @media (min-width: 1025px) and (max-width: 1601px){
+    {%- if b_i.custom_styles_text_1_2 != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-small{ {{ b_i.custom_styles_text_1_2 }} }{%- endif -%}
+    {%- if b_i.custom_styles_text_2_2 != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-large{ {{ b_i.custom_styles_text_2_2 }} }{%- endif -%}
+    {%- if b_i.custom_styles_text_3_2 != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-small-3{ {{ b_i.custom_styles_text_3_2 }} }{%- endif -%}
+  }
+  @media (max-width: 1024px){
+    {%- if b_i.custom_styles_text_1_mobile != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-small{ {{ b_i.custom_styles_text_1_mobile }} }{%- endif -%}
+    {%- if b_i.custom_styles_text_2_mobile != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-large{ {{ b_i.custom_styles_text_2_mobile }} }{%- endif -%}
+    {%- if b_i.custom_styles_text_3_mobile != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-small-3{ {{ b_i.custom_styles_text_3_mobile }} }{%- endif -%}
+  }
+  @media (max-width: {{ b_i.responsivepoint }}px){
+    {%- if b_i.mobile_not_show_text_1 -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-small{display: none !important}{%- endif -%}
+    {%- if b_i.mobile_not_show_text_2 -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-large{display: none !important}{%- endif -%}
+    {%- if b_i.mobile_not_show_text_3 -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-small-3{display: none !important}{%- endif -%}
+	{%- if b_i.mobile_not_show_buttons -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .custom-buttons{display: none !important}{%- endif -%}
+  }
+  @media (max-width: 768px){
+    {%- if b_i.custom_styles_text_1_mobile != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-small{ {{ b_i.custom_styles_text_1_mobile_2 }} }{%- endif -%}
+    {%- if b_i.custom_styles_text_2_mobile != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-large{ {{ b_i.custom_styles_text_2_mobile_2 }} }{%- endif -%}
+    {%- if b_i.custom_styles_text_3_mobile != "" -%}.simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description .tt-title-small-3{ {{ b_i.custom_styles_text_3_mobile_2 }} }{%- endif -%}
+  }
+  
+  {%- if b_i.show_custom_html and b_i.show_prem_btn -%}
+  {%- if b_i.use_custom_html_below_text -%}
+  .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-description-wrapper-main.text-left .custom-buttons{
+    align-items: unset;
+    justify-content: unset;
+  }
+  @media (min-width: 1602px){
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-description-wrapper-main .custom-buttons{
+      margin-top: {{ b_i.buttons_top_offset }}px;
+    }
+  }
+  @media (min-width: 1025px) and (max-width: 1601px){
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-description-wrapper-main .custom-buttons{
+      margin-top: {{ b_i.buttons_top_offset_medium }}px;
+    }
+  }
+  @media (max-width: 1024px){
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-description-wrapper-main .custom-buttons{
+      margin-top: {{ b_i.buttons_top_offset_mobile }}px;
+    }
+  }
+  {%- endif -%}
+  
+  {%- if b_i.show_prem_btn_1 -%}
+  {%- assign bg_alpha = b_i.background_alpha_1 | divided_by: 100.00 -%}
+  {%- assign bg_color = b_i.cbtnbg_1 | color_modify: 'alpha', bg_alpha -%}
+  {%- assign bg_alpha_a = b_i.background_alpha_a_1 | divided_by: 100.00 -%}
+  {%- assign bg_color_a = b_i.acbtnbg_1 | color_modify: 'alpha', bg_alpha_a -%}
+  .simplebanners{{ section.id }} .promoitem{{ block.id }} .custom-buttons .custom-buttons-btn-1{
+    background:{{ bg_color }};
+    color:{{ b_i.cbtntext_1 }};
+    {{ b_i.btn_custom_styles_1 }}
+  }
+  .simplebanners{{ section.id }} .promoitem{{ block.id }} .custom-buttons .custom-buttons-btn-1:hover{
+    background:{{ bg_color_a }};
+    color:{{ b_i.acbtntext_1 }};
+    {{ b_i.btn_custom_styles_hover_1 }}
+  }
+  {%- endif -%}
+  {%- if b_i.show_prem_btn_2 -%}
+  {%- assign bg_alpha = b_i.background_alpha_2 | divided_by: 100.00 -%}
+  {%- assign bg_color = b_i.cbtnbg_2 | color_modify: 'alpha', bg_alpha -%}
+  {%- assign bg_alpha_a = b_i.background_alpha_a_2 | divided_by: 100.00 -%}
+  {%- assign bg_color_a = b_i.acbtnbg_2 | color_modify: 'alpha', bg_alpha_a -%}
+  .simplebanners{{ section.id }} .promoitem{{ block.id }} .custom-buttons .custom-buttons-btn-2{
+    background:{{ bg_color }};
+    color:{{ b_i.cbtntext_2 }};
+    {{ b_i.btn_custom_styles_2 }}
+  }
+  .simplebanners{{ section.id }} .promoitem{{ block.id }} .custom-buttons .custom-buttons-btn-2:hover{
+    background:{{ bg_color_a }};
+    color:{{ b_i.acbtntext_2 }};
+    {{ b_i.btn_custom_styles_hover_2 }}
+  }
+  {%- endif -%}
+  {%- endif -%}
+  
+  {%- if b_i.show_mask -%}
+  .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description{
+    z-index: 2;
+  }
+  .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box:after {
+    content: "";
+    {%- assign alpha = b_i.show_mask_alpha | divided_by: 100.00 -%}
+    background: {{ b_i.show_mask_color | color_modify: 'alpha', alpha }};
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  {%- endif -%}
+  
+  {%- if b_i.mobile_position != 'use_main_position' -%}
+  @media (max-width: 1024px){
+    .simplebanners{{ section.id }} .promoitem{{ block.id }} .tt-promo-box .tt-description{
+      {%- case b_i.mobile_position -%}
+      {%- when 'tt-point-v-t' -%}
+      -webkit-align-items: flex-start;
+      -ms-flex-align: start;
+      align-items: flex-start;
+      {%- when 'tt-point-v-b' -%}
+      -webkit-align-items: flex-end;
+      -ms-flex-align: end;
+      align-items: flex-end;
+      {%- else -%}
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+      {%- endcase -%}
+      -webkit-justify-content: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-align-content: center;
+      -ms-flex-line-pack: center;
+      align-content: center;
+    }
+  }
+  {%- endif -%}  
+
+  {%- endfor -%}
+</style>
+
+
+{% schema %}
+{
+  "name": "Simple Banners",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "top_offset",
+      "label": "Top Offset",
+      "default": "normal",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "custom_classes",
+      "label": "Custom css classes",
+      "info": "For the custom styles. Add your styles in the theme.css.liquid"
+    },
+    {
+      "type": "checkbox",
+      "id": "fullwidth",
+      "label": "Fullwidth size",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "nopaddings",
+      "label": "No paddings",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "minus20",
+      "label": "Top offset -20px",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "items",
+      "label": "Items In Line",
+      "default": "4",
+      "options": [
+        {
+          "value": "12",
+          "label": "1"
+        },
+        {
+          "value": "6",
+          "label": "2"
+        },
+        {
+          "value": "4",
+          "label": "3"
+        },
+        {
+          "value": "3",
+          "label": "4"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show title",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "title_to_left",
+      "label": "Title to left",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "boxed_title",
+      "label": "Boxed title when fullwidth",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "text1",
+      "label": "Title",
+      "default": "POPULAR"
+    },
+    {
+      "type": "textarea",
+      "id": "text2",
+      "label": "Description",
+      "default": "CLOTHING BRANDS"
+    },
+    {
+      "type": "header",
+      "content": "Main settings"
+    },
+	{
+	  "type": "select",
+	  "id": "description_size",
+	  "label": "Description size",
+	  "default": "big",
+	  "options": [
+		{
+		  "value": "small",
+		  "label": "Small"
+		},
+		{
+		  "value": "big",
+		  "label": "Big"
+		}
+	  ]
+	},
+	{
+	  "type": "select",
+	  "id": "animation",
+	  "label": "Animation for text background",
+	  "default": "scale",
+	  "options": [
+		{
+		  "value": "scale",
+		  "label": "Scale"
+		},
+		{
+		  "value": "simple",
+		  "label": "No scale"
+		}
+	  ]
+	},
+	{
+      "type": "select",
+      "id": "position",
+      "label": "Main text information position",
+	  "info": "Main settings for all items",
+      "default": "normal",
+      "options": [
+        {
+          "value": "tt-point-v-t tt-point-h-l",
+          "label": "Top Left"
+        },
+        {
+          "value": "tt-point-v-t",
+          "label": "Top Center"
+        },
+        {
+          "value": "tt-point-v-t tt-point-h-r",
+          "label": "Top Right"
+        },
+        {
+          "value": "tt-point-h-l",
+          "label": "Left"
+        },
+        {
+          "value": "normal",
+          "label": "Center"
+        },
+        {
+          "value": "tt-point-h-r",
+          "label": "Right"
+        },
+        {
+          "value": "tt-point-v-b tt-point-h-l",
+          "label": "Bottom Left"
+        },
+        {
+          "value": "tt-point-v-b",
+          "label": "Bottom Center"
+        },
+        {
+          "value": "tt-point-v-b tt-point-h-r",
+          "label": "Bottom Right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "zoomimageeffect",
+      "label": "Zoom image on hover",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Use same description width"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_same_desc_width",
+      "label": "Use same description width",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "same_width",
+      "label": "Width",
+      "default": "330",
+	  "info": "Integer in px"
+    },
+    {
+        "type": "header",
+        "content": "Border"
+    },
+    {
+        "type": "checkbox",
+        "id": "show_border",
+        "label": "Show border",
+        "default": false
+    },
+    {
+        "type": "color",
+        "id": "border_color",
+        "label": "Border color",
+        "default": "#e9e7e7"
+    },
+    {
+        "type": "header",
+        "content": "Description background roundness"
+    },
+    {
+        "type":      "range",
+        "id":        "bg_round",
+        "min":       0,
+        "max":       50,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Description background roundness",
+        "default":   6
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "use_main_bg_color",
+          "label": "Use banner preload color",
+          "default": false,
+		  "info": "Need for iphones. Some Iphones load and not show image without content"
+        },
+        {
+          "type": "color",
+          "id": "main_bg_color",
+          "label": "Banner preload color",
+          "default": "#F7F8FA"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image2",
+          "label": "second image for mobile",
+		  "info": "Work on screen size lower than 768px"
+        },
+        {
+          "type": "text",
+          "id": "responsivepoint_image",
+          "label": "Breakpoint for second image",
+          "default": "768",
+		  "info": "Will in screen size lower than your value. Integer in px"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_link",
+          "label": "Use the link for the whole banner",
+          "default": true
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Optional"
+        },
+        {
+          "type": "header",
+          "content": "Texts"
+        },
+        {
+          "type": "checkbox",
+          "id": "text_to_left",
+          "label": "Text to left",
+          "default": false
+        },
+        {
+          "type": "textarea",
+          "id": "text1",
+          "label": "Text 1",
+          "default": "GREAT SUMMER CLEARANCE SALES",
+		  "info": "New line = <br>"
+        },
+        {
+          "type": "textarea",
+          "id": "text2",
+          "label": "Text 2",
+          "default": "GET UP TO <span style=\"color: #2879fe\">70% OFF<\/span>",
+		  "info": "New line = <br>"
+        },
+        {
+          "type": "textarea",
+          "id": "text3",
+          "label": "Text 3",
+		  "info": "New line = <br>"
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "color",
+          "id": "cbtntext",
+          "label": "Base text 1 color",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "cbtntext2",
+          "label": "Base text 2 color",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "cbtntext3",
+          "label": "Base text 3 color",
+          "default": "#777777"
+        },
+        {
+          "type": "color",
+          "id": "acbtntext",
+          "label": "Active text 1 color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "acbtntext2",
+          "label": "Active text 2 color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "acbtntext3",
+          "label": "Active text 3 color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "cbtnbg",
+          "label": "Base background color",
+          "default": "#ffffff"
+        },
+        {
+            "type": "text",
+            "id": "background_alpha",
+            "label": "Base background opacity",
+            "default": "90",
+            "info": "Range: 0-100 Percent"
+        },
+        {
+          "type": "color",
+          "id": "acbtnbg",
+          "label": "Active background color",
+          "default": "#2879fe"
+        },
+        {
+            "type": "text",
+            "id": "background_alpha_a",
+            "label": "Active background opacity",
+            "default": "90",
+            "info": "Range: 0-100 Percent"
+        },
+        {
+          "type": "paragraph",
+          "content": "Border color"
+        },
+        {
+            "type": "color",
+            "id": "cbtnbor",
+            "label": "Base border color",
+            "default": "rgba(0,0,0,0)"
+        },
+        {
+            "type": "text",
+            "id": "border_alpha",
+            "label": "Active border opacity",
+            "default": "0",
+            "info": "Range: 0-100 Percent"
+        },
+        {
+            "type": "color",
+            "id": "acbtnbor",
+            "label": "Active border color",
+            "default": "rgba(0,0,0,0)"
+        },
+        {
+            "type": "text",
+            "id": "border_alpha_a",
+            "label": "Active border opacity",
+            "default": "0",
+            "info": "Range: 0-100 Percent"
+        },
+        {
+          "type": "header",
+          "content": "Texts custom styles"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_1",
+          "label": "Сustom styles text 1",
+		  "info": "for screen size > 1600px"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_2",
+          "label": "Сustom styles text 2",
+		  "info": "for screen size > 1600px"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_3",
+          "label": "Сustom styles text 3",
+		  "info": "for screen size > 1600px"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_1_2",
+          "label": "MEDIUM SCREEN. Сustom styles text 1",
+		  "info": "for screen size > 1024px and lower than 1600px"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_2_2",
+          "label": "MEDIUM SCREEN. Сustom styles text 2",
+		  "info": "for screen size > 1024px and lower than 1600px"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_3_2",
+          "label": "MEDIUM SCREEN. Сustom styles text 3",
+		  "info": "for screen size > 1024px and lower than 1600px"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_1_mobile",
+          "label": "MOBILE. Сustom styles text 1",
+		  "info": "for screen size > 768px and lower than 1024px"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_2_mobile",
+          "label": "MOBILE. Сustom styles text 2",
+		  "info": "for screen size > 768px and lower than 1024px"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_3_mobile",
+          "label": "MOBILE. Сustom styles text 3",
+		  "info": "for screen size > 768px and lower than 1024px"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_1_mobile_2",
+          "label": "MOBILE 2. Сustom styles text 1"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_2_mobile_2",
+          "label": "MOBILE 2. Сustom styles text 2"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_styles_text_3_mobile_2",
+          "label": "MOBILE 2. Сustom styles text 3"
+        },
+		{
+          "type": "header",
+          "content": "Custom html block",
+		  "info": "Buttons have unique links as whole banner"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_custom_html",
+          "label": "Show custom html",
+          "default": false,
+		  "info": "Will work custom html content and buttons"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_custom_html_below_text",
+          "label": "Use custom html with main texts container",
+          "default": false,
+		  "info": "\"Custom html position\" below will not work"
+        },
+        {
+          "type": "textarea",
+          "id": "custom_html",
+          "label": "Custom html",
+          "info": "Facke button code: <div class=\"btn\">Women’s<\/div>"
+        },
+        {
+          "type": "select",
+          "id": "custom_html_position",
+          "label": "Custom html position",
+          "default": "normal",
+		  "info": "Will work if option \"Use custom html with main texts container\" disabled",
+          "options": [
+            {
+              "value": "tt-point-v-t tt-point-h-l",
+              "label": "Top Left"
+            },
+            {
+              "value": "tt-point-v-t",
+              "label": "Top Center"
+            },
+            {
+              "value": "tt-point-v-t tt-point-h-r",
+              "label": "Top Right"
+            },
+            {
+              "value": "tt-point-h-l",
+              "label": "Left"
+            },
+            {
+              "value": "normal",
+              "label": "Center"
+            },
+            {
+              "value": "tt-point-h-r",
+              "label": "Right"
+            },
+            {
+              "value": "tt-point-v-b tt-point-h-l",
+              "label": "Bottom Left"
+            },
+            {
+              "value": "tt-point-v-b",
+              "label": "Bottom Center"
+            },
+            {
+              "value": "tt-point-v-b tt-point-h-r",
+              "label": "Bottom Right"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Buttons main settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_prem_btn",
+          "label": "Show premade buttons",
+          "default": false,
+		  "info": "Please enable option \"Show custom html\" above"
+        },
+        {
+          "type": "checkbox",
+          "id": "btnanimation",
+          "label": "Show buttons on hover",
+          "default": false,
+		  "info": "Work only in the desktop screen"
+        },
+        {
+          "type":      "range",
+          "id":        "buttons_top_offset",
+          "min":       0,
+          "max":       100,
+          "step":      1,
+          "unit":      "px",
+          "label":     "Buttons top offset",
+          "default":    30
+        },
+        {
+          "type":      "range",
+          "id":        "buttons_top_offset_medium",
+          "min":       0,
+          "max":       100,
+          "step":      1,
+          "unit":      "px",
+          "label":     "MEDIUM SCREEN. Buttons top offset",
+          "default":    30
+        },
+        {
+          "type":      "range",
+          "id":        "buttons_top_offset_mobile",
+          "min":       0,
+          "max":       100,
+          "step":      1,
+          "unit":      "px",
+          "label":     "MOBILE. Buttons top offset",
+          "default":    30
+        },
+        {
+          "type": "header",
+          "content": "Button 1 settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_prem_btn_1",
+          "label": "Show button 1",
+          "default": true
+        },
+        {
+          "type": "url",
+          "id": "link_1",
+          "label": "Link button 1",
+          "info": "Optional"
+        },
+        {
+            "type": "text",
+            "id": "text_b_1",
+            "label": "Text button 1",
+            "default": "SHOP WOMEN"
+        },
+        {
+          "type": "color",
+          "id": "cbtntext_1",
+          "label": "Base text color",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "acbtntext_1",
+          "label": "Active text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "paragraph",
+          "content": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "cbtnbg_1",
+          "label": "Base background color",
+          "default": "#ffffff"
+        },
+        {
+            "type": "text",
+            "id": "background_alpha_1",
+            "label": "Base background opacity",
+            "default": "90",
+            "info": "Range: 0-100 Percent"
+        },
+        {
+          "type": "color",
+          "id": "acbtnbg_1",
+          "label": "Active background color",
+          "default": "#2879fe"
+        },
+        {
+            "type": "text",
+            "id": "background_alpha_a_1",
+            "label": "Active background opacity",
+            "default": "90",
+            "info": "Range: 0-100 Percent"
+        },
+        {
+          "type": "textarea",
+          "id": "btn_custom_styles_1",
+          "label": "Button custom styles"
+        },
+        {
+          "type": "textarea",
+          "id": "btn_custom_styles_hover_1",
+          "label": "HOVER. Button custom styles"
+        },
+        {
+          "type": "header",
+          "content": "Button 2 settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_prem_btn_2",
+          "label": "Show button 2",
+          "default": true
+        },
+        {
+          "type": "url",
+          "id": "link_2",
+          "label": "Link button 2",
+          "info": "Optional"
+        },
+        {
+            "type": "text",
+            "id": "text_b_2",
+            "label": "Text button 2",
+            "default": "SHOP MEN"
+        },
+        {
+          "type": "color",
+          "id": "cbtntext_2",
+          "label": "Base text color",
+          "default": "#191919"
+        },
+        {
+          "type": "color",
+          "id": "acbtntext_2",
+          "label": "Active text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "paragraph",
+          "content": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "cbtnbg_2",
+          "label": "Base background color",
+          "default": "#ffffff"
+        },
+        {
+            "type": "text",
+            "id": "background_alpha_2",
+            "label": "Base background opacity",
+            "default": "90",
+            "info": "Range: 0-100 Percent"
+        },
+        {
+          "type": "color",
+          "id": "acbtnbg_2",
+          "label": "Active background color",
+          "default": "#2879fe"
+        },
+        {
+            "type": "text",
+            "id": "background_alpha_a_2",
+            "label": "Active background opacity",
+            "default": "90",
+            "info": "Range: 0-100 Percent"
+        },
+        {
+          "type": "textarea",
+          "id": "btn_custom_styles_2",
+          "label": "Button custom styles"
+        },
+        {
+          "type": "textarea",
+          "id": "btn_custom_styles_hover_2",
+          "label": "HOVER. Button custom styles"
+        },
+        {
+          "type": "header",
+          "content": "Unique settings"
+        },
+        {
+          "type": "select",
+          "id": "description_size",
+          "label": "Description content size",
+          "info": "Set unique size for this item, custom styles must be empty",
+          "default": "use_main_size",
+          "options": [
+            {
+              "value": "use_main_size",
+              "label": "Use main size"
+            },
+            {
+              "value": "hide",
+              "label": "Hide"
+            },
+            {
+              "value": "small",
+              "label": "Small"
+            },
+            {
+              "value": "big",
+              "label": "Big"
+            }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "textbackgroundstyles",
+          "label": "Description content background custom styles",
+          "info": ">1601px. Example: max-width: unset; padding: 0; width: 100%;"
+        },
+        {
+          "type": "textarea",
+          "id": "textbackgroundstyles_medium",
+          "label": "MEDIUM >1024px. Description content background custom styles",
+          "info": "1025-1601px. Example: max-width: unset; padding: 0; width: 100%;"
+        },
+        {
+          "type": "textarea",
+          "id": "textbackgroundstyles_mobile",
+          "label": "MOBILE >768px. Description content background custom styles",
+          "info": "768-1024px. Example: max-width: unset; padding: 0; width: 100%;"
+        },
+        {
+          "type": "textarea",
+          "id": "textbackgroundstyles_mobile_2",
+          "label": "MOBILE 2. Description content background custom styles",
+          "info": "lower than 768px. Lower than 768px. Example: max-width: unset; padding: 0; width: 100%;"
+        },
+        {
+          "type": "select",
+          "id": "animation",
+          "label": "Animation for the content background",
+          "info": "Set unique animation for this item",
+          "default": "use_main_animation",
+          "options": [
+            {
+              "value": "use_main_animation",
+              "label": "Use main animation"
+            },
+            {
+              "value": "scale",
+              "label": "Scale"
+            },
+            {
+              "value": "simple",
+              "label": "No scale"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "position",
+          "label": "Text information position",
+          "info": "Set unique position for this item",
+          "default": "use_main_position",
+          "options": [
+            {
+              "value": "use_main_position",
+              "label": "Use main position"
+            },
+            {
+              "value": "tt-point-v-t tt-point-h-l",
+              "label": "Top Left"
+            },
+            {
+              "value": "tt-point-v-t",
+              "label": "Top Center"
+            },
+            {
+              "value": "tt-point-v-t tt-point-h-r",
+              "label": "Top Right"
+            },
+            {
+              "value": "tt-point-h-l",
+              "label": "Left"
+            },
+            {
+              "value": "normal",
+              "label": "Center"
+            },
+            {
+              "value": "tt-point-h-r",
+              "label": "Right"
+            },
+            {
+              "value": "tt-point-v-b tt-point-h-l",
+              "label": "Bottom Left"
+            },
+            {
+              "value": "tt-point-v-b",
+              "label": "Bottom Center"
+            },
+            {
+              "value": "tt-point-v-b tt-point-h-r",
+              "label": "Bottom Right"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Image mask"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_mask",
+          "label": "Use image mask",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "show_mask_color",
+          "label": "Image mask color",
+          "default": "#191919"
+        },
+        {
+          "type":      "range",
+          "id":        "show_mask_alpha",
+          "min":       0,
+          "max":       100,
+          "step":      1,
+          "unit":      "%",
+          "label":     "Image mask opacity",
+          "default":   30
+        },
+        {
+          "type": "header",
+          "content": "MOBILE settings"
+        },
+        {
+          "type": "select",
+          "id": "mobile_position",
+          "label": "Text information position",
+          "info": "Set unique position for this item",
+          "default": "use_main_position",
+          "options": [
+            {
+              "value": "use_main_position",
+              "label": "Use main position"
+            },
+            {
+              "value": "tt-point-v-t",
+              "label": "Top Center"
+            },
+            {
+              "value": "normal",
+              "label": "Center"
+            },
+            {
+              "value": "tt-point-v-b",
+              "label": "Bottom Center"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "responsivepoint",
+          "label": "\"Do not show\" options will work from this screen size",
+          "default": "1024",
+		  "info": "Will work in screen size lower than your value. Integer in px"
+        },
+        {
+          "type": "checkbox",
+          "id": "mobile_not_show_text_1",
+          "label": "Do not show text 1 in mobile",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "mobile_not_show_text_2",
+          "label": "Do not show text 2 in mobile",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "mobile_not_show_text_3",
+          "label": "Do not show text 3 in mobile",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "mobile_not_show_buttons",
+          "label": "Do not show buttons",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Image icon"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_icon",
+          "label": "Show image icon",
+          "default": false
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Icon image",
+		  "info": "Use PNG image. Recommended size 124x38px"
+        },
+        {
+          "type": "text",
+          "id": "width",
+          "label": "Icon width. In pixel",
+          "default": "128",
+		  "info": "Integer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Simple Banners",
+      "category": "Banner",
+      "blocks": [
+      ]
+    }
+  ]
+}
+{% endschema %}

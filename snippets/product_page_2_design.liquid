@@ -1,0 +1,59 @@
+<div class="container-indent">
+  {% include "product_page_1_gallery" type: "mobile" %}
+  <div class="container container-mobile-airSticky">
+    <div class="row airSticky_stop-block">
+      <div class="col-6 hidden-xs">
+        <div class="product-images-static hidden-xs">
+          <ul{% unless item.gallery_no_zoom %} class="no-zoom"{% endunless %} data-scrollzoom="{{ item.gallery_scroll }}">
+            {% for media in product.media %}
+            <li>
+              {% case media.media_type %}
+              {% when 'image' %}
+              <img src="{{ media.preview_image | img_url: '1024x1024' }}" alt="{{ media.alt }}" data-target="{{ media.id }}">
+              {% when 'external_video' %}
+              <div class="pt-product-media-external" data-target-id="{{ media.id }}" data-video-id="{{ media.external_id }}">
+                {{ media | external_video_tag: image_size: '600x' }}
+              </div>
+              {% when 'video' %}
+              <div class="pt-product-media-internal" data-target-id="{{ media.id }}">
+                {% capture video %}
+                {{ media | video_tag: class: 'media-video', image_size: '600x' }}  
+                {% endcapture %}
+                {{ video | replace: "<video", "<video controls" }}
+              </div>
+              {% when 'model' %}
+              <div class="pt-product-media-model notstarted" data-target-id="{{ media.id }}">
+                <div class="prpage-video-cube-icon">
+                  {% render "svg-product-page-cube" %}
+                </div>
+                <div class="prpage-video-play-icon">
+                  {% render "svg-product-page-type2-play" %}
+                </div>
+                {{ media | model_viewer_tag: image_size: '800x', autoplay: true, reveal: 'interaction', toggleable: true, data-model-id: media.id }}
+              </div>
+              {% else %}
+              <div class="pt-product-media-item" data-target-id="{{ media.id }}">
+                {{ media | media_tag: class: 'media-item', image_size: '600x' }}
+              </div>
+              {% endcase %}
+            </li>
+            {%- endfor -%}
+            
+            {% unless product_meta.video == blank %}
+            <li>
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="{{ product_meta.video }}" allowfullscreen></iframe>
+              </div>
+            </li>
+            {% endunless %}
+          </ul>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="airSticky">
+          {% include "product_page_1_description" %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

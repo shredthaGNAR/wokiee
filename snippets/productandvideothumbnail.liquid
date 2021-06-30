@@ -1,0 +1,109 @@
+{% assign _pr = all_products[item.product] %}
+{% assign sel_or_first_av_var = _pr.selected_or_first_available_variant %}
+
+{%- assign sale_on = false -%}
+{%- assign shownewicon = false -%}
+{%- if sel_or_first_av_var.compare_at_price > sel_or_first_av_var.price -%}
+	{%- assign sale_on = true -%}
+{%- endif -%}
+
+<div class="col-6 col-md-3">
+  <a href="{{ _pr.url }}" class="productandvideoimg">
+      <img class="lazyload"
+           data-src="{{ _pr.featured_image.src | product_img_url: '300x' }}"
+           data-srcset="{% include 'lazyload_string' value: _pr.featured_image %}"
+           alt="{{ _pr.featured_image.alt | escape }}"/>
+  </a>
+</div>
+<div class="col-6 col-md-3">
+  <div class="productandvideothumb">
+    {%- if item.show_product_type -%}
+    <a href="/collections/{% if collection == blank %}all{% else %}{{ collection.handle }}{% endif %}/{{ _pr.type | handle }}"
+       class="text-uppercase productandvideothumb-type"
+       >{{ _pr.type }}</a>
+    {%- endif -%}
+    
+    <h2 class="tt-title"><a href="{{ _pr.url }}">{{ _pr.title }}</a></h2>
+    {%- unless settings.catalogue_mode -%}
+    {%- if item.product_item_show_rating -%}
+    <div class="tt-rating" data-url="{{ _pr.url | within: collection }}">
+      <span class="shopify-product-reviews-badge" data-id="{{ _pr.id }}"></span>
+    </div>
+    {%- endif -%}
+    {%- endunless -%}
+    {%- if item.product_item_show_small_description -%}
+    <div class="tt-pr-small-desc">
+      {{ item.product_item_small_description }}
+    </div>
+    {%- endif -%}
+    
+    {%- if item.product_item_show_price -%}
+    {%- unless settings.catalogue_mode -%}
+    {%- if sale_on -%}
+    <div class="tt-price"><span class="new-price">{{ sel_or_first_av_var.price | money }}</span><span class="old-price">{{ sel_or_first_av_var.compare_at_price | money }}</span></div>
+    {%- else -%}
+    <div class="tt-price"><span>{{ sel_or_first_av_var.price | money }}</span><span class="old-price hide"></span></div>
+    {%- endif -%}
+    {%- endunless -%}
+    {%- endif -%}
+    
+    {%- if item.product_item_show_button -%}
+    <div class="tt-button-box">
+      {% if _pr.variants.size == 1 %}
+      <form action="/cart/add" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="{{ sel_or_first_av_var.id }}">
+        <button class="tt-btn-addtocart {% if settings.ajax_addtocart %} addtocart-item-js{% endif %}{% unless sel_or_first_av_var.available %} disable{% endunless %}"
+                {%- if settings.show_addtocart_popup_related -%}{%- unless product.metafields.description.related_collection == blank -%}data-relatedcollection="{{ _pr.metafields.description.related_collection }}"{%- endunless -%}{%- endif -%}
+                >
+          {% unless sel_or_first_av_var.available %}
+          {{ 'products.general.unavailable_html' | t }}
+          {% else %}
+          {% if sel_or_first_av_var.inventory_management == 'shopify' and sel_or_first_av_var.inventory_policy == 'continue' and sel_or_first_av_var.inventory_quantity == 0 %}
+          {{ "products.general.preorder_html" | t }}		
+          {% else %}
+          {{ 'products.general.add_to_cart_html' | t }}
+          {% endif %}
+          {% endunless %}
+        </button>
+      </form>
+      {% else %}
+      <a href="{{ _pr.url }}" class="btn ttbtnmainstyle">{{ item.product_item_button_secondname }}</a>
+      {% endif %}
+    </div>
+    {%- endif -%}
+    
+    {% capture showwishlist %}{% if item.product_item_show_wishlist and settings.show_wishlist %}true{% else %}false{% endif %}{% endcapture %}
+    {% capture showcompare %}{% if item.product_item_show_compare and settings.show_compare %}true{% else %}false{% endif %}{% endcapture %}
+    {% if showwishlist == "true" or showcompare == "true" %}
+    <div class="tt-wk-buttons-box">
+    {%- if showwishlist == "true" -%}
+    <a href="{{ product.url | within: collection }}"
+       data-productid="{{ product.id }}"
+       data-producth="{{ product.handle }}"
+       data-add="{{ "wishlist.buttons_text.tooltip_add" | t }}"
+       data-remove="{{ "wishlist.buttons_text.tooltip_remove" | t }}"
+       data-tooltip="{% if customer.id == blank %}{{ "wishlist.buttons_text.tooltip_login" | t }}{% else %}{% if wl_text %}{{ "wishlist.buttons_text.tooltip_remove" | t }}{% else %}{{ "wishlist.buttons_text.tooltip_add" | t }}{% endif %}{% endif %}"
+       data-tposition="left"
+       data-type="wishlist"
+       data-action="{% if wl_text %}wk-remove{% else %}wk-add{% endif %}"
+       class="wk-app-btn tt-btn-wishlist wlbutton-js{% if template.suffix == "wishlist" %} wk-delete-icon{% endif %}">
+      {% if template.suffix == "wishlist" %}{% include "svg-delete-icon" %}
+      {% else %}{% include "svg-heart" %}
+      {% endif %}</a>
+    {%- endif -%}
+
+    {%- if showcompare == "true" -%}
+    <a href="{{ product.url | within: collection }}"
+       class="wk-app-btn tt-btn-compare compare-js"
+       data-action="wk-add"
+       data-add="{{ "compare.buttons_text.tooltip_add" | t }}"
+       data-remove="{{ "compare.buttons_text.tooltip_remove" | t }}"
+       data-tooltip="{{ "compare.buttons_text.tooltip_add" | t }}"
+       data-tposition="left"
+       data-compareid="{{ pr_variant.id }}">{% include "svg-compare" %}</a>
+    {% endif %}
+    </div>
+    {% endif %}
+    
+  </div>
+</div>

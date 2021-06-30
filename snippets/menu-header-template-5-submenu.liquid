@@ -1,0 +1,26 @@
+<ul class="definitionLayout {{ ulsize }} ul_col">
+  <div class="multilevel-wpap-col">
+    {% for i in (0..imax) %}
+    <div class="coll_s c_{{ forloop.index }}">
+      {% for j in (0..jmax) %}
+            
+      {% assign _jmax = jmax | plus: 1 %}
+      {% assign ij = _jmax | times: i | plus: j %}
+      {% if ij >= sub_sub_links.size %}{% break %}{% endif %}
+
+      <li><a href="{{ sub_sub_links[ij].url }}">{{ sub_sub_links[ij].title }}</a>
+        {% if sub_sub_links[ij].links.size > 0 %}
+        <ul>
+          {% for sub_sub_sub_links in sub_sub_links[ij].links %}
+          <li>
+            <a href="{{ sub_sub_sub_links.url }}">{{ sub_sub_sub_links.title }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</ul>

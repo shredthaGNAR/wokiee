@@ -1,0 +1,923 @@
+{%- assign item = section.settings -%}
+
+{%- assign grid = item.items -%}
+{%- assign name_collection = item.collection -%}
+{%- if name_collection == blank -%}{%- assign name_collection = "all" -%}{%- endif -%}
+{%- assign collection = collections[name_collection] -%}
+{%- assign length = item.limit | plus: 0 -%}
+
+{%- assign usebgcolor = false -%}
+{%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+{%- assign usebgcolor = b_i.usebgcolor -%}
+{%- assign showbgimage = b_i.showbgimage -%}
+{%- assign useimage = b_i.image -%}
+{%- endfor -%}
+
+<div class="{% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent sectionproducts{{ section.id }} {{ item.custom_classes }}">
+  {% if item.nopaddings %}<div class="nopaddingspr">{% endif %}
+  {% if usebgcolor %}<div class="products-section-bg"{% if showbgimage %} style="background-image: url({{ useimage | img_url: '2048x' }});"{% endif %}>{% endif %}
+  <div class="container{% if item.fullwidth %}-fluid-custom{% endif %} container-fluid-custom-mobile-padding" data-sectionname="index_sectionproducts">
+    {%- if item.show_title -%}<div class="tt-block-title{% if item.title_to_left %} text-left{% endif %}{% if item.boxed_title and item.fullwidth %} container{% endif %}">
+      <h2 class="tt-title">
+        {%- if item.use_title_as_link -%}<a href="/collections/{{ collection.handle }}" class="title-hover-underline" title="{{ item.button_text }}">{{ item.text1 }}</a>
+        {%- else -%}{{ item.text1 }}
+        {%- endif -%}
+      </h2>
+      {% unless item.text2 == '' %}<div class="tt-description">{{ item.text2 }}</div>{% endunless %}
+      {% unless item.default_carousel %}{% unless item.text3 == '' %}<p>{{ item.text3 }}</p>{% endunless %}{% endunless %}
+    </div>{%- endif -%}
+
+    {%- if item.default_carousel -%}
+    {%- assign slider_mode = true -%}
+    <div class="{% if item.boxed_buttons and item.fullwidth %}slboxedbuttons {% endif %}tt-carousel-products-js row arrow-location-tab tt-alignment-img tt-layout-product-item slick-animated-show-js" data-slick='{"slidesToShow": {{ item.toshow }}, "slidesToScroll": {{ item.step }}, "autoplay": {{ item.module_autoplay }}, "autoplaySpeed": {{ item.delay_time }}}'
+         data-mobile="{% if item.show_oneproduct_in_mobile %}1{% else %}2{% endif %}" 
+         data-adaptive="{% if item.use_adaptive_height %}true{% else %}false{% endif %}">
+      {%- for product in collection.products limit: length -%}
+      <div class="forsliders-margins">
+        {%- include "product-grid-item" -%}
+      </div>
+      {%- endfor -%}
+    </div>
+    {%- else -%}
+    <div class="row tt-layout-product-item{% if item.items_always_in_center %} justify-content-center{% endif %}">
+      {%- for product in collection.products limit: length -%}
+      <div class="col-6 col-md-4 {% if grid == '5' %}col-5-inrow-lg{% else %}col-lg-{{ grid }}{% endif %}">
+        {%- include "product-grid-item" -%}
+      </div>
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+    
+    {%- if item.show_button -%}
+    <div class="text-center">
+      <a href="/collections/{{ collection.handle }}" class="btn btn-border btn-top">{{ item.button_text }}</a>
+    </div>
+    {%- endif -%}
+
+  </div>
+  {% if usebgcolor %}</div>{% endif %}
+  {% if item.nopaddings %}</div>{% endif %}
+</div>
+{%- if item.hideallelementsonindex -%}
+<style>
+  .sectionproducts{{ section.id }} .tt-product .tt-image-box > *:not(.tt-img-parent),
+  .sectionproducts{{ section.id }} .tt-product .tt-image-box .tt-img-parent .tt-label-location,
+  .sectionproducts{{ section.id }} .tt-product .tt-description{
+    display: none !important;
+  }
+</style>
+{%- endif -%}
+{%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+{%- if b_i.changecolor -%}
+<style>
+  .sectionproducts{{ section.id }} .tt-product .tt-description .tt-add-info li a{
+    color: {{ b_i.type_color }};
+  }
+  .sectionproducts{{ section.id }} .tt-product .tt-description .tt-add-info li a:hover {
+    color: {{ b_i.type_color_hover }};
+  }
+  .sectionproducts{{ section.id }} .spr-starrating .spr-icon-star:before, .spr-starratings .spr-icon-star:before {
+    color: {{ b_i.stars_active_color }};
+  }
+  .sectionproducts{{ section.id }} .spr-starrating .spr-icon-star-empty:before, .spr-starratings .spr-icon-star-empty:before {
+    color: {{ b_i.stars_empty_color }};
+  }
+  .sectionproducts{{ section.id }} .prod-thumb-title-color a{
+    color: {{ b_i.title_color }};
+  }
+  .sectionproducts{{ section.id }} .prod-thumb-title-color a:hover{
+    color: {{ b_i.title_color_hover }};
+  }
+  .sectionproducts{{ section.id }} .tt-product .tt-description .tt-price {
+    color: {{ b_i.price_base }};
+  }
+  .sectionproducts{{ section.id }} .tt-product .tt-description .tt-price .new-price {
+    color: {{ b_i.price_new }};
+  }
+  .sectionproducts{{ section.id }} .tt-product .tt-description .tt-price .old-price {
+    color: {{ b_i.price_old }};
+  }
+  .sectionproducts{{ section.id }} ul.tt-options-swatch li .options-color:after {
+    border-color: {{ b_i.opt_active_border }};
+  }
+  .sectionproducts{{ section.id }} ul.tt-options-swatch li a:not(.options-color) {
+    background: {{ b_i.opt_btn_bg }};
+    color: {{ b_i.opt_btn_text }};
+  }
+  body:not(.touch-device) .sectionproducts{{ section.id }} ul.tt-options-swatch li:hover a:not(.options-color),
+  .sectionproducts{{ section.id }} ul.tt-options-swatch li.active a:not(.options-color){
+    background: {{ b_i.opt_btn_bg_hover }};
+    color: {{ b_i.opt_btn_text_hover }};
+  }  
+  .sectionproducts{{ section.id }} .tt-product .tt-description .tt-btn-addtocart.thumbprod-button-bg {
+    background-color: {{ b_i.btn_bg_color }};
+    color: {{ b_i.btn_text_color }};
+    {%- if b_i.btn_custom_styles != "" -%}{{ b_i.btn_custom_styles }}{%- endif -%}
+  }
+  .sectionproducts{{ section.id }} .tt-product .tt-description .tt-btn-addtocart.thumbprod-button-bg:hover {
+    background-color: {{ b_i.btn_bg_color_hover }};
+    color: {{ b_i.btn_text_color_hover }};
+    {%- if b_i.btn_custom_styles_hover != "" -%}{{ b_i.btn_custom_styles_hover }}{%- endif -%}
+  }  
+  .sectionproducts{{ section.id }} .tt-product .tt-image-box .tt-btn-quickview {
+    {% assign bg_alpha = b_i.pr_action_bg_opacity | divided_by: 100.00 %}
+    background: {{ b_i.pr_action_bg | color_modify: 'alpha', bg_alpha  }};
+    color: {{ b_i.pr_action_icon }};
+  }
+  .sectionproducts{{ section.id }} .product-parent:not(.tt-view) .tt-description .wk-app-btn svg path {
+    fill: {{ b_i.pr_action_icon }};
+  }
+  .sectionproducts{{ section.id }} .tt-product:not(.tt-view) .tt-image-box .wk-app-btn {
+    {% assign bg_alpha = b_i.pr_action_bg_opacity | divided_by: 100.00 %}
+    background: {{ b_i.pr_action_bg | color_modify: 'alpha', bg_alpha  }};
+    color: {{ b_i.pr_action_icon }};
+  }
+  .sectionproducts{{ section.id }} .tt-product .tt-image-box .tt-btn-quickview:hover {
+    {% assign bg_alpha = b_i.pr_action_bg_opacity_hover | divided_by: 100.00 %}
+    background: {{ b_i.pr_action_bg_hover | color_modify: 'alpha', bg_alpha  }};
+    color: {{ b_i.pr_action_icon_hover }};
+  }
+  .sectionproducts{{ section.id }} .tt-product:not(.tt-view) .tt-image-box .wk-app-btn.wkapp_load,
+  .sectionproducts{{ section.id }} .tt-product:not(.tt-view) .tt-image-box .wk-app-btn:hover,
+  .sectionproducts{{ section.id }} .tt-product:not(.tt-view) .tt-image-box .wk-app-btn[data-action="wk-remove"] {
+    {% assign bg_alpha = b_i.pr_action_bg_opacity_hover | divided_by: 100.00 %}
+    background: {{ b_i.pr_action_bg_hover | color_modify: 'alpha', bg_alpha  }};
+    color: {{ b_i.pr_action_icon_hover }};
+  }
+  .sectionproducts{{ section.id }} .tt-product:not(.tt-view) .tt-image-box .wk-app-btn:hover svg path,
+  .sectionproducts{{ section.id }} .tt-product:not(.tt-view) .tt-image-box .wk-app-btn[data-action="wk-remove"] svg path {
+    fill: {{ b_i.pr_action_icon_hover }};
+  }
+  @media (max-width: 1024px){
+    .sectionproducts{{ section.id }} .tt-product .tt-description .tt-btn-quickview{
+      color: {{ b_i.pr_action_icon_mobile }};
+    }
+    .sectionproducts{{ section.id }} .tt-product .tt-description .tt-btn-quickview:hover{
+      color: {{ b_i.pr_action_icon_mobile_hover }};
+    }
+    .sectionproducts{{ section.id }} .product-parent:not(.tt-view) .tt-description .wk-app-btn svg path {
+      fill: {{ b_i.pr_action_icon_mobile }};
+    }
+    .sectionproducts{{ section.id }} .product-parent:not(.tt-view) .wk-app-btn:hover svg path,
+    .sectionproducts{{ section.id }} .product-parent:not(.tt-view) .wk-app-btn[data-action="wk-remove"] svg path {
+      fill: {{ b_i.pr_action_icon_mobile_hover }};
+    }
+  }
+</style>
+{% endif %}
+{% if b_i.changecolorother %}
+<style>
+  .sectionproducts{{ section.id }} .arrow-location-tab .slick-arrow{
+    color: {{ b_i.slider_arrow_icon }};
+    background: {{ b_i.slider_arrow_bg }};
+  }
+  .sectionproducts{{ section.id }} .arrow-location-tab .slick-arrow:hover{
+    background: {{ b_i.slider_arrow_bg_hover }};
+    color: {{ b_i.slider_arrow_icon_hover }};
+  }
+  .sectionproducts{{ section.id }} .tt-block-title .tt-title,
+  .sectionproducts{{ section.id }} .tt-block-title .tt-title a.title-hover-underline{
+    color: {{ b_i.main_title }};
+  }
+  .sectionproducts{{ section.id }} .tt-block-title .tt-title a.title-hover-underline:hover{
+    color: {{ b_i.main_title_hover }};
+  }
+  .sectionproducts{{ section.id }} .tt-block-title .tt-description{
+    color: {{ b_i.desc_title_color }};
+  }
+  .sectionproducts{{ section.id }} .btn.btn-border {
+    background: {{ b_i.showmore_bg }};
+    color: {{ b_i.showmore_text }};
+    border: 2px solid {{ b_i.showmore_border }};
+  }
+  .sectionproducts{{ section.id }} .btn.btn-border:hover{
+    background: {{ b_i.showmore_bg_hover }};
+    color: {{ b_i.showmore_text_hover }};
+    border-color: {{ b_i.showmore_border_hover }};
+  }  
+  .sectionproducts{{ section.id }} .thumbnail_small_description{
+    color: {{ b_i.smalldescription }};
+  }
+  
+</style>
+{% endif %}
+{% if b_i.usebgcolor %}
+<style>
+  .sectionproducts{{ section.id }} .tt-product .tt-description,
+  .sectionproducts{{ section.id }} .tt-product .tt-description .tt-product-inside-hover {
+    background-color: {{ b_i.bgco }};
+  }
+  .sectionproducts{{ section.id }} > div{
+    background-color: {{ b_i.bgco }};
+    background-repeat: no-repeat;
+    background-size: {{ b_i.imagesize }};
+    background-position: {{ b_i.imagealign }};
+  }
+
+  @media (min-width: 1025px){
+    .sectionproducts{{ section.id }} > div{
+      padding-top: {{ b_i.bgdepad }}px;
+      padding-bottom: {{ b_i.bgdepad_2 }}px;
+    }
+  }
+  @media (max-width: 1024px){
+    .sectionproducts{{ section.id }} > div{
+      padding-top: {{ b_i.bgmopad }}px;
+      padding-bottom: {{ b_i.bgmopad_2 }}px;
+    }
+  }
+  {% if item.usemiheight %}
+  @media (min-width: 791px){
+    .sectionproducts{{ section.id }} > div > div > .row{
+      align-items: center;
+      min-height: {{ b_i.backgroundminheight2 }}px;
+    }
+  }
+  @media (min-width: 1200px){
+    .sectionproducts{{ section.id }} > div > div > .row{
+      align-items: center;
+      min-height: {{ b_i.backgroundminheight3 }}px;
+    }
+  }
+  @media (max-width: 790px){
+    .sectionproducts{{ section.id }} > div > div > .row{
+      align-items: center;
+      min-height: {{ b_i.backgroundminheight1 }}px;
+    }
+  }
+  {% endif %}
+</style>
+{% endif %}
+{% endfor %}
+
+{% schema %}
+  {
+    "name": "Products",
+	"class": "index-section",
+    "settings": [
+      {
+        "type": "select",
+        "id": "top_offset",
+        "label": "Top Offset",
+        "default": "normal",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "normal",
+            "label": "Normal"
+          }
+        ]
+      },
+      {
+      "type": "textarea",
+        "id": "custom_classes",
+        "label": "Custom css classes",
+        "info": "For the custom styles. Add your styles in the theme.css.liquid"
+      },
+      {
+        "type": "checkbox",
+        "id": "fullwidth",
+        "label": "Fullwidth size",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "nopaddings",
+        "label": "No paddings",
+        "default": false,
+		"info": "!!! Please use this option with product thumbnail design \"type 2\""
+      },
+      {
+        "type": "checkbox",
+        "id": "hideallelementsonindex",
+        "label": "Hide all elements after image",
+        "default": false,
+        "info": "Work with product type \"Default\""
+      },
+      {
+        "type": "checkbox",
+        "id": "show_title",
+        "label": "Show Title Block",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "title_to_left",
+        "label": "Title to left",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "boxed_title",
+        "label": "Boxed title when fullwidth",
+        "default": false
+      },
+      {
+        "type": "textarea",
+        "id": "text1",
+        "label": "Title",
+        "default": "OUR COLLECTIONS"
+      },
+      {
+        "type": "textarea",
+        "id": "text2",
+        "label": "Small description",
+        "default": "SUMMER 2018",
+		"info": "Empty field = hide field"
+      },
+      {
+        "type": "textarea",
+        "id": "text3",
+        "label": "Big description",
+		"info": "Empty field = hide field. Not work with slider mode"
+      },
+      {
+        "type": "header",
+        "content": "Show all button"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_title_as_link",
+        "label": "Use title as link to the collection",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_button",
+        "label": "Show button",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button text",
+		"default": "SHOW ALL"
+      },
+      {
+        "type": "header",
+        "content": "Products settings"
+      },
+      {
+        "label": "Collection",
+        "id": "collection",
+        "type": "collection"
+      },
+      {
+        "type": "checkbox",
+        "id": "items_always_in_center",
+        "label": "Products in center",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "limit",
+        "label": "Items Length. Integer",
+        "default": "8"
+      },
+      {
+        "type": "select",
+        "id": "items",
+        "label": "Products In Row",
+        "options": [
+          { "value": "6", "label": "2" },
+          { "value": "4", "label": "3" },
+          { "value": "3", "label": "4" },
+		  { "value": "5", "label": "5" },
+		  { "value": "2", "label": "6" }
+        ],
+        "default": "3",
+        "info": "For screen size > 1024"
+      },
+      {
+        "type": "header",
+        "content": "By Default Carousel"
+      },
+      {
+        "type": "checkbox",
+        "id": "default_carousel",
+        "label": "Default Carousel",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "boxed_buttons",
+        "label": "Boxed buttons when fullwidth",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_oneproduct_in_mobile",
+        "label": "Show one product in mobile",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "use_adaptive_height",
+        "label": "Use slider adaptive height",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "toshow",
+        "label": "Items in row",
+        "options": [
+          { "value": "2", "label": "2" },
+          { "value": "3", "label": "3" },
+          { "value": "4", "label": "4" },
+          { "value": "5", "label": "5" },
+          { "value": "6", "label": "6" }
+        ],
+        "default": "4",
+        "info": "For screen size > 1024"
+      },
+      {
+        "type": "select",
+        "id": "step",
+        "label": "Slides To Scroll",
+        "default": "2",
+        "options": [
+          {
+            "value": "1",
+            "label": "1"
+          },
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          },
+          {
+            "value": "5",
+            "label": "5"
+          },
+          {
+            "value": "6",
+            "label": "6"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "module_autoplay",
+        "label": "Auto-rotate slides",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "delay_time",
+        "label": "Change slides every",
+        "options": [
+          { "value": "5000", "label": "5 seconds" },
+          { "value": "6000", "label": "6 seconds" },
+          { "value": "7000", "label": "7 seconds" },
+          { "value": "8000", "label": "8 seconds" },
+          { "value": "9000", "label": "9 seconds" },
+          { "value": "10000", "label": "10 seconds" }
+        ],
+        "default": "7000"
+      }
+	],
+    "blocks": [
+      {
+        "type": "item",
+        "name": "new colors and background",
+		"limit": 1,
+        "settings": [
+            {
+              "type": "header",
+              "content": "Section custom colors"
+            },
+            {
+              "type": "checkbox",
+              "id": "changecolor",
+              "label": "Change Products thumbnail color",
+              "default": false
+            },
+            {
+              "type": "color",
+              "id": "type_color",
+              "label": "Product type/vendor color",
+              "default": "#999999"
+            },
+            {
+              "type": "color",
+              "id": "type_color_hover",
+              "label": "Product type/vendor color hover",
+              "default": "#2879fe"
+            },
+            {
+              "type": "color",
+              "id": "stars_empty_color",
+              "label": "Stars(default shopify app) empty color",
+              "default": "#d4d4d4"
+            },
+            {
+              "type": "color",
+              "id": "stars_active_color",
+              "label": "Stars(default shopify app) active color",
+              "default": "#ffb503"
+            },
+            {
+              "type": "color",
+              "id": "title_color",
+              "label": "Product name color",
+              "default": "#191919"
+            },
+            {
+              "type": "color",
+              "id": "title_color_hover",
+              "label": "Product name color hover",
+              "default": "#2879fe"
+            },
+            {
+              "type": "color",
+              "id": "smalldescription",
+              "label": "Product small description",
+              "default": "#777777"
+            },
+            {
+              "type": "color",
+              "id": "price_base",
+              "label": "Price base color",
+              "default": "#191919"
+            },
+            {
+              "type": "color",
+              "id": "price_new",
+              "label": "Price new color",
+              "default": "#f8353e"
+            },
+            {
+              "type": "color",
+              "id": "price_old",
+              "label": "Price old color",
+              "default": "#191919"
+            },
+            {
+              "type": "color",
+              "id": "opt_active_border",
+              "label": "Variant \"Color\" hover border color",
+              "default": "#2879fe"
+            },
+            {
+              "type": "color",
+              "id": "opt_btn_bg",
+              "label": "Variants background color",
+              "default": "#f7f8fa"
+            },
+            {
+              "type": "color",
+              "id": "opt_btn_text",
+              "label": "Variants text color",
+              "default": "#777777"
+            },
+            {
+              "type": "color",
+              "id": "opt_btn_bg_hover",
+              "label": "Variants background color hover",
+              "default": "#2879fe"
+            },
+            {
+              "type": "color",
+              "id": "opt_btn_text_hover",
+              "label": "Variants background color hover",
+              "default": "#ffffff"
+            },
+            {
+              "type": "paragraph",
+              "content": "Add to cart button"
+            },
+            {
+              "type": "color",
+              "id": "btn_bg_color",
+              "label": "Button background color",
+              "default": "#2879fe"
+            },
+            {
+              "type": "color",
+              "id": "btn_text_color",
+              "label": "Button text color",
+              "default": "#ffffff"
+            },
+            {
+              "type": "color",
+              "id": "btn_bg_color_hover",
+              "label": "Button background color hover",
+              "default": "#2267d8"
+            },
+            {
+              "type": "color",
+              "id": "btn_text_color_hover",
+              "label": "Button text color hover",
+              "default": "#ffffff"
+            },
+            {
+            "type": "textarea",
+              "id": "btn_custom_styles",
+              "label": "Button custom styles"
+            },
+            {
+            "type": "textarea",
+              "id": "btn_custom_styles_hover",
+              "label": "Button custom styles hover"
+            },
+            {
+              "type": "paragraph",
+              "content": "Quick view, wishlist, compare"
+            },
+            {
+              "type": "color",
+              "id": "pr_action_bg",
+              "label": "Action buttons",
+              "default": "#ffffff",
+              "info": "Quick view, wishlist, compare"
+            },
+            {
+              "type":      "range",
+              "id":        "pr_action_bg_opacity",
+              "min":       0,
+              "max":       100,
+              "step":      1,
+              "label":     "Action buttons opacity",
+              "default":   90
+            },
+            {
+              "type": "color",
+              "id": "pr_action_icon",
+              "label": "Action buttons icons",
+              "default": "#191919",
+              "info": "Quick view, wishlist, compare"
+            },
+            {
+              "type": "color",
+              "id": "pr_action_bg_hover",
+              "label": "Action buttons hover",
+              "default": "#191919",
+              "info": "Quick view, wishlist, compare"
+            },
+            {
+              "type":      "range",
+              "id":        "pr_action_bg_opacity_hover",
+              "min":       0,
+              "max":       100,
+              "step":      1,
+              "label":     "Action buttons opacity",
+              "default":   90
+            },
+            {
+              "type": "color",
+              "id": "pr_action_icon_hover",
+              "label": "Action buttons icons hover",
+              "default": "#ffffff",
+              "info": "Quick view, wishlist, compare"
+            },
+            {
+              "type": "color",
+              "id": "pr_action_icon_mobile",
+              "label": "MOBILE. Action buttons icons",
+              "default": "#191919",
+              "info": "Quick view, wishlist, compare"
+            },
+            {
+              "type": "color",
+              "id": "pr_action_icon_mobile_hover",
+              "label": "MOBILE. Action buttons icons hover",
+              "default": "#2879fe",
+              "info": "Quick view, wishlist, compare"
+            },
+            {
+              "type": "header",
+              "content": "Title, slider, show more button"
+            },
+            {
+              "type": "checkbox",
+              "id": "changecolorother",
+              "label": "Change slider arrows, show more button",
+              "default": false
+            },
+            {
+              "type": "color",
+              "id": "main_title",
+              "label": "Main title color",
+              "default": "#191919"
+            },
+            {
+              "type": "color",
+              "id": "main_title_hover",
+              "label": "Main title as link hover color",
+              "default": "#2879fe"
+            },
+            {
+              "type": "color",
+              "id": "desc_title_color",
+              "label": "Description title color",
+              "default": "#777777"
+            },
+  
+            {
+              "type": "color",
+              "id": "slider_arrow_bg",
+              "label": "Slider arrow background",
+              "default": "#f7f8fa"
+            },
+            {
+              "type": "color",
+              "id": "slider_arrow_icon",
+              "label": "Slider arrow icon",
+              "default": "#191919"
+            },
+            {
+              "type": "color",
+              "id": "slider_arrow_bg_hover",
+              "label": "Slider arrow background",
+              "default": "#2879fe"
+            },
+            {
+              "type": "color",
+              "id": "slider_arrow_icon_hover",
+              "label": "Slider arrow icon",
+              "default": "#ffffff"
+            },
+            {
+              "type": "color",
+              "id": "showmore_bg",
+              "label": "Show more button background",
+              "default": "#ffffff"
+            },
+            {
+              "type": "color",
+              "id": "showmore_border",
+              "label": "Show more button border",
+              "default": "#2267d8"
+            },
+            {
+              "type": "color",
+              "id": "showmore_text",
+              "label": "Show more text",
+              "default": "#2267d8"
+            },
+            {
+              "type": "color",
+              "id": "showmore_bg_hover",
+              "label": "Show more button background hover",
+              "default": "#2267d8"
+            },
+            {
+              "type": "color",
+              "id": "showmore_border_hover",
+              "label": "Show more button border hover",
+              "default": "#2267d8"
+            },
+            {
+              "type": "color",
+              "id": "showmore_text_hover",
+              "label": "Show more text hover",
+              "default": "#ffffff"
+            },
+
+            {
+              "type": "header",
+              "content": "Background Settings"
+            },
+            {
+              "type": "checkbox",
+              "id": "usebgcolor",
+              "label": "Use background color or padding",
+              "default": false
+            },
+            {
+              "type": "color",
+              "id": "bgco",
+              "label": "Background color",
+              "default": "#ffffff"
+            },
+            {
+              "type": "text",
+              "id": "bgdepad",
+              "label": "Vertical top padding desktop",
+              "default": "80",
+              "info": "integer, in px"
+            },
+            {
+              "type": "text",
+              "id": "bgdepad_2",
+              "label": "Vertical bottom padding desktop",
+              "default": "80",
+              "info": "integer, in px"
+            },
+            {
+              "type": "text",
+              "id": "bgmopad",
+              "label": "Vertical top padding mobile",
+              "default": "80",
+              "info": "integer, in px"
+            },
+            {
+              "type": "text",
+              "id": "bgmopad_2",
+              "label": "Vertical bottom padding mobile",
+              "default": "80",
+              "info": "integer, in px"
+            },
+            {
+              "type": "paragraph",
+              "content": "Background image"
+            },
+            {
+              "type": "checkbox",
+              "id": "showbgimage",
+              "label": "Show background image",
+              "default": false
+            },
+            {
+              "type": "image_picker",
+              "id": "image",
+              "label": "Image"
+            },
+            {
+              "type": "select",
+              "id": "imagealign",
+              "label": "Image postion",
+              "default": "center",
+              "options": [
+                {
+                  "value": "top",
+                  "label": "Top"
+                },
+                {
+                  "value": "center",
+                  "label": "Center"
+                },
+                {
+                  "value": "bottom",
+                  "label": "Bottom"
+                }
+              ]
+            },
+            {
+              "type": "select",
+              "id": "imagesize",
+              "label": "Image size",
+              "default": "cover",
+              "options": [
+                {
+                  "value": "cover",
+                  "label": "Full background size"
+                },
+                {
+                  "value": "contain",
+                  "label": "Contain"
+                }
+              ]
+            },
+            {
+              "type": "checkbox",
+              "id": "usemiheight",
+              "label": "Use minimal height",
+              "default": false
+            },
+            {
+              "type": "text",
+              "id": "backgroundminheight3",
+              "label": "Min height for big screen size",
+              "default": "450",
+              "info": "integer, in px"
+            },
+            {
+              "type": "text",
+              "id": "backgroundminheight2",
+              "label": "Min height for medium screen size",
+              "default": "450",
+              "info": "integer, in px"
+            },
+            {
+              "type": "text",
+              "id": "backgroundminheight1",
+              "label": "Min height for mobile screen size",
+              "default": "200",
+              "info": "integer, in px"
+            }
+		]
+	  }
+    ],
+    "presets": [
+      {
+        "name": "Products",
+        "category": "Products"
+      }
+    ]
+  }
+{% endschema %}

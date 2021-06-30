@@ -1,0 +1,4 @@
+{%- assign key = '_' | append: texture_name | append: '|' -%}
+{%- if textures_shema contains key -%}
+{%- assign image_index = textures_shema | strip_newlines | split: key | first | split: '|' | size | plus: 1 -%}
+{{ 'filter_color' | append: image_index | append: '.png' }}{%- endif -%}

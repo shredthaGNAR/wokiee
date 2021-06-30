@@ -1,0 +1,478 @@
+{%- assign item = section.settings -%}
+
+{%- assign str_blocks_title = '|' -%}
+{%- assign str_blocks_title_drag = '|' -%}
+{%- for block in section.blocks -%}
+{%- assign str_blocks_title = str_blocks_title | append: block.settings.linklist | append: '_' | append: forloop.index0 -%}
+{%- unless forloop.last -%}{%- assign str_blocks_title = str_blocks_title | append: '|' -%}{%- endunless -%}
+{%- endfor -%}
+{%- for block in section.blocks -%}
+{%- assign str_blocks_title_drag = str_blocks_title_drag | append: block.settings.newnavigation_item | append: '_' | append: forloop.index0 -%}
+{%- unless forloop.last -%}{%- assign str_blocks_title_drag = str_blocks_title_drag | append: '|' -%}{%- endunless -%}
+{%- endfor -%}
+[PARTMOBILE]
+{%- include "main-menu-mobilecat" mm: item.main_menu_selected -%}
+[/PARTMOBILE]
+[PART]
+<div class="icons-main-menu">
+  <div class="tt-desctop-menu ttmainmenuicons">
+    {%- include "main-menu-icons" -%}
+  </div>
+</div>
+[/PART]
+
+{% schema %}
+  {
+    "name": "Header menu with icons",
+    "settings": [
+      {
+        "type": "header",
+        "content": "After saving the page you will see the changes!!!"
+      },
+      {
+        "type": "header",
+        "content": "Categorie Menu"
+      },
+      {
+        "type": "link_list",
+        "id": "main_menu_selected",
+        "label": "Categorie Menu",
+        "default": "main-menu",
+		"info": "The category menu is a general menu. From the main menu items we can create mega-menus and other drop-down lists."
+      },
+      {
+        "type": "header",
+        "content": "Separate your svg icons with menu item by number"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_1",
+        "label": "Menu item 1. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_2",
+        "label": "Menu item 2. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_3",
+        "label": "Menu item 3. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_4",
+        "label": "Menu item 4. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_5",
+        "label": "Menu item 5. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_6",
+        "label": "Menu item 6. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_7",
+        "label": "Menu item 7. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_8",
+        "label": "Menu item 8. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_9",
+        "label": "Menu item 9. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_10",
+        "label": "Menu item 10. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_11",
+        "label": "Menu item 11. Paste svg code"
+      },
+      {
+        "type": "textarea",
+        "id": "svg_item_12",
+        "label": "Menu item 12. Paste svg code"
+      }
+	],
+	"blocks": [
+      {
+        "type": "menu_two_columns",
+        "name": "Simple submenu 2 columns",
+        "settings": [
+		  {
+            "type": "paragraph",
+			"content": "Use only item names from the main menu. DO NOT INSERT HERE A LINK FROM THE ADMINISTRATION PANEL WITH THE MAIN MENU !!!!!"
+		  },
+          {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Select menu item",
+			"info": "Works on the old method with the menu. Creating navigation with documentation. Select an item from the mega menu. Do not use the new drag and drop of the admin panel menu. Drop Limit = 1"
+          },
+          {
+            "type": "textarea",
+            "id": "newnavigation_item",
+            "label": "Main menu item full name",
+			"info": "Works with the new admin drag-and-drop menu bar. Copy and paste the full name of the item from the main menu. Drop Limit = 1"
+          }
+        ]
+      },
+      {
+        "type": "ms_simplewithtitle",
+        "name": "Simple submenu with title",
+        "settings": [
+		  {
+            "type": "paragraph",
+			"content": "Use only item names from the main menu. DO NOT INSERT HERE A LINK FROM THE ADMINISTRATION PANEL WITH THE MAIN MENU !!!!!"
+		  },
+          {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Select menu item",
+			"info": "Works on the old method with the menu. Creating navigation with documentation. Select an item from the mega menu. Do not use the new drag and drop of the admin panel menu. Drop Limit = 1"
+          },
+          {
+            "type": "textarea",
+            "id": "newnavigation_item",
+            "label": "Main menu item full name",
+			"info": "Works with the new admin drag-and-drop menu bar. Copy and paste the full name of the item from the main menu. Drop Limit = 1"
+          }
+        ]
+      },
+      {
+        "type": "megamenu",
+        "name": "Megamenu",
+        "settings": [
+		  {
+            "type": "paragraph",
+			"content": "Use only item names from the main menu. DO NOT INSERT HERE A LINK FROM THE ADMINISTRATION PANEL WITH THE MAIN MENU !!!!!"
+		  },
+          {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Select Menu Item",
+			"info": "Work for old method with menu. Create navigations with documentation. Select item with mega menu. Not Use new drag admin panel menu. Drop-down limit=4"
+          },
+          {
+            "type": "textarea",
+            "id": "newnavigation_item",
+            "label": "Main Menu Item Full Name",
+			"info": "Works with the new drag and drop menu admin panel. Copy and paste the full name of the item from the main menu. Dropdown = 2"
+          },
+          {
+            "type": "select",
+            "id": "grid",
+            "label": "Items In Row",
+            "options": [
+              {
+                "value": "2",
+                "label": "6"
+              },
+              {
+                "value": "3",
+                "label": "4"
+              },
+              {
+                "value": "4",
+                "label": "3"
+              },
+              {
+                "value": "6",
+                "label": "2"
+              }
+            ],
+            "default": "4"
+          },
+          {
+            "type": "header",
+            "content": "----------------"
+          },
+          {
+            "type": "header",
+            "content": "Categorie Images"
+          },
+          {
+            "type": "image_picker",
+            "id": "image1",
+            "label": "Image Item 1"
+          },
+          {
+            "type": "image_picker",
+            "id": "image2",
+            "label": "Image Item 2"
+          },
+          {
+            "type": "image_picker",
+            "id": "image3",
+            "label": "Image Item 3"
+          },
+          {
+            "type": "image_picker",
+            "id": "image4",
+            "label": "Image Item 4"
+          },
+          {
+            "type": "image_picker",
+            "id": "image5",
+            "label": "Image Item 5"
+          },
+          {
+            "type": "image_picker",
+            "id": "image6",
+            "label": "Image Item 6"
+          },
+          {
+            "type": "header",
+            "content": "----------------"
+          },
+          {
+            "type": "header",
+            "content": "Widgets"
+          },
+          {
+            "type": "radio",
+            "id": "widget",
+            "label": "Widget In the Submenu",
+            "options": [
+              {
+                "value": "none",
+                "label": "None"
+              },
+              {
+                "value": "gallery",
+                "label": "Gallery"
+              },
+              {
+                "value": "banner",
+                "label": "Banner"
+              }
+            ],
+            "default": "banner"
+          },
+          {
+            "type": "header",
+            "content": "Widget > Gallery"
+          },
+          {
+            "type": "checkbox",
+            "id": "widgetgallery_grid",
+            "label": "Use grid 5 for links, 7 for gallery",
+            "default": false
+          },
+          {
+            "type": "text",
+            "id": "widgetgallery_title",
+            "label": "Title",
+            "default": "SPECIALS"
+          },
+          {
+            "type": "url",
+            "id": "widgetgallery_url",
+			"label": "Title Link"
+          },
+          {
+            "label": "Collection",
+            "id": "collection",
+            "type": "collection"
+          },
+          {
+            "type": "text",
+            "id": "collection_limit",
+            "label": "Show Products",
+            "default": "4",
+            "info": "Integer"
+          },
+          {
+            "type": "header",
+            "content": "Widget > Banner"
+          },
+          {
+            "type": "url",
+            "id": "widgetbanner_url",
+            "label": "Banner Link"
+          },
+          {
+            "type": "image_picker",
+            "id": "widgetbanner_img",
+            "label": "Image",
+            "info": "Image must be JPG, 410 x 430 Px"
+          },
+          {
+            "type": "textarea",
+            "id": "widgetbanner_title",
+            "label": "Text 1",
+            "default": "SALE"
+          },
+          {
+            "type": "textarea",
+            "id": "widgetbanner_title2",
+            "label": "Text 2",
+            "default": "70% OFF"
+          },
+          {
+            "type": "textarea",
+            "id": "widgetbanner_title3",
+            "label": "Text 3",
+            "default": "Free shipping on all US order or order above $99"
+          },
+          {
+            "type": "color",
+            "id": "widgetbanner_color",
+            "label": "Text 1 Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "widgetbanner_color2",
+            "label": "Text 2 Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "widgetbanner_color3",
+            "label": "Text 3 Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "widgetbanner_color4",
+            "label": "Button Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "checkbox",
+            "id": "widgetbanner_btn",
+            "label": "Show Button",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "widgetbanner_btnname",
+            "label": "Button Name",
+            "default": "SHOP NOW!"
+          },
+          {
+            "type": "header",
+            "content": "----------------"
+          },
+          {
+            "type": "header",
+            "content": "Bottom Banners"
+          },
+          {
+            "type": "select",
+            "id": "banners_grid",
+            "label": "Show Banners",
+            "options": [
+              {
+                "value": "none",
+                "label": "None"
+              },
+              {
+                "value": "customhtml",
+                "label": "Custom Html"
+              },
+              {
+                "value": "12",
+                "label": "1"
+              },
+              {
+                "value": "6",
+                "label": "2"
+              }
+            ],
+            "default": "6"
+          },
+          {
+            "type": "textarea",
+            "id": "html",
+            "label": "Custom Html",
+            "info": "Paste your html code. Banners Off.",
+            "default": "Custom Html"
+          },
+          {
+            "type": "url",
+            "id": "banner1_url",
+            "label": "Banner 1 Link"
+          },
+          {
+            "type": "image_picker",
+            "id": "bottombanners_img_1",
+            "label": "Image 1",
+            "info": "Image must be JPG, 542 x 160 Px"
+          },
+          {
+            "type": "text",
+            "id": "banners_tit1",
+            "label": "Title 1",
+            "default": "SUMMER <span class=\"tt-base-color\">2018<\/span>"
+          },
+          {
+            "type": "text",
+            "id": "banners_tit11",
+            "label": "Title 2",
+            "default": "NEW ARRIVALS"
+          },
+          {
+            "type": "color",
+            "id": "color_11",
+            "label": "Title 1 Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "color_12",
+            "label": "Title 2 Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "url",
+            "id": "banner2_url",
+            "label": "Banner 2 Link"
+          },
+          {
+            "type": "image_picker",
+            "id": "bottombanners_img_2",
+            "label": "Image 2",
+            "info": "Image must be JPG, 542 x 160 Px"
+          },
+          {
+            "type": "text",
+            "id": "banners_tit2",
+            "label": "Title 1",
+            "default": "CLEARANCE SALES"
+          },
+          {
+            "type": "text",
+            "id": "banners_tit21",
+            "label": "Title 2",
+            "default": "GET UP TO 20% OFF"
+          },
+          {
+            "type": "color",
+            "id": "color_21",
+            "label": "Title 1 Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "color_22",
+            "label": "Title 2 Color",
+            "default": "#ffffff"
+          }
+        ]
+      }
+	]
+  }
+{% endschema %}

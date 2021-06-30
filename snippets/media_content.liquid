@@ -1,0 +1,25 @@
+{% case media.media_type %}
+{% when 'image' %}
+{% if mobilecontent %}
+<img srcset="{{ media.preview_image | img_url: '600x' }}" data-lazy="{{ media.preview_image | img_url: '1024x1024' }}" alt="{{ media.alt }}"{% if item.gallery_type == 'four_images' %} data-target="{{ media.id }}"{% endif %}>
+{% endif %}
+{% when 'external_video' %}
+<div class="pt-product-media-external" data-target-id="{{ media.id }}" data-video-id="{{ media.external_id }}"{% unless mobilecontent %}{% if featured_media_type != 'external_video' %} style="display: none;"{% else %} featuredmedia{% endif %}{% endunless %}>
+  {{ media | external_video_tag: image_size: '600x' }}
+</div>
+{% when 'video' %}
+<div class="pt-product-media-internal" data-target-id="{{ media.id }}"{% unless mobilecontent %}{% if featured_media_type != 'video' %} style="display: none;"{% else %} featuredmedia{% endif %}{% endunless %}>
+  {% capture video %}
+  {{ media | video_tag: class: 'media-video', image_size: '600x' }}  
+  {% endcapture %}
+  {{ video | replace: "<video", "<video controls" }}
+</div>
+{% when 'model' %}
+<div class="pt-product-media-model" data-target-id="{{ media.id }}"{% unless mobilecontent %}{% if featured_media_type != 'model' %} style="display: none;"{% else %} featuredmedia{% endif %}{% endunless %}>
+  {{ media | model_viewer_tag: image_size: '800x', reveal: 'interaction', toggleable: true, data-model-id: media.id }}
+</div>
+{% else %}
+<div class="pt-product-media-item" data-target-id="{{ media.id }}"{% unless mobilecontent %} style="display: none;"{% endunless %}>
+  {{ media | media_tag: class: 'media-item', image_size: '600x' }}
+</div>
+{% endcase %}

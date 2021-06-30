@@ -1,0 +1,14 @@
+{%- assign product_meta = product.metafields.description -%}
+{%- assign m_sizechart = product_meta.sizechart -%}
+{%- capture sizechart -%}{% if m_sizechart != blank %}{{ m_sizechart }}{% else %}{{ item.popupcontent }}{% endif %}{%- endcapture -%}
+{%- assign m_shipping = product_meta.shipping -%}
+{%- capture shipping -%}{% if m_shipping != blank %}{{ m_shipping }}{% else %}{{ item.popupcontentshipping }}{% endif %}{%- endcapture -%}
+{%- if item.show_sizechart and sizechart != '' and sizechart != 'disable' -%}
+{%- include "modal-sizechart" value: sizechart -%}
+{%- endif -%}
+{%- if item.show_shipping and shipping != '' and shipping != 'disable' -%}
+{%- include "modal-shipping" value: shipping -%}
+{%- endif -%}
+{%- if item.show_message -%}
+{%- include "modal-message" -%}
+{%- endif -%}

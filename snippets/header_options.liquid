@@ -1,0 +1,46 @@
+{%- if settings.header_design == "header_type_5" -%}
+{%- else -%}
+{%- if settings.search_is_open -%}
+<div class="tt-parent-box tt-desctop-parent-headtype1">
+  <div class="tt-search-opened-headtype1 headerformplaceholderstyles">
+    <form action="/search" method="get" role="search">
+      <button type="submit" class="tt-btn-search">
+        <i class="icon-f-85"></i>
+      </button>
+      <input class="tt-search-input"
+             type="search"
+             name="q"
+             placeholder="{{ 'general.search.place_holder' | t }}">
+      <input type="hidden" name="type" value="product" />
+    </form>
+  </div>
+</div>
+{%- endif -%}
+{%- endif -%}
+
+{%- include "menu-search" -%}
+
+{%- include "menu-cart" -%}
+{%- include "menu-customer" -%}
+
+{%- if item.show_options_links -%}
+<!-- tt-langue and tt-currency -->
+<div class="tt-desctop-parent-multi tt-parent-box">
+  <div class="tt-multi-obj tt-dropdown-obj">
+    <button class="tt-dropdown-toggle"
+            data-tooltip="{{ 'general.tooltip_texts.header_settings' | t }}"
+            data-tposition="bottom"
+            ><i class="icon-f-79"></i></button>
+    <div class="tt-dropdown-menu">
+      <div class="tt-mobile-add">
+        <button class="tt-close">Close</button>
+      </div>
+      <div class="tt-dropdown-inner">
+        {%- include "menu-language" -%}
+        {%- include "menu-currency" -%}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /tt-langue and tt-currency -->
+{%- endif -%}

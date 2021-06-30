@@ -1,0 +1,1 @@
+{%- if settings.image_options_count > 0 -%}{%- capture schema -%}{%- for i in (1..settings.image_options_count) -%}{%- assign key = 'filter_color' | append: i -%}_{{ settings[key] }}|{%- endfor -%}{%- endcapture -%}{{schema}}{% endif %}

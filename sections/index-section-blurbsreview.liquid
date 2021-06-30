@@ -1,0 +1,1304 @@
+{%- assign item = section.settings -%}
+
+<div class="{% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent blurbsreview{{ section.id }}" data-sectionname="index_blurbssection">
+  {% if item.usebgcolor %}<div{% if item.showbgimage %} style="background-image: url({{ item.image | img_url: '2048x' }});"{% endif %}>{% endif %}
+  <div class="container{% if item.fullwidth %}-fluid-custom container-fluid-custom-mobile-padding{% endif %}">
+    {%- if item.show_title -%}
+    <div class="tt-block-title{% if item.title_to_left %} text-left{% endif %}{% if item.boxed_title and item.fullwidth %} container{% endif %}">
+      <h2 class="tt-title">{{ item.text1 }}</h2>
+      {%- unless item.text2 == '' -%}<div class="tt-description">{{ item.text2 }}</div>{%- endunless -%}
+    </div>
+    {%- endif -%}
+    
+    <div class="obj-data02-wrapper {{ item.itemsinrow }} js-blurbs-slider {% if item.itemsinrow == "row-col-3" %}tt-blurbsreview-masonry tt-grid-col-3{% endif %}" data-slick='{"autoplay": {{ item.module_autoplay }}, "autoplaySpeed": {{ item.delay_time }}}'>
+      {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+      {% if item.itemsinrow == "row-col-3" %}<div class="element-item">{% endif %}
+      <div class="obj-data02 obj-data02{{ block.id }} {{ item.contentalign }}" {{ block.shopify_attributes }}>
+        {% if b_i.showstars %}
+        <div class="obj-data02__rating">
+          <svg width="118" height="22" viewBox="0 0 118 22" fill="none" class="basestarscolor">
+            <rect width="22" height="22" fill="#D4D4D4"/>
+            <path d="M11 1L13.3607 8.25735H21L14.8197 12.7426L17.1803 20L11 15.5147L4.81966 20L7.18034 12.7426L1 8.25735H8.63932L11 1Z" fill="white"/>
+            <rect x="24" width="22" height="22" fill="#D4D4D4"/>
+            <path d="M35 1L37.3607 8.25735H45L38.8197 12.7426L41.1803 20L35 15.5147L28.8197 20L31.1803 12.7426L25 8.25735H32.6393L35 1Z" fill="white"/>
+            <rect x="48" width="22" height="22" fill="#D4D4D4"/>
+            <path d="M59 1L61.3607 8.25735H69L62.8197 12.7426L65.1803 20L59 15.5147L52.8197 20L55.1803 12.7426L49 8.25735H56.6393L59 1Z" fill="white"/>
+            <rect x="72" width="22" height="22" fill="#D4D4D4"/>
+            <rect x="72" width="11" height="22" fill="#D4D4D4"/>
+            <path d="M83 1L85.3607 8.25735H93L86.8197 12.7426L89.1803 20L83 15.5147L76.8197 20L79.1803 12.7426L73 8.25735H80.6393L83 1Z" fill="white"/>
+            <rect x="96" width="22" height="22" fill="#D4D4D4"/>
+            <path d="M107 1L109.361 8.25735H117L110.82 12.7426L113.18 20L107 15.5147L100.82 20L103.18 12.7426L97 8.25735H104.639L107 1Z" fill="white"/>
+          </svg>
+          <div class="tt-trim">
+            <svg width="118" height="22" viewBox="0 0 118 22" fill="none" class="activestarscolor">
+              <rect width="22" height="22" fill="#FFBA2E"/>
+              <path d="M11 1L13.3607 8.25735H21L14.8197 12.7426L17.1803 20L11 15.5147L4.81966 20L7.18034 12.7426L1 8.25735H8.63932L11 1Z" fill="white"/>
+              <rect x="24" width="22" height="22" fill="#FFBA2E"/>
+              <path d="M35 1L37.3607 8.25735H45L38.8197 12.7426L41.1803 20L35 15.5147L28.8197 20L31.1803 12.7426L25 8.25735H32.6393L35 1Z" fill="white"/>
+              <rect x="48" width="22" height="22" fill="#FFBA2E"/>
+              <path d="M59 1L61.3607 8.25735H69L62.8197 12.7426L65.1803 20L59 15.5147L52.8197 20L55.1803 12.7426L49 8.25735H56.6393L59 1Z" fill="white"/>
+              <rect x="72" width="22" height="22" fill="#FFBA2E"/>
+              <rect x="72" width="11" height="22" fill="#FFBA2E"/>
+              <path d="M83 1L85.3607 8.25735H93L86.8197 12.7426L89.1803 20L83 15.5147L76.8197 20L79.1803 12.7426L73 8.25735H80.6393L83 1Z" fill="white"/>
+              <rect x="96" width="22" height="22" fill="#FFBA2E"/>
+              <path d="M107 1L109.361 8.25735H117L110.82 12.7426L113.18 20L107 15.5147L100.82 20L103.18 12.7426L97 8.25735H104.639L107 1Z" fill="white"/>
+            </svg>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if b_i.title != '' %}<div class="obj-data02__title">{% if b_i.url == blank %}{{ b_i.title }}{% else %}<a href="{{ b_i.url }}">{{ b_i.title }}</a>{% endif %}</div>{% endif %}
+        {% if b_i.desc != '' %}<div class="obj-data02__text">{{ b_i.desc }}</div>{% endif %}
+
+        {%- if b_i.usemedia -%}
+        <div class="obj-data02__img">
+          {%- assign useimagesize = b_i.useimagesize | append: "px" -%}
+          {%- assign retina = b_i.useimagesize | split: 'x' | last | times: 2 -%}
+          {%- assign retina = retina | append: 'x' | append: retina -%}
+          {%- if b_i.image == blank -%}{%- include "get_svg" type:'image' size:useimagesize -%}
+          {%- else -%}
+          <img class="lazyload"
+               data-src="{{ b_i.image | img_url: retina }}"
+               alt="{{ b_i.image.alt }}">
+          {%- endif -%}
+        </div>
+        {%- endif -%}
+
+        {% if b_i.descauth != '' %}<div class="obj-data02__author">{{ b_i.descauth }}</div>{% endif %}
+        {% if b_i.descdate != '' %}<div class="obj-data02__data">{{ b_i.descdate }}</div>{% endif %}
+      </div>
+      {% if item.itemsinrow == "row-col-3" %}</div>{% endif %}
+      {%- endfor -%}
+      {%- else -%}
+      <span style="display: flex; justify-content: center;">This section doesn’t currently include any content. Add content to this section using the sidebar.</span>
+      {%- endif -%}
+
+    </div>
+  </div>
+  {% if item.usebgcolor %}</div>{% endif %}
+</div>
+
+
+<style>
+  {% if item.usebgcolor %}
+  .blurbsreview{{ section.id }} > div{
+    background-color: {{ item.bgco }};
+    background-repeat: no-repeat;
+    background-size: {{ item.imagesize }};
+    background-position: {{ item.imagealign }};
+  }
+  
+  @media (min-width: 1025px){
+    .blurbsreview{{ section.id }} > div{
+      padding-top: {{ item.bgdepad }}px;
+      padding-bottom: {{ item.bgdepad_2 }}px;
+    }
+  }
+  @media (max-width: 1024px){
+    .blurbsreview{{ section.id }} > div{
+      padding-top: {{ item.bgmopad }}px;
+      padding-bottom: {{ item.bgmopad_2 }}px;
+    }
+  }
+  {% if item.usemiheight %}
+  @media (min-width: 791px){
+    .blurbsreview{{ section.id }} > div > div > .row{
+      align-items: center;
+      min-height: {{ item.backgroundminheight2 }}px;
+    }
+  }
+  @media (min-width: 1200px){
+    .blurbsreview{{ section.id }} > div > div > .row{
+      align-items: center;
+      min-height: {{ item.backgroundminheight3 }}px;
+    }
+  }
+  @media (max-width: 790px){
+    .blurbsreview{{ section.id }} > div > div > .row{
+      align-items: center;
+      min-height: {{ item.backgroundminheight1 }}px;
+    }
+  }
+  {% endif %}
+  {% endif %}
+
+  .blurbsreview{{ section.id }} svg.basestarscolor path{
+    fill: {{ item.colorstarsreview }};
+  }
+  .blurbsreview{{ section.id }} svg.activestarscolor path{
+    fill: {{ item.colorstarsreviewa }};
+  }
+  .blurbsreview{{ section.id }} svg.basestarscolor rect{
+    fill: {{ item.colorreview }};
+  }
+  .blurbsreview{{ section.id }} svg.activestarscolor rect{
+    fill: {{ item.colorreviewa }};
+  }
+  .blurbsreview{{ section.id }} .obj-data02 .obj-data02__img img {
+    border-radius: {{ item.img_round }}px;
+  }
+  .blurbsreview{{ section.id }} .obj-data02{
+    padding: {{ item.blurbpadding }};
+    border-radius: {{ item.bg_round }}px;
+  }
+  .blurbsreview{{ section.id }} .tt-block-title{
+    padding-bottom: {{ item.titlepadding }}px;
+  }
+  .blurbsreview{{ section.id }} .tt-block-title .tt-title{
+    font-size: {{ item.fontsizemtitle }}px;
+    line-height: {{ item.lineheightmtitle }}px;
+    font-weight: {{ item.fontweightmtitle }};
+    color: {{ item.colortext1 }};
+  }
+  .blurbsreview{{ section.id }} .tt-block-title .tt-description{
+    margin-top: {{ item.toppaddingmdesc }}px;
+    font-size: {{ item.fontsizemdesc }}px;
+    line-height: {{ item.lineheightmdesc }}px;
+    font-weight: {{ item.fontweightmdesc }};
+    color: {{ item.colortext2 }};
+  }
+  .blurbsreview{{ section.id }} .obj-data02__title {
+    margin-top: {{ item.toppaddingititle }}px;
+    font-size: {{ item.fontsizeititle }}px;
+    line-height: {{ item.lineheightititle }}px;
+    font-weight: {{ item.fontweightititle }};
+  }
+  .blurbsreview{{ section.id }} .obj-data02__text {
+    margin-top: {{ item.toppaddingidesc }}px;
+    font-size: {{ item.fontsizeidesc }}px;
+    line-height: {{ item.lineheightidesc }}px;
+    font-weight: {{ item.fontweightidesc }};
+  }  
+  .blurbsreview{{ section.id }} .obj-data02__author {
+    margin-top: {{ item.toppaddingauthorreview }}px;
+    font-size: {{ item.fontsizeauthorreview }}px;
+    line-height: {{ item.lineheightauthorreview }}px;
+    font-weight: {{ item.fontweightauthorreview }};
+  }
+  .blurbsreview{{ section.id }} .obj-data02__data {
+    margin-top: {{ item.toppaddingdate }}px;
+    font-size: {{ item.fontsizedate }}px;
+    line-height: {{ item.lineheightdate }}px;
+    font-weight: {{ item.fontweightdate }};
+  }
+  .obj-data02 .obj-data02__img { 
+    margin-top: {{ item.toppaddingimage }}px;
+  }  
+  @media (max-width: 1024px){
+    .blurbsreview{{ section.id }} .obj-data02{
+      padding: {{ item.blurbpadding_mobile }};
+    }
+    .blurbsreview{{ section.id }} .tt-block-title{
+      padding-bottom: {{ item.titlepadding_mobile }}px;
+    }
+    .blurbsreview{{ section.id }} .tt-block-title .tt-title{
+      font-size: {{ item.fontsizemtitle_mobile }}px;
+      line-height: {{ item.lineheightmtitle_mobile }}px;
+    }
+    .blurbsreview{{ section.id }} .tt-block-title .tt-description{
+      margin-top: {{ item.toppaddingmdesc_mobile }}px;
+      font-size: {{ item.fontsizemdesc_mobile }}px;
+      line-height: {{ item.lineheightmdesc_mobile }}px;
+    }
+    .blurbsreview{{ section.id }} .obj-data02__title {
+      margin-top: {{ item.toppaddingititle_mobile }}px;
+      font-size: {{ item.fontsizeititle_mobile }}px;
+      line-height: {{ item.lineheightititle_mobile }}px;
+    }
+    .blurbsreview{{ section.id }} .obj-data02__text {
+      margin-top: {{ item.toppaddingidesc_mobile }}px;
+      font-size: {{ item.fontsizeidesc_mobile }}px;
+      line-height: {{ item.lineheightidesc_mobile }}px;
+    }
+    .blurbsreview{{ section.id }} .obj-data02__author {
+      margin-top: {{ item.toppaddingauthorreview_mobile }}px;
+      font-size: {{ item.fontsizeauthorreview_mobile }}px;
+      line-height: {{ item.lineheightauthorreview_mobile }}px;
+    }
+    .blurbsreview{{ section.id }} .obj-data02__data {
+      margin-top: {{ item.toppaddingdate_mobile }}px;
+      font-size: {{ item.fontsizedate_mobile }}px;
+      line-height: {{ item.lineheightdate_mobile }}px;
+    }
+    .obj-data02 .obj-data02__img {
+      margin-top: {{ item.toppaddingimage_mobile }}px;
+    }
+  }
+
+  {%- for block in section.blocks -%}
+  {%- assign b_i = block.settings -%}
+  .blurbsreview{{ section.id }} .obj-data02{{ block.id }} .obj-data02__img img {
+    height: {{ b_i.useimagesize | split: 'x' | last }}px;
+  }
+  .blurbsreview{{ section.id }} .obj-data02{{ block.id }} {
+    {% assign opacity = b_i.opacity | divided_by: 100.00 %}
+    background: {{ b_i.bgcolor | color_modify: 'alpha', opacity }};
+    border: {{ b_i.border }}px solid {{ b_i.bordercolor }};
+    {{ b_i.item_custom_styles }}
+  }
+  .blurbsreview{{ section.id }} .obj-data02{{ block.id }} .obj-data02__title,
+  .blurbsreview{{ section.id }} .obj-data02{{ block.id }} .obj-data02__title a{
+    color: {{ b_i.colortext1 }};
+  }
+  .blurbsreview{{ section.id }} .obj-data02{{ block.id }} .obj-data02__title a:hover{
+    color: {{ b_i.colortext1_hover }};
+  }
+  .blurbsreview{{ section.id }} .obj-data02{{ block.id }} .obj-data02__text{
+    color: {{ b_i.colortext2 }};
+  }
+  .blurbsreview{{ section.id }} .obj-data02{{ block.id }} .obj-data02__author{
+    color: {{ b_i.colortext3 }};
+  }
+  .blurbsreview{{ section.id }} .obj-data02{{ block.id }} .obj-data02__data{
+    color: {{ b_i.colortext4 }};
+  }
+  .blurbsreview{{ section.id }} .obj-data02{{ block.id }} .obj-data02__rating .tt-trim {
+    width: {{ b_i.rating | times: 100 | divided_by: 5 }}%;
+  }
+  {%- endfor -%}
+  
+  .blurbsreview{{ section.id }} .obj-data02-wrapper.slick-slider .slick-dots li button{
+    background: {{ item.sliderbutton }};
+  }
+  .blurbsreview{{ section.id }} .obj-data02-wrapper.slick-slider .slick-dots .slick-active button,
+  .blurbsreview{{ section.id }} .obj-data02-wrapper.slick-slider .slick-dots li:hover button {
+    background: {{ item.sliderbutton_hover }};
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Review section Blurbs",
+    "settings": [
+      {
+        "type": "select",
+        "id": "top_offset",
+        "label": "Top Offset",
+        "default": "normal",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "normal",
+            "label": "Normal"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "fullwidth",
+        "label": "Fullwidth size",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Title"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_title",
+        "label": "Show title",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "title_to_left",
+        "label": "Title to left",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "boxed_title",
+        "label": "Boxed title when fullwidth",
+        "default": false
+      },
+      {
+        "type": "textarea",
+        "id": "text1",
+        "label": "Title",
+        "default": "Text Field"
+      },
+      {
+        "type": "textarea",
+        "id": "text2",
+        "label": "Description",
+        "default": "Text field"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "colortext1",
+        "label": "Titles color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "colortext2",
+        "label": "Texts color",
+        "default": "#777777"
+      },
+      {
+        "type": "color",
+        "id": "colorstarsreview",
+        "label": "Base stars review color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "colorstarsreviewa",
+        "label": "Active stars review color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "colorreview",
+        "label": "Base background review color",
+        "default": "#D4D4D4"
+      },
+      {
+        "type": "color",
+        "id": "colorreviewa",
+        "label": "Active background review color",
+        "default": "#FFBA2E"
+      },
+      {
+        "type": "header",
+        "content": "Settings"
+      },
+      {
+        "type": "select",
+        "id": "itemsinrow",
+        "label": "Items in row",
+        "default": "row-col-3",
+        "options": [
+          {
+            "value": "row-col-1",
+            "label": "1"
+          },
+          {
+            "value": "row-col-2",
+            "label": "2"
+          },
+          {
+            "value": "row-col-3",
+            "label": "3"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "contentalign",
+        "label": "Content align",
+        "default": "text-left",
+        "options": [
+          {
+            "value": "text-left",
+            "label": "Left"
+          },
+          {
+            "value": "text-center",
+            "label": "Center"
+          },
+          {
+            "value": "text-right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+          "type":      "range",
+          "id":        "bg_round",
+          "min":       0,
+          "max":       50,
+          "step":      1,
+          "unit":      "px",
+          "label":     "Items background roundness",
+          "default":   5
+      },
+      {
+          "type":      "range",
+          "id":        "img_round",
+          "min":       0,
+          "max":       100,
+          "step":      1,
+          "unit":      "px",
+          "label":     "Items image roundness",
+          "default":   0
+      },
+      {
+        "type": "header",
+        "content": "Mobile slider settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "module_autoplay",
+        "label": "Auto-rotate slides",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "delay_time",
+        "label": "Change slides every",
+        "options": [
+          { "value": "1000", "label": "1 seconds" },
+          { "value": "2000", "label": "2 seconds" },
+          { "value": "3000", "label": "3 seconds" },
+          { "value": "4000", "label": "4 seconds" },
+          { "value": "5000", "label": "5 seconds" },
+          { "value": "6000", "label": "6 seconds" },
+          { "value": "7000", "label": "7 seconds" },
+          { "value": "8000", "label": "8 seconds" },
+          { "value": "9000", "label": "9 seconds" },
+          { "value": "10000", "label": "10 seconds" }
+        ],
+        "default": "4000"
+      },
+      {
+        "type": "color",
+        "id": "sliderbutton",
+        "label": "Mobile slider dots color",
+        "default": "#dadada"
+      },
+      {
+        "type": "color",
+        "id": "sliderbutton_hover",
+        "label": "Mobile slider dots hover color",
+        "default": "#191919"
+      },
+	  {
+		"type": "header",
+		"content": "Style settings"
+	  },
+	  {
+		"type": "header",
+		"content": "Desktop screen"
+	  },
+	  {
+		"type":      "range",
+		"id":        "titlepadding",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Main title block bottom padding",
+		"default":    41
+	  },
+      {
+        "type": "text",
+        "id": "blurbpadding",
+        "label": "Content padding in the item",
+		"default": "35px 25px 35px 25px",
+		"info": "top, right, bottom, left. Value in px"
+      },
+      {
+        "type": "header",
+        "content": "Section title settings"
+      },
+      {
+        "type": "paragraph",
+        "content": "Main title"
+      },
+	  {
+		"type":      "range",
+		"id":        "fontsizemtitle",
+		"min":       14,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Main title",
+		"default":   48
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightmtitle",
+		"min":       14,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Main title",
+		"default":   53
+	  },
+      {
+        "type":      "range",
+        "id":        "fontweightmtitle",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Font weight Main title",
+        "default":   600
+      },
+      {
+        "type": "paragraph",
+        "content": "Main description"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingmdesc",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Main description top offset",
+		"default":   0
+	  },
+	  {
+		"type":      "range",
+		"id":        "fontsizemdesc",
+		"min":       14,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Main description",
+		"default":   24
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightmdesc",
+		"min":       14,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Main description",
+		"default":   33
+	  },
+      {
+        "type":      "range",
+        "id":        "fontweightmdesc",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Font weight Main description",
+        "default":   400
+      },
+      {
+        "type": "header",
+        "content": "Content settings"
+      },
+      {
+        "type": "paragraph",
+        "content": "Item settings title"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingititle",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Item title top offset",
+		"default":   12
+	  },
+	  {
+		"type":      "range",
+		"id":        "fontsizeititle",
+		"min":       12,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Item title",
+		"default":   24
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightititle",
+		"min":       12,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Item title",
+		"default":   33
+	  },
+      {
+        "type":      "range",
+        "id":        "fontweightititle",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Font weight Item title",
+        "default":   500
+      },
+      {
+        "type": "paragraph",
+        "content": "Item settings description"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingidesc",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Item description top offset",
+		"default":   13
+	  },
+	  {
+		"type":      "range",
+		"id":        "fontsizeidesc",
+		"min":       12,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Item description",
+		"default":   18
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightidesc",
+		"min":       12,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Item description",
+		"default":   24
+	  },
+      {
+        "type":      "range",
+        "id":        "fontweightidesc",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Font weight Item description",
+        "default":   300
+      },
+      {
+        "type": "paragraph",
+        "content": "Item settings image"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingimage",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Item image top offset",
+		"default":   23
+	  },
+      {
+        "type": "paragraph",
+        "content": "Item settings author review"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingauthorreview",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Item author review top offset",
+		"default":   12
+	  },
+	  {
+		"type":      "range",
+		"id":        "fontsizeauthorreview",
+		"min":       12,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Item author review",
+		"default":   18
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightauthorreview",
+		"min":       12,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Item author review",
+		"default":   24
+	  },
+      {
+        "type":      "range",
+        "id":        "fontweightauthorreview",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Font weight Item author review",
+        "default":   500
+      },
+      {
+        "type": "paragraph",
+        "content": "Item settings date"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingdate",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Item date top offset",
+		"default":   0
+	  },
+	  {
+		"type":      "range",
+		"id":        "fontsizedate",
+		"min":       12,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Item date",
+		"default":   15
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightdate",
+		"min":       12,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Item date",
+		"default":   24
+	  },
+      {
+        "type":      "range",
+        "id":        "fontweightdate",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Font weight Item date",
+        "default":   300
+      },
+	  {
+		"type": "header",
+		"content": "Mobile screen"
+	  },
+	  {
+		"type":      "range",
+		"id":        "titlepadding_mobile",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Main title block bottom padding",
+		"default":    21
+	  },
+      {
+        "type": "text",
+        "id": "blurbpadding_mobile",
+        "label": "Content padding in the item",
+		"default": "20px 20px 20px 20px",
+		"info": "top, right, bottom, left. Value in px"
+      },
+      {
+        "type": "header",
+        "content": "Section title settings"
+      },
+      {
+        "type": "paragraph",
+        "content": "Main title"
+      },
+	  {
+		"type":      "range",
+		"id":        "fontsizemtitle_mobile",
+		"min":       14,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Main title",
+		"default":   24
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightmtitle_mobile",
+		"min":       14,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Main title",
+		"default":   31
+	  },
+      {
+        "type": "paragraph",
+        "content": "Main description"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingmdesc_mobile",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Main description top offset",
+		"default":   0
+	  },
+	  {
+		"type":      "range",
+		"id":        "fontsizemdesc_mobile",
+		"min":       14,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Main description",
+		"default":   16
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightmdesc_mobile",
+		"min":       14,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Main description",
+		"default":   24
+	  },
+      {
+        "type": "header",
+        "content": "Content settings"
+      },
+      {
+        "type": "paragraph",
+        "content": "Item settings title"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingititle_mobile",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Item title top offset",
+		"default":   21
+	  },
+	  {
+		"type":      "range",
+		"id":        "fontsizeititle_mobile",
+		"min":       12,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Item title",
+		"default":   24
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightititle_mobile",
+		"min":       12,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Item title",
+		"default":   33
+	  },
+      {
+        "type": "paragraph",
+        "content": "Item settings description"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingidesc_mobile",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Item description top offset",
+		"default":   13
+	  },
+	  {
+		"type":      "range",
+		"id":        "fontsizeidesc_mobile",
+		"min":       12,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Item description",
+		"default":   18
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightidesc_mobile",
+		"min":       12,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Item description",
+		"default":   24
+	  },
+      {
+        "type": "paragraph",
+        "content": "Item settings image"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingimage_mobile",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Item image top offset",
+		"default":   23
+	  },
+      {
+        "type": "paragraph",
+        "content": "Item settings author review"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingauthorreview_mobile",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Item author review top offset",
+		"default":   12
+	  },
+	  {
+		"type":      "range",
+		"id":        "fontsizeauthorreview_mobile",
+		"min":       12,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Item author review",
+		"default":   18
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightauthorreview_mobile",
+		"min":       12,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Item author review",
+		"default":   24
+	  },
+      {
+        "type": "paragraph",
+        "content": "Item settings date"
+      },
+	  {
+		"type":      "range",
+		"id":        "toppaddingdate_mobile",
+		"min":       0,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Item date top offset",
+		"default":   0
+	  },
+	  {
+		"type":      "range",
+		"id":        "fontsizedate_mobile",
+		"min":       12,
+		"max":       100,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Font size Item date",
+		"default":   15
+	  },
+	  {
+		"type":      "range",
+		"id":        "lineheightdate_mobile",
+		"min":       12,
+		"max":       101,
+		"step":      1,
+		"unit":      "px",
+		"label":     "Line height Item date",
+		"default":   24
+	  },
+      {
+        "type": "header",
+        "content": "Background Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "usebgcolor",
+        "label": "Use background color or padding",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "bgco",
+        "label": "Background color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "text",
+        "id": "bgdepad",
+        "label": "Vertical top padding desktop",
+		"default": "80",
+		"info": "integer, in px"
+      },
+      {
+        "type": "text",
+        "id": "bgdepad_2",
+        "label": "Vertical bottom padding desktop",
+		"default": "80",
+		"info": "integer, in px"
+      },
+      {
+        "type": "text",
+        "id": "bgmopad",
+        "label": "Vertical top padding mobile",
+		"default": "80",
+		"info": "integer, in px"
+      },
+      {
+        "type": "text",
+        "id": "bgmopad_2",
+        "label": "Vertical bottom padding mobile",
+		"default": "80",
+		"info": "integer, in px"
+      },
+      {
+        "type": "paragraph",
+        "content": "Background image"
+      },
+      {
+        "type": "checkbox",
+        "id": "showbgimage",
+        "label": "Show background image",
+        "default": false
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+	  {
+		"type": "select",
+		"id": "imagealign",
+		"label": "Image postion",
+		"default": "center",
+		"options": [
+		  {
+			"value": "top",
+			"label": "Top"
+		  },
+		  {
+			"value": "center",
+			"label": "Center"
+		  },
+		  {
+			"value": "bottom",
+			"label": "Bottom"
+		  }
+		]
+	  },
+	  {
+		"type": "select",
+		"id": "imagesize",
+		"label": "Image size",
+		"default": "cover",
+		"options": [
+		  {
+			"value": "cover",
+			"label": "Full background size"
+		  },
+		  {
+			"value": "contain",
+			"label": "Contain"
+		  }
+		]
+	  },
+      {
+        "type": "checkbox",
+        "id": "usemiheight",
+        "label": "Use minimal height",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "backgroundminheight3",
+        "label": "Min height for big screen size",
+		"default": "450",
+		"info": "integer, in px"
+      },
+      {
+        "type": "text",
+        "id": "backgroundminheight2",
+        "label": "Min height for medium screen size",
+		"default": "450",
+		"info": "integer, in px"
+      },
+      {
+        "type": "text",
+        "id": "backgroundminheight1",
+        "label": "Min height for mobile screen size",
+		"default": "200",
+		"info": "integer, in px"
+      }
+	],
+    "blocks": [
+      {
+        "type": "item",
+        "name": "Item",
+        "settings": [
+          {
+              "type": "checkbox",
+              "id": "showstars",
+              "label": "Show rating",
+              "default": true
+          },
+          {
+              "type":      "range",
+              "id":        "rating",
+              "min":       1,
+              "max":       5,
+              "step":      0.1,
+              "label":     "Item rating",
+              "default":   5
+          },
+          {
+            "type": "checkbox",
+            "id": "usemedia",
+            "label": "Use image",
+            "default": true
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "select",
+            "id": "useimagesize",
+            "label": "Use image size",
+            "default": "64x64",
+            "options": [
+              {
+                "value": "48x48",
+                "label": "48x48px"
+              },
+              {
+                "value": "64x64",
+                "label": "64x64px"
+              },
+              {
+                "value": "128x128",
+                "label": "128x128px"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "Texts settings"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Title link"
+          },
+          {
+            "type": "textarea",
+            "id": "title",
+            "label": "Title",
+            "default": "Text field"
+          },
+          {
+            "type": "textarea",
+            "id": "desc",
+            "label": "Description",
+            "default": "A great about us block helps builds trust between you and your customers. The more content you provide about you."
+          },
+          {
+            "type": "text",
+            "id": "descauth",
+            "label": "Review author",
+            "default": "Review author"
+          },
+          {
+            "type": "text",
+            "id": "descdate",
+            "label": "Date",
+            "default": "January 1, 2021"
+          },
+          {
+            "type": "header",
+            "content": "Item settings"
+          },
+          {
+            "type": "color",
+            "id": "bgcolor",
+            "label": "Item background color",
+            "default": "#ffffff"
+          },
+          {
+              "type":      "range",
+              "id":        "opacity",
+              "min":       0,
+              "max":       100,
+              "step":      1,
+              "unit":      "%",
+              "label":     "Item background opacity",
+              "default":   100
+          },
+          {
+            "type": "color",
+            "id": "colortext1",
+            "label": "Title color",
+            "default": "#191919"
+          },
+          {
+            "type": "color",
+            "id": "colortext2",
+            "label": "Description color",
+            "default": "#777777"
+          },
+          {
+            "type": "color",
+            "id": "colortext3",
+            "label": "Review author color",
+            "default": "#191919"
+          },
+          {
+            "type": "color",
+            "id": "colortext4",
+            "label": "Date color",
+            "default": "#777777"
+          },
+          {
+              "type":      "range",
+              "id":        "border",
+              "min":       0,
+              "max":       20,
+              "step":      1,
+              "unit":      "px",
+              "label":     "Item border",
+              "default":   5
+          },
+          {
+            "type": "color",
+            "id": "bordercolor",
+            "label": "Item border color",
+            "default": "#000000"
+          },
+          {
+            "type": "header",
+            "content": "Item custom styles"
+          },
+          {
+            "type": "paragraph",
+            "content": "[background: link to find your gradient](https:\/\/cssgradient.io\/);"
+          },
+          {
+            "type": "paragraph",
+            "content": "[box-shadow: link to find your value](https:\/\/www.cssmatic.com\/box-shadow);"
+          },
+          {
+            "type": "textarea",
+            "id": "item_custom_styles",
+            "label": "Item background custom styles"
+          }
+        ]
+	  }
+	],
+    "presets": [
+      {
+        "name": "Review section Blurbs",
+        "category": "Blurbs Section"
+      }
+    ]
+  }
+{% endschema %}

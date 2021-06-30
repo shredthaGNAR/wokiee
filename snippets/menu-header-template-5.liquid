@@ -1,0 +1,91 @@
+<div class="tt-dropdown-menu">
+  <div class="container">
+    <div class="tt-modal-header row">
+      <div class="col-auto col-logo">
+        {% if item.showlogo_opened and item.logo_opened != blank -%}
+        {%- capture image_size -%}{{ item.logo_max_width_opened }}x{%- endcapture -%}
+        {%- capture image_size_retina -%}{{ item.logo_max_width_opened | times: 2 }}x{%- endcapture -%}
+        {%- capture headerlogo -%}{%- if item.logo_opened != blank -%}{{ item.logo_opened | img_url: image_size }}{%- endif -%}{%- endcapture -%}
+        {%- capture headerlogoretina -%}{%- if item.logo_opened != blank -%}{{ item.logo_opened | img_url: image_size_retina }}{%- endif -%}{%- endcapture -%}
+        {%- capture headerlogoalt -%}{{ item.logo_opened.alt }}{%- endcapture -%}
+        <a href="/" class="tt-logo" itemprop="url">
+          <img src="{{ headerlogo }}"
+               srcset="{{ headerlogo }} 1x, {{ headerlogoretina }} 2x"
+               alt="{{ headerlogoalt }}"
+               class="tt-retina" itemprop="logo"/>
+        </a>
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="row nav-multilevel-wrapper">
+      
+      {%- for link in linklists[section.settings.main_menu_selected].links -%}
+      <div class="col-md-3"><!-- level 1 -->
+        <div class="nav-multilevel">
+          
+          <!-- level 1 -->
+          {% unless svgicons == '' %}
+          {% assign svg = 'text' | append: forloop.index %}
+          {% assign svg = svgicons.settings[svg] %}
+          
+          <div class="nav-multilevel__icon">
+            {% if svg != '' %}
+            <a href="{{ link.url }}">
+              {{ svg }}
+            </a>
+            {% endif %}
+          </div>
+          {% endunless %}
+          
+          <!-- level 1 -->
+          <div class="nav-multilevel__layout"><!-- level 1 -->
+            <div class="nav-multilevel__title"><a href="{{ link.url }}">{{ link.title }}</a></div><!-- level 1 -->
+            
+            {%- assign submenu_type = "" -%}
+            {%- capture return -%}{%- include "get_linklist_dropdown", customlink: link -%}{%- endcapture -%}
+            {%- assign return = return | split: "%%" -%}
+            {%- assign child_list_handle = return | last | strip -%}
+            {%- capture secondlevel -%}{%- if child_list_handle == 'false' -%}{{ link.handle }}{%- else -%}{{ child_list_handle }}{%- endif -%}{%- endcapture -%}
+
+            {%- assign level_2 = linklists[secondlevel] -%}
+            {%- if level_2.empty? -%}
+            {%- assign secondlevel = link.title | handle -%}
+            {%- assign level_2 = linklists[secondlevel] -%}
+            {%- endif -%}
+            
+            {%- unless level_2.empty? -%}
+            
+            {% for sub_link in level_2.links %}
+            <ul class="tt-multilev-list"><!-- level 2 -->
+              <li>
+                <a href="{{ sub_link.url }}">{{ sub_link.title }}</a>
+                
+                <!-- level 3 -->
+                {% assign sub_sub_links = sub_link.links %}
+
+                {% if sub_sub_links.size > 0 %}
+                {% if sub_sub_links.size <= 10  %}
+                {% include "menu-header-template-5-submenu" ulsize: 'ul_sm', imax: 0, jmax: 9 %}  
+                {% elsif sub_sub_links.size <= 20 %}
+                {% include "menu-header-template-5-submenu" ulsize: 'ul_md', imax: 1, jmax: 9 %}
+                {% elsif sub_sub_links.size <= 30 %}
+                {% include "menu-header-template-5-submenu" ulsize: 'ul_lg', imax: 2, jmax: 9 %}
+                {% else %}
+                {% assign itemsmax = sub_sub_links.size | divided_by: 3.0 | ceil | minus: 1 %}
+                {% include "menu-header-template-5-submenu" ulsize: 'ul_lg', imax: 2, jmax: itemsmax %}
+                {% endif %}
+                
+                {% endif %}
+
+              </li>
+            </ul><!-- level 2 -->
+            {%- endfor -%}
+            
+            {%- endunless -%}
+          </div>
+        </div>
+      </div><!-- level 1 -->
+      {%- endfor -%}
+    </div>
+  </div>
+</div>

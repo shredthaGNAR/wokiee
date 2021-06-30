@@ -1,0 +1,261 @@
+{%- assign item = section.settings -%}
+{%- if item.show_section and section.blocks.size > 0 -%}
+<div class="tt-promo-fixed nonevent{% unless item.show_on_mobile %} tt-hidden-mobile{% endunless %}"
+     style="background-color:{{ item.bg_color }};{% if item.show_always %} opacity: 1;{% endif %}"
+     data-start="{{ item.val_first | times: 1000 | round }}"
+     data-min="{{ item.val_min | times: 1000 | round }}"
+     data-max="{{ item.val_max | times: 1000 | round }}">
+  <button class="tt-btn-close" style="color:{{ item.close_color }};" data-c="{{ item.close_color }}" data-ac="{{ item.close_active_color }}" data-hovercolors></button>
+  <div class="tt-img">
+    <a href="#"><img src="{{ 'dummy.png' | asset_url }}" alt="Promo box"></a>
+  </div>
+  <div class="tt-description" style="color:{{ item.text_color }};">
+    <div class="tt-box-top">
+      <p>{{ item.text1 }}</p>
+      <p><a href="#" class="pr_name" style="color:{{ item.name_color }};" data-c="{{ item.name_color }}" data-ac="{{ item.name_active_color }}" data-hovercolors>Product name</a></p>
+    </div>
+    <div class="tt-info" style="color:{{ item.text_color }};">
+      <span class="tt-info-value">info</span> <span class="tt-info-text">info</span>
+    </div>
+  </div>
+</div>
+
+{%- if section.blocks.size > 0 -%}
+<div class="hide promofixeddata">
+  {%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+  {%- assign pri = b_i.pr_item -%}
+  {%- unless pri == blank -%}
+  {%- assign pri = all_products[pri] -%}
+  <div data-url="{{ pri.url }}"
+       data-image="{{ pri.featured_image.src | product_img_url: '150x' }}"
+       data-alt="{{ pri.featured_image.alt }}"
+       data-name="{{ pri.title }}"
+       data-text="{{ b_i.text1 }}{% unless b_i.text2 == '' %}||{{ b_i.text2 }}{% endunless %}{% unless b_i.text3 == '' %}||{{ b_i.text3 }}{% endunless %}{% unless b_i.text4 == '' %}||{{ b_i.text4 }}{% endunless %}{% unless b_i.text5 == '' %}||{{ b_i.text5 }}{% endunless %}"
+       data-min="{{ b_i.val_min }}"
+       data-max="{{ b_i.val_max }}"
+       ></div>
+  {%- endunless -%}
+  {%- endfor -%}
+</div>
+{%- endif -%}
+
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "Static Advertising",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_section",
+        "label": "Show section",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_on_mobile",
+        "label": "Show on mobile devices",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Modal delay settings"
+      },
+      {
+        "type": "textarea",
+        "id": "text1",
+        "label": "Main text",
+		"default": "Someone purchsed a"
+      },
+      {
+        "type": "text",
+        "id": "val_first",
+        "label": "Delay until the first message after page loading",
+        "default": "0",
+        "info": "Integer. Value in seconds"
+      },
+      {
+        "type": "text",
+        "id": "val_min",
+        "label": "Random range in seconds with the following product. Minimum",
+        "default": "10",
+        "info": "Integer. Value in seconds. Range with new message"
+      },
+      {
+        "type": "text",
+        "id": "val_max",
+        "label": "Random range in seconds with the following product. Maximum",
+        "default": "40",
+        "info": "Integer. Value in seconds. Range with new message"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_always",
+        "label": "\"Show always\" for the colors change. Use in customize theme only",
+        "default": false,
+  		"info": "Used for visible customization"
+      },
+      {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text color",
+        "default": "#999999"
+      },
+      {
+        "type": "color",
+        "id": "name_color",
+        "label": "Product name",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "name_active_color",
+        "label": "Product name active",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "close_color",
+        "label": "Close button",
+        "default": "#999999"
+      },
+      {
+        "type": "color",
+        "id": "close_active_color",
+        "label": "Close button active",
+        "default": "#2879fe"
+      }
+	],
+    "blocks": [
+      {
+        "type": "item",
+        "name": "Product Item",
+        "settings": [
+          {
+            "type": "product",
+            "id": "pr_item",
+			"label": "Select Product"
+          },
+          {
+            "type": "text",
+            "id": "val_min",
+            "label": "Random range with minutes. Min",
+            "default": "1",
+  			"info": "Integer. Time of purchase. This is text information only"
+          },
+          {
+            "type": "text",
+            "id": "val_max",
+            "label": "Random range with minutes. Max",
+            "default": "16",
+  			"info": "Integer. Time of purchase. This is text information only"
+          },
+          {
+            "type": "text",
+            "id": "text1",
+            "label": "Random advertising text 1",
+            "default": "minutes ago from New York, USA"
+          },
+          {
+            "type": "text",
+            "id": "text2",
+            "label": "Random advertising text 2",
+            "default": "minutes ago from Berlin, Germany"
+          },
+          {
+            "type": "text",
+            "id": "text3",
+            "label": "Random advertising text 3",
+            "default": "minutes ago from Tokyo, Japan"
+          },
+          {
+            "type": "text",
+            "id": "text4",
+            "label": "Random advertising text 4",
+            "default": "minutes ago from Moscow, Russia"
+          },
+          {
+            "type": "text",
+            "id": "text5",
+            "label": "Random advertising text 5",
+            "default": "minutes ago from London, England"
+          }
+        ]
+      }
+	]
+  }
+{% endschema %}
+  
+{% javascript %}
+  function initPromoFixed(){
+    var $ttpromofixed = $(".tt-promo-fixed"),
+    	$promofixeddata = $(".promofixeddata"),
+        $promofixedclose = $ttpromofixed.find(".tt-btn-close");
+    
+    if($('html').hasClass('touch-device') && $ttpromofixed.hasClass('hidden-mobile')) return false;
+	if($ttpromofixed.hasClass('hidden-mobile') && $(window).width < 1025) return false;
+    if($promofixeddata.length == 0) return false;
+    
+    setPromoFixedItem($ttpromofixed, $promofixeddata);
+	showPromoFixed($ttpromofixed, $ttpromofixed.data('start'));
+    
+	showPromoFixedNextMessage($ttpromofixed, $promofixeddata, $promofixedclose)
+
+    $promofixedclose.click(function(){
+      $ttpromofixed.addClass('nonevent').fadeTo(100, 0);
+    });
+  }
+  function showPromoFixedNextMessage($modal, $data, $close){
+    var nextmin = $modal.data('min'),
+        nextmax = $modal.data('max');
+	var i = getRndInteger(nextmin, nextmax);
+    setTimeout(function(){
+      $close.trigger('click');
+      setTimeout(function(){
+        setPromoFixedItem($modal, $data);
+        showPromoFixed($modal, 0);
+        showPromoFixedNextMessage($modal, $data, $close);
+      }, 100);
+    }, i);
+  }
+  function getPromoFixedCustomProductIndex($promofixeddata){
+    var min = 0,
+        max = $promofixeddata.children().length;
+    return getRndInteger(min, max);
+  }
+  function setPromoFixedItem($modal, $data){
+    var i = getPromoFixedCustomProductIndex($data)
+    var data = $data.children().eq(i);
+    $modal.find('.tt-img').find('a').attr('href', data.data('url')).find('img').attr('src', data.data('image')).attr('alt', data.data('alt'));
+    $modal.find('.pr_name').attr('href', data.data('url')).text(data.data('name'));
+    
+    var nummin = parseInt(data.data('min')),
+    	nummax = parseInt(data.data('max')),
+    	num = getRndInteger(nummin, nummax);
+    $modal.find('.tt-info-value').text(num);
+
+	if (typeof data.data('text') === typeof undefined) return false;
+    var str = data.data('text').split('||'),
+    	i = getRndInteger(0, str.length-1);
+    $modal.find('.tt-info-text').text(str[i]);
+  }
+  function showPromoFixed($parent, delay){
+    setTimeout(function(){
+	  $parent.removeClass('nonevent').fadeTo(300, 1);
+    }, delay);
+  }
+  function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min) ) + min;
+  }
+  setTimeout(initPromoFixed, 300);
+{% endjavascript %}

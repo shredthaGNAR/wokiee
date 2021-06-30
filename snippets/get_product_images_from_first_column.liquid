@@ -1,0 +1,15 @@
+{%- assign opt_imgs = '' -%}
+{%- assign opt_imgs_alt = '' -%}
+{%- assign opts1 = '' -%}
+{%- for variant in product.variants -%}
+{%- assign _o1 =  '%' | append: variant.option1 | append: '%' -%}
+{%- if variant.image.id == empty? -%}{%- continue -%}{%- endif -%}
+{%- unless opts1 contains _o1 -%}
+{%- assign opts1 = opts1 | append: _o1 -%}
+{%- assign product_img_url = variant.image.src | product_img_url: '100x' -%}
+{%- assign v1 = variant.option1 | replace: '"', '&quot;' -%}
+{%- assign opt_imgs = opt_imgs | append:'"' | append: v1 | append:'"' | append:':' | append:'"' | append: product_img_url | append:'"' | append: ',' -%}
+{%- endunless -%}
+{%- endfor -%}
+{%- assign opt_imgs = '{' | append: opt_imgs | append: '%%' | replace: ',%%', '' | replace: '%%', '' | append: '}' -%}
+{{ opt_imgs }}

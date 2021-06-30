@@ -1,0 +1,77 @@
+<div class="dropdown-menu{% if submenu_type == 'ms_simplewithtitle' %} size-xs{% elsif submenu_type == 'menu_two_columns' %}{% if section_block.showbanner %} size-md{% else %} size-sm{% endif %}{% endif %}">
+  <div class="dropdown-menu-wrapper">
+    <div class="row tt-col-list">
+      {%- for child_level_2 in level_2.links -%}
+      <div class="col{% if submenu_type == 'ms_simplewithtitle' %} col-12{% endif %}{% if submenu_type == 'menu_two_columns' and section_block.showbanner == false %} col-cust{% endif %}">
+        <h6 class="tt-title-submenu">
+
+          {% if child_level_2.title contains 'hidedesktop' %}
+          <div style="visibility: hidden;">{{ child_level_2.title }}</div>
+          {% else %}
+          <a href="{{ child_level_2.url }}"><span>{{ child_level_2.title }}</span></a>
+          {% endif %}
+
+        </h6>
+        {%- capture return -%}{%- include "get_linklist_dropdown", link: child_level_2 -%}{%- endcapture -%}{%- assign return = return | split: "%%" -%}{%- assign has_drop_down = return | first | strip -%}{%- assign child_list_handle = return | last | strip -%}
+
+        {%- assign level_3 = linklists[child_list_handle] -%}
+        {%- if level_3.empty? -%}
+        {%- assign child_list_handle = child_level_2.title | handle -%}
+        {%- assign level_3 = linklists[child_list_handle] -%}
+        {%- endif -%}
+
+        {%- if level_3.links != blank -%}
+        <ul class="tt-megamenu-submenu">
+          {%- for child_level_3 in level_3.links -%}
+          <li>
+            <a href="{{ child_level_3.url }}"><span>{{ child_level_3.title }}</span></a>
+
+            {%- capture return -%}{%- include "get_linklist_dropdown", link: child_level_3 -%}{%- endcapture -%}{%- assign return = return | split: "%%" -%}{%- assign has_drop_down = return | first | strip -%}{%- assign child_list_handle = return | last | strip -%}
+
+            {%- assign level_4 = linklists[child_list_handle] -%}
+            {%- if level_4.empty? -%}
+            {%- assign child_list_handle = child_level_3.title | handle -%}
+            {%- assign level_4 = linklists[child_list_handle] -%}
+            {%- endif -%}
+
+            {%- if level_4.links != blank -%}
+            <ul>
+              {%- for child_level_4 in level_4.links -%}
+              <li>
+                <a href="{{ child_level_4.url | downcase }}"><span>{{ child_level_4.title }}</span></a>
+
+                {%- capture return -%}{%- include "get_linklist_dropdown", link: child_level_4 -%}{%- endcapture -%}{%- assign return = return | split: "%%" -%}{%- assign has_drop_down = return | first | strip -%}{%- assign child_list_handle = return | last | strip -%}
+
+                {%- if has_drop_down == "true" -%}
+                {%- assign level_5 = linklists[child_list_handle] -%}
+                {%- unless level_5.empty? -%}
+                <ul>
+                  {%- for child_level_5 in level_5.links -%}
+                  <li><a href="{{ child_level_5.url | downcase }}">{{ child_level_5.title }}</a></li>
+                  {%- endfor -%}
+                </ul>
+                {%- endunless -%}
+                {%- endif -%}
+              </li>
+              {%- endfor -%}
+            </ul>
+            {%- endif -%}
+          </li>
+          {%- endfor -%}
+        </ul>
+        {%- endif -%}
+      </div>
+      {% if section_block.showbanner and forloop.index == 2 %}
+      <div class="col">
+      </div>
+      {% endif %}
+      {%- endfor -%}
+    </div>
+    {% if section_block.showbanner %}
+    <a href="{{ section_block.link }}" class="cat-me-b" style="background-image: url('{{ section_block.image | img_url: '462x' }}')">
+      {% if section_block.text1 != '' %}<p style="color: {{ section_block.ctext1 }}">{{ section_block.text1 }}</p>{% endif %}
+      {% if section_block.text2 != '' %}<div class="tt-title" style="color: {{ section_block.ctext2 }}">{{ section_block.text2 }}</div>{% endif %}
+    </a>
+    {% endif %}
+  </div>
+</div>

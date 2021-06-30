@@ -1,0 +1,51 @@
+{%- if product.available and settings.satc_show -%}
+<div class="tt-fixed-product-wrapper" style="display: none;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-6 col-lg-4 col-xl-3">
+        <div class="tt-fixed-product">
+          <div class="tt-img">
+            <img src="{{ product.featured_image.src | product_img_url: 'x80' }}" alt="Sticky Image">
+          </div>
+          <div class="tt-description">
+            <h3 class="tt-title">{{ product.title }}</h3>
+            <div class="tt-price">
+              <span class="new-price">$278</span>
+              <span class="old-price">$400</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% if product.variants.size >= 1 and product.variants[0].title != "Default Title" %}<div class="col-6 col-lg-4 col-select">
+        <form class="form-default">
+          <select class="form-control tt-obj-dark">
+            {% for variant in product.variants %}
+            {% if variant.available %}
+            <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+              {{ variant.title }}
+            </option>
+            {% elsif settings.show_unavailable_variants %}
+            <option class="disabled" value="{{ variant.id }}">{{ variant.title }}</option>
+            {% endif %}
+            {% endfor %}
+          </select>
+        </form>
+      </div>{% endif %}
+      <div class="col-6 col-lg-4 col-xl-3">
+        <div class="tt-row-custom01">
+          <div class="col-item">
+            <div class="tt-input-counter style-01">
+              <span class="minus-btn"></span>
+              <input type="text" value="1" size="5">
+              <span class="plus-btn"></span>
+            </div>
+          </div>
+          <div class="col-item">
+            <a href="#" class="btn stickyaddtocart">ADD TO CART</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endif -%}

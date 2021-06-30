@@ -1,0 +1,408 @@
+{%- assign item = section.settings -%}
+{% capture videoitem %}
+<div class="col-12 col-md-6">
+  <div class="productandvideo-video">
+    <video src="{{ item.videolink }}"
+           poster="{{ item.image | img_url: '580x' }}"
+           preload="auto"
+           playsinline=""
+           loop=""
+           muted=""
+           >
+    </video>
+    {%- if item.showtexts -%}
+    <div class="productandvideo-video-desc">
+      {% if item.text1 != '' %}<h2 class="tt-title" style="color:{{ item.text1color }};">{{ item.text1 }}</h2>{% endif %}
+      {% if item.text2 != '' %}<div class="tt-desc" style="color:{{ item.text2color }};">{{ item.text2 }}</div>{% endif %}
+    </div>
+    {%- endif -%}
+  </div>
+</div>
+{% endcapture %}
+{% capture productitem %}
+{% include "productandvideothumbnail" %}
+{% endcapture %}
+<div class="productandvideosection {% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent {{ item.custom_classes }}"
+     data-sectionname="index_productandvideosection">
+  <div class="container prvidsec{{ section.id }}">
+    {%- if item.show_title -%}
+    <div class="tt-block-title{% if item.title_to_left %} text-left{% endif %}">
+      <h2 class="tt-title">{{ item.titletext1 }}</h2>
+      {%- unless item.titletext2 == '' -%}<div class="tt-description">{{ item.titletext2 }}</div>{%- endunless -%}
+    </div>
+    {%- endif -%}    
+    <div class="row align-items-center{% if item.reverse %} productandvideosection-reverse{% endif %}">
+      {% if item.reverse %}
+      {{ productitem }}
+      {{ videoitem }}
+      {% else %}
+      {{ videoitem }}
+      {{ productitem }}
+      {% endif %}
+    </div>
+  </div>
+</div>
+<style>
+  .prvidsec{{ section.id }} .productandvideothumb .tt-title{
+    font-weight: {{ item.fontweight }};
+  }
+  .prvidsec{{ section.id }} .productandvideothumb .tt-price{
+    font-weight: {{ item.pricefontweight }};
+  }
+  .prvidsec{{ section.id }} .productandvideo-video video{
+    border-radius: {{ item.video_roundness }}px;
+  }
+  .prvidsec{{ section.id }} .productandvideoimg{
+    border-radius: {{ item.product_roundness }}px;
+  }
+  @media (min-width: 1025px){
+    .prvidsec{{ section.id }} .productandvideothumb .tt-title{
+      font-size: {{ item.fontsize }}px;
+      line-height: {{ item.lineheight }}px;
+    }
+    .prvidsec{{ section.id }} .productandvideothumb .tt-pr-small-desc{
+      margin-top: {{ item.smalltextindet }}px;
+      font-size: {{ item.smalltextfontsize }}px;
+      line-height: {{ item.smalltextlineheight }}px;
+    }
+    .prvidsec{{ section.id }} .productandvideothumb .tt-price{
+      margin-top: {{ item.pricetextindet }}px;
+      font-size: {{ item.pricefontsize }}px;
+      line-height: {{ item.pricelineheight }}px;
+    }
+    .prvidsec{{ section.id }} .productandvideothumb .tt-button-box{
+      margin-top: {{ item.buttonindet }}px;
+    }
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Video Plus Product",
+	"class": "index-section",
+    "settings": [
+      {
+        "type": "select",
+        "id": "top_offset",
+        "label": "Top Offset",
+        "default": "normal",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "normal",
+            "label": "Normal"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "reverse",
+        "label": "Reverse content",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Title"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_title",
+        "label": "Show title",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "title_to_left",
+        "label": "Title to left",
+        "default": false
+      },
+      {
+        "type": "textarea",
+        "id": "titletext1",
+        "label": "Title",
+        "default": "Title"
+      },
+      {
+        "type": "textarea",
+        "id": "titletext2",
+        "label": "Description",
+        "default": "Description"
+      },
+      {
+        "type": "header",
+        "content": "Video settings"
+      },
+      {
+        "type": "textarea",
+        "id": "videolink",
+        "label": "Video link",
+        "default": "//cdn.shopify.com/s/files/1/0278/0859/6071/files/txtandvideo_01.mp4?1600",
+        "info": "Upload your video in settings > files. Copy video link and paste in the field"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Video image",
+		"info": "Image width 580px"
+      },
+      {
+        "type": "checkbox",
+        "id": "showtexts",
+        "label": "Show texts",
+        "default": false
+      },
+      {
+        "type": "textarea",
+        "id": "text1",
+        "label": "Video text 1",
+        "default": "Text Field"
+      },
+      {
+        "type": "textarea",
+        "id": "text2",
+        "label": "Video text 2",
+        "default": "This is multi-purpose software that can be used for any type of the store."
+      },
+      {
+        "type": "color",
+        "id": "text1color",
+        "label": "Color text 1",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "text2color",
+        "label": "Color text 2",
+        "default": "#ffffff"
+      },
+      {
+        "type": "header",
+        "content": "Product settings"
+      },
+      {
+        "type":      "product",
+        "id":        "product",
+        "label":     "Product"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_type",
+        "label": "Show product type",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_item_show_rating",
+        "label": "Show rating",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_item_show_small_description",
+        "label": "Show small description",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "product_item_small_description",
+        "label": "Small description",
+        "default": "This is multi-purpose software that can be used for any type of the store."
+      },
+      {
+        "type": "checkbox",
+        "id": "product_item_show_price",
+        "label": "Show price",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_item_show_button",
+        "label": "Show button add to cart",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "product_item_button_secondname",
+        "label": "Button name when product have many variants",
+        "default": "SELECT OPTIONS"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_item_show_wishlist",
+        "label": "Show button wishlist",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_item_show_compare",
+        "label": "Show button compare",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Product info settings for screen size > 768px"
+      },
+      {
+        "type": "paragraph",
+        "content": "Product name settings"
+      },
+      {
+        "type":      "range",
+        "id":        "fontsize",
+        "min":       14,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Product name font size",
+        "default":   22
+      },
+      {
+        "type":      "range",
+        "id":        "lineheight",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Product name line height",
+        "default":   32
+      },
+      {
+        "type":      "range",
+        "id":        "fontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Product name font weight",
+        "default":   500
+      },
+      {
+        "type": "paragraph",
+        "content": "Small description settings"
+      },
+      {
+        "type":      "range",
+        "id":        "smalltextindet",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Small description top padding",
+        "default":   10
+      },
+      {
+        "type":      "range",
+        "id":        "smalltextfontsize",
+        "min":       14,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Small description font size",
+        "default":   16
+      },
+      {
+        "type":      "range",
+        "id":        "smalltextlineheight",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Small description line height",
+        "default":   22
+      },
+      {
+        "type": "paragraph",
+        "content": "Price settings"
+      },
+      {
+        "type":      "range",
+        "id":        "pricetextindet",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Price top padding",
+        "default":   8
+      },
+      {
+        "type":      "range",
+        "id":        "pricefontsize",
+        "min":       14,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Price name font size",
+        "default":   22
+      },
+      {
+        "type":      "range",
+        "id":        "pricelineheight",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Price line height",
+        "default":   32
+      },
+      {
+        "type":      "range",
+        "id":        "pricefontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Price font weight",
+        "default":   500
+      },
+      {
+        "type": "paragraph",
+        "content": "Button settings"
+      },
+      {
+        "type":      "range",
+        "id":        "buttonindet",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Button top padding",
+        "default":   17
+      },
+      {
+        "type": "header",
+        "content": "Roundness"
+      },
+      {
+        "type": "range",
+        "id": "video_roundness",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Video roundness",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "product_roundness",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Product image roundness",
+        "default": 0
+      }
+    ],
+    "presets": [
+      {
+        "name": "Video Plus Product",
+        "category": "Products"
+      }
+    ]
+  }
+{% endschema %}

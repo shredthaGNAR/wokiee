@@ -1,0 +1,37 @@
+{%- layout none -%}
+{%- assign sale_on = false -%}
+{%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+{%- assign sale_on = true -%}
+{%- endif -%}
+<div class="tt-hotspot-content">
+  <a href="#" class="tt-btn-close"></a>
+  <div class="tt-img">
+    <a href="{{ product.url }}">
+      <img src="{{ product.featured_image.src | product_img_url: '150x' }}" alt="{{ product.featured_image.alt }}">
+    </a>
+  </div>
+  <div class="tt-description">
+    <h2 class="tt-title">
+      <a href="{{ product.url }}">{{ product.title }}</a>
+    </h2>
+    {%- if sale_on and product.variants.size == 1 -%}
+    <div class="tt-price"><span class="new-price">{{ product.selected_or_first_available_variant.price | money }}</span><span class="old-price">{{ product.selected_or_first_available_variant.compare_at_price | money }}</span></div>
+    {%- else -%}
+    <div class="tt-price"><span>{% if product.price_min != product.price_max %}{{ product.price_min | money_without_trailing_zeros }} - {{ product.price_max | money_without_trailing_zeros }}{% else %}{{ product.selected_or_first_available_variant.price | money }}{% endif %}</span><span class="old-price hide"></span></div>
+    {%- endif -%}
+    {%- if product.available -%}
+    {%- if product.variants.size == 1 and settings.product_item_show_cart -%}
+    <form action="/cart/add" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      <button class="btn{% if settings.ajax_addtocart %} addtocart-item-js{% endif %} ttbtnmainstyle" title='{{ 'products.general.add_to_cart' | t | capitalize }}'>{{ 'products.general.add_to_cart' | t }}</button>
+    </form>
+    {%- elsif settings.product_item_show_quickview -%}
+    <a href="#" data-toggle="modal" data-target="#ModalquickView" class="btn ttbtnmainstyle" title="{{ 'products.general.view_all_variants' | t | capitalize }}" data-value="{{ product.url }}" data-quantity="{% for variant in product.variants %}{% if variant.inventory_policy == "continue" %}{{ variant.id }}-continue;{% else %}{{ variant.id }}-{{ variant.inventory_quantity }};{% endif %}{% endfor %}"{% if settings.first_variant_column_is_image and settings.use_in_the_small_products %} data-optionimages='{% include 'get_product_images_from_first_column' %}'{% endif %}>{{ 'products.general.view_all_variants' | t }}</a>
+    {%- else -%}
+    <a href="{{ product.url }}" class="btn ttbtnmainstyle" title="Go to product">{{ 'products.general.view_all_variants' | t }}</a>
+    {%- endif -%}
+    {%- else -%}
+    <a href="{{ product.url }}" class="btn disable">{{ 'products.general.unavailable_html' | t }}</a>
+    {%- endif -%}
+  </div>
+</div>

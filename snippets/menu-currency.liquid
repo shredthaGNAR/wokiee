@@ -1,0 +1,29 @@
+{%- assign currency = menu_currency.supported_currencies | split: '|' -%}
+
+{%- if currency.size > 1 and menu_currency.use_multiple_currencies == false -%}
+<ul class="currency">
+  {%- for value in currency -%}
+  {%- assign array = value | split: ',' -%}
+  {%- assign iso_4217 = array[0] | upcase | strip -%}
+  {%- assign name = array[1] | strip -%}
+  <li data-currency="{{ iso_4217 }}"{% if iso_4217 == shop.currency %} class="active"{% endif %}><a href="#">{{ name }}</a></li>
+  {%- endfor -%}
+</ul>
+{%- endif -%}
+
+{%- if shop.enabled_currencies.size > 1 and menu_currency.use_multiple_currencies -%}
+{%- form 'currency', class: "currency-selector small--hide" -%}
+<input name="currency" hidden>
+<ul class="currency-selector" data-currency-selector>
+  {%- for currency in shop.enabled_currencies -%}
+  <li data-currency="{{currency.iso_code}}"{% if currency == cart.currency %} class="active"{% endif %}>
+    <a href="#">
+      {% if menu_currency.show_symbol %}{{ currency.symbol }}{% endif %}
+      {% if menu_currency.show_iso_code %}{{ currency.iso_code }}{% endif %}
+      {% if menu_currency.show_name %}{{ currency.name }}{% endif %}
+    </a>
+  </li>
+  {%- endfor -%}
+</ul>
+{%- endform -%}
+{%- endif -%}

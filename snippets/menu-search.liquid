@@ -1,0 +1,33 @@
+{% capture header_type5_inline %}{%- if settings.header_design == "header_type_5" and item.logo_bar == 'allinline' -%}true{% else %}false{% endif %}{% endcapture %}
+{% capture check_header_type5 %}{%- if settings.header_design == "header_type_5" and item.logo_bar == 'allinlinelogocenter' -%}true{% else %}false{% endif %}{% endcapture %}
+<!-- tt-search -->
+<div class="tt-desctop-parent-search tt-parent-box{% if settings.search_is_open or header_type5_inline == 'true' %}{% if check_header_type5 == "false" %} serchisopen{% endif %}{% endif %}">
+  <div class="tt-search tt-dropdown-obj">
+    <button class="tt-dropdown-toggle"
+            data-tooltip="{{ 'general.tooltip_texts.header_search' | t }}"
+            data-tposition="bottom"
+            >
+      <i class="icon-f-85"></i>
+    </button>
+    <div class="tt-dropdown-menu">
+      <div class="container">
+        <form action="/search" method="get" role="search">
+          <div class="tt-col">
+            <input type="hidden" name="type" value="product" />
+            <input class="tt-search-input"
+                   type="search"
+                   name="q"
+                   placeholder="{{ 'general.search.place_holder' | t }}"
+                   aria-label="{{ 'general.search.place_holder' | t }}">
+            <button type="submit" class="tt-btn-search"></button>
+          </div>
+          <div class="tt-col">
+            <button class="tt-btn-close icon-f-84"></button>
+          </div>
+          <div class="tt-info-text">{{ 'general.search.header_message' | t }}</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /tt-search -->

@@ -1,0 +1,309 @@
+{%- assign item = section.settings -%}
+<div class="{% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent {{ item.custom_classes }}"{% if item.use_background and item.background_boxed == false %} style="background:{{ item.background_color }}"{% endif %} data-sectionname="index_iconbanners2">
+  <div class="container{% if item.fullwidth %}-fluid{% endif %}{% if item.items_always_in_center %} text-center{% endif %}"{% if item.use_background and item.background_boxed %} style="background:{{ item.background_color }}"{% endif %}>
+
+    <div class="tt-single-text-with-icons ib2{{ section.id }}" data-slick='{"autoplay": {{ item.module_autoplay }}, "autoplaySpeed": {{ item.delay_time }}}'>
+      
+      {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}{%- assign b_i = block.settings -%}
+
+      <div class="tt-single-text-with-icons-item" {{ block.shopify_attributes }}>
+        {% if b_i.link != blank %}<a href="{{ b_i.link }}" data-hovercolors>{% endif %}
+          <i class="icon {{ b_i.icon }}" style="color: {% if item.same_iconcolor %}{{ item.icon_color }}{% else %}{{ b_i.icon_color }}{% endif %}"
+             data-c="{% if item.same_iconcolor %}{{ item.icon_color }}{% else %}{{ b_i.icon_color }}{% endif %}"
+             data-ac="{% if item.same_iconcolor %}{{ item.icon_hover_color }}{% else %}{{ b_i.icon_colorh }}{% endif %}"
+             ></i>
+          <p style="color:{{ item.title_color }};" data-c="{{ item.title_color }}" data-ac="{{ item.title_hover_color }}">{{ b_i.text1 }}</p>
+        {% if b_i.link != blank %}</a>{% endif %}
+      </div>
+
+      {%- endfor -%}
+      {%- else -%}
+      <span style="display: flex; justify-content: center;">This section doesn’t currently include any content. Add content to this section using the sidebar.</span>
+      {%- endif -%}
+      
+    </div>
+
+  </div>
+</div>
+<style>
+  .ib2{{ section.id }}.tt-single-text-with-icons{
+    font-size: {{ item.textsize }}px;
+    line-height: {{ item.textsize }}px;
+    font-weight: {{ item.fontweighttext }};
+  }
+  .ib2{{ section.id }}.tt-single-text-with-icons .tt-single-text-with-icons-item i{
+    font-size: {{ item.iconsize }}px;
+    line-height: {{ item.iconsize }}px;
+    top: {{ item.iconposition }}px;
+  }
+  .ib2{{ section.id }}.tt-single-text-with-icons .tt-single-text-with-icons-item{
+    padding-top: {{ item.toppadding }}px;
+    padding-bottom: {{ item.botpadding }}px;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Icon Banners type 2",
+  "class": "index-section",
+  "settings": [
+      {
+        "type": "select",
+        "id": "top_offset",
+        "label": "Top Offset",
+        "default": "normal",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "normal",
+            "label": "Normal"
+          }
+        ]
+      },
+      {
+        "type": "textarea",
+        "id": "custom_classes",
+        "label": "Custom css classes",
+        "info": "For the custom styles. Add your styles in the theme.css.liquid"
+      },
+      {
+        "type": "checkbox",
+        "id": "fullwidth",
+        "label": "Fullwidth size",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "items_always_in_center",
+        "label": "Items in center",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Texts settings"
+      },
+      {
+        "type":      "range",
+        "id":        "iconsize",
+        "min":       10,
+        "max":       50,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Icon size",
+        "default":   28
+      },
+      {
+        "type":      "range",
+        "id":        "textsize",
+        "min":       10,
+        "max":       30,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Text size",
+        "default":   14
+      },
+      {
+        "type":      "range",
+        "id":        "fontweighttext",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Font weight text",
+        "default":   400
+      },
+      {
+        "type":      "range",
+        "id":        "iconposition",
+        "min":       -50,
+        "max":       50,
+        "step":      1,
+		"unit":      "px",
+        "label":     "Correct icon vertical position",
+        "default":   -3
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "icon_color",
+        "label": "Icon color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Title color",
+        "default": "#191919"
+      },
+      {
+        "type": "checkbox",
+        "id": "same_iconcolor",
+        "label": "Use same icon color",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "icon_hover_color",
+        "label": "Icon hover color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "title_hover_color",
+        "label": "Title hover color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_background",
+        "label": "Use background",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "background_boxed",
+        "label": "Boxed background",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background color",
+        "default": "#f7f8fa"
+      },
+      {
+        "type":      "range",
+        "id":        "toppadding",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Top padding",
+        "default":   12
+      },
+      {
+        "type":      "range",
+        "id":        "botpadding",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Bottom padding",
+        "default":   10
+      },
+      {
+        "type": "header",
+        "content": "Slider settings for mobile"
+      },
+      {
+        "type": "checkbox",
+        "id": "module_autoplay",
+        "label": "Auto-rotate slides",
+        "default": true
+      },
+      {
+        "type":      "range",
+        "id":        "delay_time",
+        "min":       1000,
+        "max":       9000,
+        "step":      500,
+		"unit":		 "ms",
+        "label":     "Change slides every",
+        "default":   1500
+      }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Optional"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Wokiee icon",
+          "default": "icon-f-44",
+		  "info": "[Wokiee Icons](\/\/portotheme.com\/shopify\/wokiee\/icons)"
+        },
+        {
+          "type": "text",
+          "id": "text1",
+          "label": "Title",
+          "default": "FREE delivery available"
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#2879fe"
+        },
+        {
+          "type": "color",
+          "id": "icon_colorh",
+          "label": "Icon color",
+          "default": "#2879fe"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Icon Banners type 2",
+      "category": "Banner",
+        "blocks": [
+          {
+            "type": "item",
+            "settings": {
+              "icon": "icon-f-44",
+              "text1": "FREE delivery available"
+            }
+          },
+          {
+            "type": "item",
+            "settings": {
+              "icon": "icon-f-38",
+              "text1": "1 YEAR guarantee"
+            }
+          },
+          {
+            "type": "item",
+            "settings": {
+              "icon": "icon-e-09",
+              "text1": "30 DAYS returns"
+            }
+          },
+          {
+            "type": "item",
+            "settings": {
+              "icon": "icon-f-89",
+              "text1": "4.5/5 on Powerreviews"
+            }
+          }
+        ]
+    }
+  ]
+}
+{% endschema %}

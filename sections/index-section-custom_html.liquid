@@ -1,0 +1,71 @@
+{%- assign item = section.settings -%}
+<div class="container-indent{% unless item.topoffset %} nomargin{% endunless %}"{% if item.usebgcolor and item.usebgcolorfullwidth %} style="background: {{ item.bgco }}"{% endif %}>
+  <div{% unless item.fullwidth2 %} class="container{% if item.fullwidth %}-fluid-custom container-fluid-custom-mobile-padding{% endif %}"{% endunless %}{% if item.usebgcolor and item.usebgcolorfullwidth == false %} style="background: {{ item.bgco }}"{% endif %}>
+    {%- if item.data contains '[images]' -%}{% include 'portfolio-widget' value: item.data %}
+    {%- else -%}{{ item.data }}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Custom Html",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "topoffset",
+      "label": "Top Offset",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "fullwidth",
+      "label": "Fullwidth Container",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "fullwidth2",
+      "label": "Fullwidth without container",
+      "default": false,
+	  "info": "Work with option \"Fullwidth Container\""
+    },
+    {
+      "type": "textarea",
+      "id": "data",
+      "label": "Content"
+    },
+    {
+      "type": "header",
+      "content": "Background color"
+    },
+    {
+      "type": "checkbox",
+      "id": "usebgcolor",
+      "label": "Use background color",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "usebgcolorfullwidth",
+      "label": "Fullwidth background color",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bgco",
+      "label": "Background color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Html",
+      "category": "Simple Section",
+      "settings": {
+      }
+    }
+  ]
+}
+{% endschema %}

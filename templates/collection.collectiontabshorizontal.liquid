@@ -1,0 +1,32 @@
+{% layout none %}
+{%- assign slider_mode = false -%}
+{%- assign show_slider_dots = true -%}
+{% for t in current_tags %}
+{% if t contains 'col_' %}{% assign col = t | split: 'col_' | last %}
+{% elsif t contains 'num_' %}{% assign num = t | split: 'num_' | last %}
+{% elsif t == "slider_true" %}{%- assign slider_mode = true -%}
+{% elsif t contains "step_" %}{% assign step = t | split: 'step_' | last %}
+{% elsif t contains "autoplay_" %}{% assign autoplay = t | split: 'autoplay_' | last %}
+{% elsif t contains "speed_" %}{% assign speed = t | split: 'speed_' | last %}
+{% elsif t contains "toshow_" %}{% assign toshow = t | split: 'toshow_' | last %}
+{% elsif t contains "template_" %}{% assign template_ = t | split: 'template_' | last %}
+{% elsif t contains "showtitle_" %}{% assign show_title = true %}
+{% else %}{% assign grid = t %}
+{% endif %}
+{% endfor %}
+
+{%- if slider_mode -%}
+<div class="tt-carousel-products-js row arrow-location-tab{% unless show_title %} no-title{% endunless %} tt-alignment-img tt-layout-product-item slick-animated-show-js" data-slick='{"slidesToShow": {{ toshow }}, "slidesToScroll": {{ step }}, "autoplay": {{ autoplay }}, "autoplaySpeed": {{ speed }}}'>
+  {%- for product in collections[col].products limit: num -%}
+  <div class="forsliders-margins">
+    {% include "product-grid-item" %}
+  </div>
+  {%- endfor -%}
+</div>
+{%- else -%}
+{%- for product in collections[col].products limit: num -%}
+<div class="col-6 col-md-4 {{ grid }}">
+  {% include "product-grid-item" %}
+</div>
+{%- endfor -%}
+{%- endif -%}

@@ -1,0 +1,154 @@
+{%- if settings.popup_newsletter_show -%}
+{% if settings.use_as_simple_popup %}
+<!-- Modal (Discount) -->
+<div class="modal fade ModalnewsletterSimple" id="Modalnewsletter" tabindex="-1" role="dialog" aria-label="myModalLabel" aria-hidden="true" data-pause="{{ settings.popup_newsletter_delay_first }}">
+  <div class="modal-dialog modal-discount">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="icon icon-clear"></span></button>
+      </div>
+      <div class="form-default">
+        <div class="tt-layout-center">
+          <div class="tt-promo-title">
+            {% if settings.popup_newsletter_svg_image_show %}
+            {{ settings.popup_newsletter_svg_image }}
+            {% endif %}
+            
+            {% if settings.popup_newsletter_text_01 != "" %}<div class="text-simple-01">{{ settings.popup_newsletter_text_01 }}</div>{% endif %}
+            {% if settings.popup_newsletter_text_02 != "" %}<div class="text-simple-02">{{ settings.popup_newsletter_text_02 }}</div>{% endif %}
+            {% if settings.popup_newsletter_text_03 != "" %}<div class="text-simple-03">{{ settings.popup_newsletter_text_03 }}</div>{% endif %}
+            {% if settings.popup_newsletter_text_04 != "" %}<div class="text-simple-04">{{ settings.popup_newsletter_text_04 }}</div>{% endif %}
+            {% if settings.popup_newsletter_text_05 != "" %}<div class="text-simple-05">{{ settings.popup_newsletter_text_05 }}</div>{% endif %}
+
+            {% if settings.popup_simple_show_button %}
+            <a href="{{ settings.popup_simple_button_url }}" class="btn btn-popup-simple ttmodalbtn">{{ settings.popup_simple_button_name }}</a>
+            {% endif %}
+          </div>
+          {% if settings.show_popup_simple_text_06 %}
+          <div class="checkbox-group">
+            <input type="checkbox" id="checkBox1">
+            <label for="checkBox1">
+              <span class="check"></span>
+              <span class="box"></span>
+              {{ settings.popup_newsletter_question }}
+            </label>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<!-- Modal (Discount) -->
+<div class="modal fade" id="Modalnewsletter" tabindex="-1" role="dialog" aria-label="myModalLabel" aria-hidden="true" data-pause="{{ settings.popup_newsletter_delay_first }}">
+  <div class="modal-dialog modal-discount">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="icon icon-clear"></span></button>
+      </div>
+      <div class="form-default">
+        <div class="modal-body tt-background{% if settings.popup_newsletter_image_fullwidth %} tt-background-fullwidth{% endif %}{% if settings.popup_newsletter_content_center %} tt-layout-center{% endif %}">
+          <div class="tt-modal-discount row">
+            <div class="col-6 ml-auto">
+              <div class="tt-promo-title">
+                <div class="text-01">{{ settings.popup_newsletter_title }}</div>
+                <div class="text-02">{{ settings.popup_newsletter_title_2 }}</div>
+                <div class="text-03">{{ settings.popup_newsletter_description }}</div>
+              </div>
+              <div class="subscribe-form form-default">
+                <div class="row-subscibe">
+                  {%- if settings.use_mailchimp_form -%}
+                  {%- if settings.mailchimp_form_action != "" -%}
+                  <form action="{{ settings.mailchimp_form_action }}" method="post" name="mc-embedded-subscribe-form" target="_blank">
+                    <div class="input-group">
+                      <input type="email" name="EMAIL" class="form-control" placeholder="{{ settings.popup_newsletter_formmsg }}">
+                      <button type="submit" class="btn ttmodalbtn">{{ settings.popup_newsletter_button }}</button>
+                    </div>
+                  </form>
+                  {%- endif -%}
+                  {%- else -%}
+
+                  {%- form 'customer' -%}
+                  {{ form.errors | default_errors }}
+                  {%- if form.posted_successfully? -%}
+
+                  {%- endif -%}
+                  <div class="input-group">
+                    <input type="hidden" name="contact[tags]" value="newsletter">
+                    <input type="email"
+                           name="contact[email]"
+                           class="form-control"
+                           value="{%- if customer -%}{{ customer.email }}{%- endif -%}"
+                           placeholder="{{ settings.popup_newsletter_formmsg }}"
+                           autocorrect="off"
+                           autocapitalize="off">
+                    <button type="submit" class="btn ttmodalbtn" name="commit">{{ settings.popup_newsletter_button }}</button>
+                  </div>
+                  {%- endform -%}
+
+                  {%- endif -%}
+                </div>
+              </div>
+              <div class="checkbox-group">
+                <input type="checkbox" id="checkBox1">
+                <label for="checkBox1">
+                  <span class="check"></span>
+                  <span class="box"></span>
+                  {{ settings.popup_newsletter_question }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+<!-- / Modal (newsletter) -->
+<script>
+  window.addEventListener('DOMContentLoaded', function() {
+
+    var obj = {
+      init: function() {
+        try
+        {
+          if ($.cookie('popupNewsletter') != 'disable') {
+            this.checkboxEvent();
+            var pause = $('#Modalnewsletter').attr('data-pause');
+            setTimeout(function() {
+              $('#Modalnewsletter')
+              					.modal('show')
+								.on('hidden.bs.modal', function(){
+                                  $('body').removeClass('modal-newsletter');
+                                });
+              $('body').addClass('modal-newsletter');
+              var date = new Date();
+              var minutes = {{ settings.popup_newsletter_delay }};
+              date.setTime(date.getTime() + (minutes * 60 * 1000));
+              $.cookie('popupNewsletter', 'disable', {expires:date, path:'/'});
+            }, pause);
+          }
+        }
+        catch (err) {} // ignore errors reading cookies
+      },
+      checkboxEvent: function() {
+        $('#checkBox1').change(function(){
+          if ($(this).is(':checked')) {
+            $.cookie('popupNewsletter', 'disable', {expires:1, path:'/'});
+          } else {
+            $.cookie("popupNewsletter", null, { path: '/' });
+          }
+        });
+      }
+    };
+
+    $(document).ready(function() {
+      if(location.pathname.indexOf('/challenge') > -1 || location.search.indexOf('customer_posted=true') > -1) return false;
+      obj.init();
+    });
+
+  })
+</script>
+{%- endif -%}

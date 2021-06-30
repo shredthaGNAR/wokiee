@@ -1,0 +1,141 @@
+{%- if footer_links_2 != '' and footer_links_2.settings.show_content -%}
+
+{%- capture image_size2 -%}{{ footer_links_2.settings.logo_max_width }}x{%- endcapture -%}
+{%- capture image_size_retina2 -%}{{ footer_links_2.settings.logo_max_width | times: 2 }}x{%- endcapture -%}
+{%- capture footerlogo2 -%}{%- if footer_links_2.settings.logo != blank -%}{{ footer_links_2.settings.logo | img_url: image_size2 }}{%- else -%}title_{{ footer_links_2.settings.logo_text }}{%- endif -%}{%- endcapture -%}
+{%- capture footerlogoretina2 -%}{%- if footer_links_2.settings.logo != blank -%}{{ footer_links_2.settings.logo | img_url: image_size_retina2 }}{%- endif -%}{%- endcapture -%}
+{%- assign footerlogoalt2 = footer_links_2.settings.logo.alt -%}
+
+{%- assign count = 0 -%}
+{%- for i in (1..2) -%}
+{%- assign html_show = 'linklist_showhtml' | append: i -%}{%- assign html_show = footer_links_2.settings[html_show] -%}
+{%- assign _linklist = 'linklist' | append: i -%}{%- assign _linklist = footer_links_2.settings[_linklist] -%}
+{%- if _linklist != blank or html_show -%}{%- assign count = count | plus: 1 -%}{%- endif -%}
+{%- endfor -%}
+
+<div class="tt-footer-col tt-color-scheme-03 tt-top-border tt-footer-type2">
+  <div class="container{% if item.fullwidth %}-fluid-custom-mobile-padding container-fluid-custom{% endif %}">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="tt-footer-box">
+          {%- if footer_links_2.settings.show_logoblock -%}
+          <a href="/" class="tt-logo tt-logo-alignment">
+            {%- if footerlogo2 contains "title_" -%}<h2 class="tt-title">{{ footerlogo2 | split:"title_" | last }}</h2>
+            {%- else -%}<img src="{{ footerlogo2 }}" srcset="{{ footerlogo2 }} 1x, {{ footerlogoretina2 }} 2x" alt="{{ footerlogoalt2 }}" class="tt-retina">
+            {%- endif -%}
+          </a>
+          {%- endif -%}
+          <div class="tt-footer-description">{{ footer_links_2.settings.coltext1 }}</div>
+          {{ footer_links_2.settings.coltext2 }}
+
+          {%- if footer_links_2.settings.show_socials -%}
+          {%- capture soc_links -%}
+          {%- if footer_links_2.settings.facebook_url -%}<li><a class="icon-g-64" target="_blank" href="{{ footer_links_2.settings.facebook_url }}"></a></li>{%- endif -%}
+          {%- if footer_links_2.settings.twitter_url -%}<li><a class="icon-h-58" target="_blank" href="{{ footer_links_2.settings.twitter_url }}"></a></li>{%- endif -%}
+          {%- if footer_links_2.settings.gmail_url -%}<li><a class="icon-g-66" target="_blank" href="{{ footer_links_2.settings.gmail_url }}"></a></li>{%- endif -%}
+          {%- if footer_links_2.settings.instagram_url -%}<li><a class="icon-g-67" target="_blank" href="{{ footer_links_2.settings.instagram_url }}"></a></li>{%- endif -%}
+          {%- if footer_links_2.settings.pinterest_url -%}<li><a class="icon-g-70" target="_blank" href="{{ footer_links_2.settings.pinterest_url }}"></a></li>{%- endif -%}
+          {%- if footer_links_2.settings.youtube_url -%}<li><a class="icon-g-76" target="_blank" href="{{ footer_links_2.settings.youtube_url }}"></a></li>{%- endif -%}
+          {%- if footer_links_2.settings.whatsapp_url -%}<li><a target="_blank" href="{{ footer_links_2.settings.whatsapp_url }}">{% include "svg-whatsapp" %}</a></li>{%- endif -%}
+          {%- endcapture -%}
+          {%- assign soc_links = soc_links | strip -%}
+          {%- if soc_links != '' -%}<ul class="tt-social-icon">{{ soc_links }}</ul>{%- endif -%}
+          {%- endif -%}
+
+        </div>
+      </div>
+      <div class="col-md-6 offset-md-1 collapse-listing-firstchild">
+        
+        {%- if footer_links_2.settings.show_subsribe_form -%}
+        
+        <div class="tt-newsletter tt-indent-item">
+          
+          <div class="tt-mobile-collapse">
+            <h4 class="tt-collapse-title">{{ footer_links_2.settings.text1 }}</h4>
+            <div class="tt-collapse-content">
+              <p>{{ footer_links_2.settings.text2 }}</p>
+
+              {%- if settings.use_mailchimp_form -%}
+              {%- if settings.mailchimp_form_action != "" -%}
+              <form action="{{ settings.mailchimp_form_action }}" method="post" name="mc-embedded-subscribe-form" target="_blank">
+                <div class="form-group">
+                  <input type="email" name="EMAIL" class="form-control" placeholder="{{ footer_links_2.settings.text4 }}">
+                  <button type="submit" class="btn footer_subscribe_btn">{{ footer_links_2.settings.text3 }}</button>
+                </div>
+              </form>
+              {%- else -%}
+              <strong><u><a href="{{ shop.url }}/admin/themes" style="color: black;">
+                Add newsletter redirect link in:<br>
+                Customize Theme / General Settings / Newsletter / MailChimp form action URL
+                </a></u></strong>
+              {%- endif -%}
+
+              {%- else -%}
+
+              {%- form 'customer' -%}
+              {{ form.errors | default_errors }}
+              <div class="form-group">
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                <input type="email"
+                       name="contact[email]"
+                       class="form-control"
+                       value="{% if customer %}{{ customer.email }}{% endif %}"
+                       placeholder="{{ footer_links_2.settings.text4 }}"
+                       autocomplete="off"
+                       autocapitalize="off"
+                       spellcheck="false" >
+                <button type="submit" class="btn footer_subscribe_btn" name="commit">{{ footer_links_2.settings.text3 }}</button>
+              </div>
+              {%- endform -%}
+
+              {%- endif -%}
+            </div>
+          </div>
+         
+        </div>
+        {%- endif -%}
+        
+        {%- if count > 1 -%}
+        <div class="tt-collapse-listing">
+          <div class="row">
+
+            {%- for i in (1..2) -%}
+            {%- assign _linklist = 'linklist' | append: i -%}
+            {%- assign _title = 'linklist_t' | append: i -%}
+            {%- assign html_show = 'linklist_showhtml' | append: i -%}
+            {%- assign html_content = 'linklist_html' | append: i -%}
+            {%- assign _linklist = footer_links_2.settings[_linklist] -%}
+            {%- assign html_show = footer_links_2.settings[html_show] -%}
+            {%- if _linklist != blank or html_show -%}
+            
+            <div class="col-md-6">
+              <div class="tt-mobile-collapse">
+                <h4 class="tt-collapse-title">{{ footer_links_2.settings[_title] }}</h4>
+                <div class="tt-collapse-content">
+                  {%- if _linklist != blank -%}
+                  <ul class="tt-list">
+                    {%- for link in linklists[_linklist].links -%}
+                    <li><a href="{{ link.url }}"{% if settings.footer_main_links_underline_hover %} class="text-decoration-hover"{% endif %}>{{ link.title }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                  {%- endif -%}
+                  {% if html_show %}
+                  {{ footer_links_2.settings[html_content] }}
+                  {% endif %}
+                </div>
+              </div>
+              
+            </div>
+            
+            {%- endif -%}
+            {%- endfor -%}
+            
+          </div>
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- endif -%}

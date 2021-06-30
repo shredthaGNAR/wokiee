@@ -1,0 +1,303 @@
+{%- assign item = section.settings -%}
+{%- assign info_image_size = '220x435px' %}
+{%- assign img_size = info_image_size | split: 'x' | first | append: 'x' -%}
+
+<div class="{% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent" data-sectionname="index_verticaltabs" data-respjs="index_sectiontabs">
+  <div class="container{% if item.fullwidth %}-fluid-custom{% endif %} container-fluid-custom-mobile-padding v-tabs-content">
+
+    <div class="row">
+      <div class="col-6 col-sm-4{% if item.default_grid == '5' %} col-5-inrow-lg{% else %} col-md-3{% endif %}">
+        <div class="v-tabs-img-box v-tabs-img-box{{ section.id }}">
+          {%- if item.image == blank -%}{%- include "get_svg" type:'image' size:info_image_size -%}
+          {%- else -%}
+          {%- assign scale_numbers = '_' | append: img_size -%}
+          <img class="lazyload"
+               src="{{ item.image | img_url: img_size }}"
+               data-src="{{ item.image | img_url: img_size }}"
+               data-srcset="{% include 'lazyload_string' value: item.image %}"
+               alt="{{ item.image.alt }}">
+          {%- endif -%}
+          <div class="v-tabs-img-box-text">
+            <p>{{ item.text1 }}</p>
+            <h2>{{ item.text2 }}</h2>
+            {% unless item.hide_tabs %}
+            <ul class="nav tt-tabs-default" role="tablist">
+              {%- for block in section.blocks -%}
+              <li>
+                <a href="#{{ section.id }}{{ forloop.index }}" class="nav-link {% if forloop.first %} active{% endif %}" data-toggle="tab" role="tab">{{ block.settings.tab_name }}</a>
+              </li>
+              {%- endfor -%}
+            </ul>
+            {% endunless %}
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-sm-8{% if item.default_grid == '5' %} col-5_end-inrow-lg{% else %} col-md-9{% endif %}">
+        <div class="nav tt-tabs-default hide" role="tablist">
+          {%- for block in section.blocks -%}
+          <a href="#{{ section.id }}{{ forloop.index }}" data-toggle="tab" role="tab">{{ block.settings.tab_name }}</a>
+          {%- endfor -%}
+        </div>
+        <div class="tab-content">
+          {%- for block in section.blocks -%}
+          {%- assign name_collection = block.settings.collection -%}
+          {%- if name_collection == blank -%}{%- assign name_collection = "all" -%}{%- endif -%}
+          {%- assign collection = collections[name_collection] -%}
+          <div id="{{ section.id }}{{ forloop.index }}" class="tab-pane{% if forloop.first %} active{% endif %}" role="tabpanel" {{ block.shopify_attributes }}>
+            <div class="ajaxcontent startajax slider" data-content="col_{{ collection.handle }}+num_{{ block.settings.limit }}+col-lg-{{ block.settings.toshow }}+toshow_{{ block.settings.toshow }}+slider_true+step_{{ block.settings.step }}+autoplay_{{ block.settings.module_autoplay }}+speed_{{ block.settings.delay_time }}{% if item.show_title %}+showtitle_{% endif %}+template_{{ template }}"></div>
+          </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .v-tabs-img-box{{ section.id }} p{
+  	color: {{ item.cbtntext }};
+  }
+  .v-tabs-img-box{{ section.id }} .v-tabs-img-box-text h2:not(.small):not([class^="tt-title"]):not([class^="tt-collapse"]):not([class^="tt-aside"]){
+  	color: {{ item.cbtntext2 }};
+  }
+  .v-tabs-img-box{{ section.id }} .v-tabs-img-box-text ul a{
+    color: {{ item.tbcolor }};  
+  }
+  .v-tabs-img-box{{ section.id }} .v-tabs-img-box-text ul a.active,
+  .v-tabs-img-box{{ section.id }} .v-tabs-img-box-text ul a:hover{
+    color: {{ item.tbcolora }};
+    {%- assign bg_alpha_a = item.background_alpha_a | divided_by: 100.00 -%}
+    {%- assign bg_color_a = item.acbtnbg | color_modify: 'alpha', bg_alpha_a -%}
+    background: {{ bg_color_a }};
+  }
+</style>
+
+
+{% schema %}
+{
+  "name": "Tabs Vertical",
+  "class": "index-section",
+  "max_blocks": 8,
+  "settings": [
+      {
+        "type": "select",
+        "id": "top_offset",
+        "label": "Top Offset",
+        "default": "normal",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "normal",
+            "label": "Normal"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "fullwidth",
+        "label": "Fullwidth size",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "default_grid",
+        "label": "Default grid",
+        "options": [
+          { "value": "4", "label": "4" },
+          { "value": "5", "label": "5" }
+        ],
+        "default": "5",
+        "info": "For screen size > 1024"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+      {
+        "type": "textarea",
+        "id": "text1",
+        "label": "Description",
+        "default": "WINTER 2019/20"
+      },
+      {
+        "type": "textarea",
+        "id": "text2",
+        "label": "Title",
+        "default": "WOMEN"
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_tabs",
+        "label": "Hide tab name",
+        "default": false,
+		"info": "Use when tabs counter equal 1"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "cbtntext",
+        "label": "Text 1 color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "cbtntext2",
+        "label": "Text 2 color",
+        "default": "#191919"
+      },
+      {
+        "type": "paragraph",
+        "content": "Tabs color"
+      },
+      {
+        "type": "color",
+        "id": "tbcolor",
+        "label": "Tabs text base color",
+        "default": "#777777"
+      },
+      {
+        "type": "color",
+        "id": "tbcolora",
+        "label": "Tabs text active color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "acbtnbg",
+        "label": "Active background color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "text",
+        "id": "background_alpha_a",
+        "label": "Active background opacity",
+        "default": "90",
+      	"info": "Range: 0-100 Percent"
+      }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Tab Gallery",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_name",
+          "label": "Tab Name",
+          "default": "Tab"
+        },
+        {
+          "label": "Collection",
+          "id": "collection",
+          "type": "collection"
+        },
+        {
+          "type": "text",
+          "id": "limit",
+          "label": "Items Length. Integer",
+          "default": "8"
+        },
+        {
+          "type": "header",
+          "content": "Slider Settings"
+        },
+        {
+          "type": "select",
+          "id": "toshow",
+          "label": "Products In Row",
+          "options": [
+			{ "value": "2", "label": "2" },
+            { "value": "3", "label": "3" },
+            { "value": "4", "label": "4" },
+			{ "value": "5", "label": "5" },
+			{ "value": "6", "label": "6" }
+          ],
+          "default": "4",
+          "info": "For screen size > 1024"
+        },
+        {
+          "type": "select",
+          "id": "step",
+          "label": "Slides To Scroll",
+          "default": "1",
+          "info": "Max = Products In Row",
+          "options": [
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "2",
+              "label": "2"
+            },
+            {
+              "value": "3",
+              "label": "3"
+            },
+            {
+              "value": "4",
+              "label": "4"
+            },
+            {
+              "value": "5",
+              "label": "5"
+            },
+            {
+              "value": "6",
+              "label": "6"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "module_autoplay",
+          "label": "Auto-rotate slides",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "delay_time",
+          "label": "Change slides every",
+          "options": [
+            { "value": "5000", "label": "5 seconds" },
+            { "value": "6000", "label": "6 seconds" },
+            { "value": "7000", "label": "7 seconds" },
+            { "value": "8000", "label": "8 seconds" },
+            { "value": "9000", "label": "9 seconds" },
+            { "value": "10000", "label": "10 seconds" }
+          ],
+          "default": "7000"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tabs Vertical",
+      "category": "Products",
+      "blocks": [
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

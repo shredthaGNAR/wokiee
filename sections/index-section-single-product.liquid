@@ -1,0 +1,1692 @@
+{%- assign item = section.settings -%}
+
+{% assign _pr = all_products[item.product] %}
+{% assign sel_or_first_av_var = _pr.selected_or_first_available_variant %}
+
+{%- assign product_meta = _pr.metafields.description -%}
+{%- assign sale_on = false -%}
+{%- assign shownewicon = false -%}
+{%- if sel_or_first_av_var.compare_at_price > sel_or_first_av_var.price -%}
+	{%- assign sale_on = true -%}
+{%- endif -%}
+
+{% capture imageitem %}
+<div class="col-12 col-md-6 col-lg-6">
+  <a href="{{ _pr.url }}">
+    <div class="custom-loader" style="display: none;">
+      <div class="lds-ripple"><div></div><div></div></div>
+    </div>
+    <div class="productandvideoimg">
+      <img class="lazyload"
+         data-src="{{ _pr.featured_image.src | product_img_url: '300x' }}"
+         data-srcset="{% include 'lazyload_string' value: _pr.featured_image %}"
+         alt="{{ _pr.featured_image.alt | escape }}"/>
+    </div>
+  </a>
+</div>
+{% endcapture %}
+{% capture productitem %}
+<div class="col-12 col-md-6 col-lg-5">
+  <div class="singleproductinfo">
+    {% if item.show_custom_text_1 %}<div class="custom-text-1">{{ item.custom_text_1 }}</div>{% endif %}
+    {% if item.show_custom_text_2 %}<div class="custom-text-2">{{ item.custom_text_2 }}</div>{% endif %}
+    
+    {%- unless product_meta.countdown == blank -%}
+    {%- if item.showcountdown -%}
+    <div class="tt-countdown_box_02 tt-type-02">
+      <div class="tt-countdown_inner">
+        <div class="tt-countdown" data-date="{{ product_meta.countdown }}">
+        </div>
+      </div>
+    </div>
+    {%- endif -%}
+    {%- endunless -%}
+    
+    {% if item.show_product_availability %}
+    <div class="availability">
+      <span>{{ 'products.product.availability' | t }}</span>
+      {% if _pr.available %}
+      <span class="stock_quantity hide"></span> <span class="in_stock hide">{{ 'products.product.in_stock' | t }}</span> <span class="many_in_stock hide">{{ 'products.product.many_in_stock' | t }}</span> <span class="sold_out hide">{{ "products.product.sold_out" | t }}</span> <span class="continue_out hide">{{ "products.product.purchase_when_out_of_stock" | t }}</span>
+      {% else %}
+      <span class="sold_out">{{ "products.product.sold_out" | t }}</span>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <h2 class="tt-title"><a href="{{ _pr.url }}">{{ _pr.title }}</a></h2>
+    
+    {%- if item.product_item_show_price -%}
+    {%- if sale_on -%}
+    <div class="tt-price"><span class="new-price">{{ sel_or_first_av_var.price | money }}</span><span class="old-price">{{ sel_or_first_av_var.compare_at_price | money }}</span></div>
+    {%- else -%}
+    <div class="tt-price"><span>{{ sel_or_first_av_var.price | money }}</span><span class="old-price hide"></span></div>
+    {%- endif -%}
+    {%- endif -%}
+    
+    {%- if item.product_item_show_small_description -%}
+    <div class="tt-pr-small-desc">
+      {{ item.product_item_small_description }}
+    </div>
+    {%- endif -%}
+
+    {% if _pr.variants.size >= 1 and _pr.variants[0].title != "Default Title" %}
+    <div class="col-select">
+      <form class="form-default">
+        {% if item.show_variants_field_name %}<label>{{ item.variants_field_name }}</label>{% endif %}
+        <select class="form-control tt-obj-dark">
+          {% for variant in _pr.variants %}
+          
+          <option{% if variant.available == false and settings.show_unavailable_variants == false %} class="disabled"{% endif %}{% if variant == _pr.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+            {{ variant.title }}
+          </option>
+
+          
+          {% endfor %}
+        </select>
+      </form>
+    </div>{% endif %}
+    
+    {%- if item.product_item_show_button -%}
+    <div class="tt-button-box">
+      {%- form 'product', _pr -%}
+        <input type="hidden" class="input_variant" name="id" value="{{ sel_or_first_av_var.id }}">
+        
+        <div class="tt-row-custom-01">
+          {% if _pr.available %}
+          <div class="col-item{% unless item.show_input %} hide{% endunless %}">
+            <div class="tt-input-counter style-01">
+              <span class="minus-btn"></span>
+              <input type="text" name="quantity" value="1" size="5">
+              <span class="plus-btn"></span>
+            </div>
+          </div>
+          {% endif %}
+          <div class="col-item">          
+            <button class="btn btn-lg btn-addtocart{% if settings.ajax_addtocart %} addtocart-js{% endif %}"
+                    {%- if settings.show_addtocart_popup_related -%}{%- unless _pr.metafields.description.related_collection == blank -%}data-relatedcollection="{{ _pr.metafields.description.related_collection }}"{%- endunless -%}{%- endif -%}
+                    >
+              {% unless sel_or_first_av_var.available %}
+              {{ 'products.general.unavailable_html' | t }}
+              {% else %}
+              {% if sel_or_first_av_var.inventory_management == 'shopify' and sel_or_first_av_var.inventory_policy == 'continue' and sel_or_first_av_var.inventory_quantity == 0 %}
+              {{ "products.general.preorder_html" | t }}		
+              {% else %}
+              {{ 'products.general.add_to_cart_html' | t }}
+              {% endif %}
+              {% endunless %}
+            </button>
+          </div>
+        </div>
+      {% endform %}
+    </div>
+    {%- endif -%}
+    
+  </div>
+</div>
+{% endcapture %}
+
+<div class="prvidsec{{ section.id }} sectionsingleproduct {% if item.top_offset == 'none' %}nomargin {% elsif item.top_offset == 'small' %}tt-offset-small {% endif %}container-indent {{ item.custom_classes }}"
+     data-sectionname="index_sectionsingleproduct"
+     data-quantity="{% for variant in _pr.variants %}{% if variant.inventory_policy == "continue" %}{{ variant.id }}-continue{{ variant.inventory_quantity }};{% else %}{{ variant.id }}-{{ variant.inventory_quantity }};{% endif %}{% endfor %}" 
+     data-prurl="{{ _pr.handle }}">
+  {% if item.usebgcolor %}<div{% if item.showbgimage %} style="background-image: url({{ item.image | img_url: '2048x' }});"{% endif %}>{% endif %}
+  <div class="container container-fluid-custom-mobile-padding">
+    {%- if item.show_title -%}
+    <div class="tt-block-title{% if item.title_to_left %} text-left{% endif %}">
+      <h2 class="tt-title">{{ item.titletext1 }}</h2>
+      {%- unless item.titletext2 == '' -%}<div class="tt-description">{{ item.titletext2 }}</div>{%- endunless -%}
+    </div>
+    {%- endif -%}    
+    <div class="row justify-content-between align-items-center{% if item.reverse %} productandvideosection-reverse{% endif %}">
+      {% if item.reverse %}
+      {{ productitem }}
+      {{ imageitem }}
+      {% else %}
+      {{ imageitem }}
+      {{ productitem }}
+      {% endif %}
+    </div>
+  </div>
+  {% if item.usebgcolor %}</div>{% endif %}
+</div>
+
+<style>
+  {% if item.center_mobile %}
+  @media (max-width: 789px){
+    .prvidsec{{ section.id }} .singleproductinfo {
+      text-align: center;
+    }
+    .prvidsec{{ section.id }}.sectionsingleproduct .tt-button-box .tt-row-custom-01 .col-item:nth-child(2) {
+      -webkit-flex: unset;
+      -ms-flex: unset;
+      flex: unset;
+    }
+    .prvidsec{{ section.id }}.sectionsingleproduct .tt-button-box .tt-row-custom-01{
+      justify-content: center;
+    }
+  }
+  {% endif %}
+  
+  {% if item.usebgcolor %}
+  .prvidsec{{ section.id }} > div{
+    background-color: {{ item.bgco }};
+    background-repeat: no-repeat;
+    background-size: {{ item.imagesize }};
+    background-position: {{ item.imagealign }};
+  }
+
+  @media (min-width: 1025px){
+    .prvidsec{{ section.id }} > div{
+      padding-top: {{ item.bgdepad }}px;
+      padding-bottom: {{ item.bgdepad_2 }}px;
+    }
+  }
+  @media (max-width: 1024px){
+    .prvidsec{{ section.id }} > div{
+      padding-top: {{ item.bgmopad }}px;
+      padding-bottom: {{ item.bgmopad_2 }}px;
+    }
+  }
+  {% if item.usemiheight %}
+  @media (min-width: 791px){
+    .prvidsec{{ section.id }} > div > div > .row{
+      align-items: center;
+      min-height: {{ item.backgroundminheight2 }}px;
+    }
+  }
+  @media (min-width: 1200px){
+    .prvidsec{{ section.id }} > div > div > .row{
+      align-items: center;
+      min-height: {{ item.backgroundminheight3 }}px;
+    }
+  }
+  @media (max-width: 790px){
+    .prvidsec{{ section.id }} > div > div > .row{
+      align-items: center;
+      min-height: {{ item.backgroundminheight1 }}px;
+    }
+  }
+  {% endif %}
+
+  {% endif %}
+  
+  .lds-ripple {
+    display: inline-block;
+    position: relative;
+    width: 71px;
+    height: 63px;
+  }
+  .lds-ripple div {
+    position: absolute;
+    border: 4px solid {{ item.loadercolor }};
+    opacity: 1;
+    border-radius: 50%;
+    animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  }
+  .lds-ripple div:nth-child(2) {
+    animation-delay: -0.5s;
+  }
+  @keyframes lds-ripple {
+    0% {
+      top: 36px;
+      left: 36px;
+      width: 0;
+      height: 0;
+      opacity: 1;
+    }
+    100% {
+      top: 0px;
+      left: 0px;
+      width: 72px;
+      height: 72px;
+      opacity: 0;
+    }
+  }
+  
+
+
+
+  
+  .sectionsingleproduct .custom-loader {
+    max-width: 100%;
+    position: absolute;
+    top: calc(50% - 35px);
+    left: calc(50% - 35px);
+    z-index: 2;
+  }
+  .prvidsec{{ section.id }} .availability span:first-child {
+    color: {{ item.avacot }};
+  }
+  .prvidsec{{ section.id }} .singleproductinfo .availability{
+    font-weight: {{ item.avafontweight }}px;
+    color: {{ item.avaco }};
+    margin-top: {{ item.avaindent }}px;
+    font-size: {{ item.avafontsize }}px;
+    line-height: {{ item.avalineheight }}px;
+  }
+  .prvidsec{{ section.id }} .singleproductinfo .tt-title{
+    font-weight: {{ item.fontweight }};
+  }
+  .prvidsec{{ section.id }} .singleproductinfo .tt-title a{
+    color: {{ item.prco }};
+  }
+  .prvidsec{{ section.id }} .singleproductinfo .tt-title a:hover{
+    color: {{ item.prcoa }};
+  }
+  .prvidsec{{ section.id }} .singleproductinfo .tt-price{
+    font-weight: {{ item.pricefontweight }};
+    color: {{ item.priceco }};
+  }
+  .prvidsec{{ section.id }} .singleproductinfo .tt-price .new-price{
+    color: {{ item.pricecon }};
+  }
+  .prvidsec{{ section.id }} .singleproductinfo .tt-price .old-price {
+    font-weight: {{ item.oldpricefontweight }};
+    margin-left: 11px;
+    color: {{ item.pricecoold }};
+    {% if item.pricecrossout %}text-decoration: line-through;{% endif %}
+  }
+  .prvidsec{{ section.id }} .productandvideoimg{
+    border-radius: {{ item.product_roundness }}px;
+  }
+  .prvidsec{{ section.id }} .singleproductinfo .tt-pr-small-desc{
+    font-weight: {{ item.smalltextfontweight }};
+    color: {{ item.textco }};
+    margin-top: {{ item.smalltextindet }}px;
+    font-size: {{ item.smalltextfontsize }}px;
+    line-height: {{ item.smalltextlineheight }}px;
+  }
+  .prvidsec{{ section.id }} .singleproductinfo .col-select label{
+    font-weight: {{ item.varfontweight }};
+    color: {{ item.vartitleco }};
+  }
+  .prvidsec{{ section.id }} .singleproductinfo .col-select select{
+    font-weight: {{ item.varfieldfontweight }};
+  }
+  
+    .prvidsec{{ section.id }} .tt-input-counter.style-01 input{
+      padding-top: {{ item.countpaddingtop }}px;
+      font-size: {{ item.countfontsize }}px;
+      line-height: {{ item.countfontsize }}px;
+      font-weight: {{ item.countfontweight }};
+      height: {{ item.buttonheight }}px;
+    }
+    .prvidsec{{ section.id }} .tt-input-counter.style-01 .minus-btn:before,
+    .prvidsec{{ section.id }} .tt-input-counter.style-01 .plus-btn:before{
+      line-height: {{ item.buttonheight }}px;
+    }
+    .prvidsec{{ section.id }} .tt-button-box .tt-row-custom-01 .btn.btn-lg{
+      font-size: {{ item.buttonfontsize }}px;
+      line-height: {{ item.buttonfontsize }}px;
+      font-weight: {{ item.buttonfontweight }};
+      height: {{ item.buttonheight }}px;
+    }
+  	.prvidsec{{ section.id }} .tt-button-box .tt-row-custom-01 .btn.btn-lg:not(.disable){
+      color: {{ item.cbtntext }};
+      background: {{ item.bg_color }};
+      {{ item.btn_custom_styles }}
+    }
+    .prvidsec{{ section.id }} .tt-button-box .tt-row-custom-01 .btn.btn-lg:hover{
+      color: {{ item.cbtntext_a }};
+      background: {{ item.bg_color_a }};
+      {{ item.btn_custom_styles_hover }}
+    }
+    .prvidsec{{ section.id }} .singleproductinfo .tt-button-box{
+      margin-top: {{ item.buttonindet }}px;
+    }
+    .prvidsec{{ section.id }} .singleproductinfo .col-select{
+      margin-top: {{ item.varindet }}px;
+    }
+    .prvidsec{{ section.id }} .singleproductinfo .col-select label{
+      font-size: {{ item.varfontsize }}px;
+      line-height: {{ item.varlineheight }}px;
+      margin-bottom: {{ item.varindetbottom }}px;
+    }
+    .prvidsec{{ section.id }} .singleproductinfo .col-select select{
+      font-size: {{ item.varfieldfontsize }}px;
+      line-height: {{ item.varfieldfontsize }}px;
+      height: {{ item.formheight }}px !important;
+      padding-top: {{ item.formpaddingtop }}px;
+    }
+  
+  
+  .prvidsec{{ section.id }} .form-default .form-control,
+  .prvidsec{{ section.id }} .tt-input-counter.style-01 input{
+    background-color: {{ item.bg_form }};
+    border: {{ item.bg_form_bo_s }}px solid {{ item.bg_form_bo }};
+    color: {{ item.bg_form_text }};
+  }
+  .prvidsec{{ section.id }} .tt-input-counter.style-01 input{
+    color: {{ item.bg_form_text_counter }};
+  }
+  .prvidsec{{ section.id }} .form-default .form-control:hover,
+  .prvidsec{{ section.id }} .form-default .form-control:focus{
+    background-color: {{ item.bg_forma }};
+    border: {{ item.bg_form_bo_sa }}px solid {{ item.bg_form_boa }};
+    color: {{ item.bg_form_texta }};
+    padding-left: calc(17px - {{ item.bg_form_bo_s | times: -1 | plus: item.bg_form_bo_sa }}px);
+    padding-top: calc({{ item.formpaddingtop }}px - {{ item.bg_form_bo_s | times: -1 | plus: item.bg_form_bo_sa }}px);
+  }
+  .prvidsec{{ section.id }} .tt-input-counter.style-01:hover input,
+  .prvidsec{{ section.id }} .tt-input-counter.style-01:focus input{
+    background-color: {{ item.bg_forma }};
+    border: {{ item.bg_form_bo_sa }}px solid {{ item.bg_form_boa }};
+  }
+  .prvidsec{{ section.id }} .tt-input-counter.style-01 span{
+    color: {{ item.bg_form_text_counter_sign }};
+  }
+  .prvidsec{{ section.id }} .tt-input-counter.style-01 span:hover{
+    color: {{ item.bg_form_text_counter_signa }};
+  }
+  {%- if item.show_custom_text_1 -%}
+  .prvidsec{{ section.id }} .custom-text-1{
+    font-weight: {{ item.customtext1fontweight }};
+    color: {{ item.customtext1co }};
+  }
+  {%- endif -%}
+  {%- if item.show_custom_text_2 -%}
+  .prvidsec{{ section.id }} .custom-text-2{
+    font-weight: {{ item.customtext2fontweight }};
+    color: {{ item.customtext2co }};
+  }
+  {%- endif -%}
+  @media (min-width: 1025px){
+    {%- if item.show_custom_text_1 -%}
+    .prvidsec{{ section.id }} .custom-text-1{
+      margin-top: {{ item.customtext1indet }}px;
+      font-size: {{ item.customtext1fontsize }}px;
+      line-height: {{ item.customtext1lineheight }}px;
+    }
+    {%- endif -%}
+    {%- if item.show_custom_text_2 -%}
+    .prvidsec{{ section.id }} .custom-text-2{
+      margin-top: {{ item.customtext2indet }}px;
+      font-size: {{ item.customtext2fontsize }}px;
+      line-height: {{ item.customtext2lineheight }}px;
+    }
+    {%- endif -%}
+    .prvidsec{{ section.id }} .singleproductinfo .tt-title{
+      margin-top: {{ item.prnameindent }}px;
+      font-size: {{ item.fontsize }}px;
+      line-height: {{ item.lineheight }}px;
+    }
+    .prvidsec{{ section.id }} .singleproductinfo .tt-price{
+      margin-top: {{ item.pricetextindet }}px;
+      font-size: {{ item.pricefontsize }}px;
+      line-height: {{ item.pricelineheight }}px;
+    }
+    .prvidsec{{ section.id }} .singleproductinfo .tt-price .old-price {
+      font-size: {{ item.oldpricefontsize }}px;
+      line-height: {{ item.oldpricelineheight }}px;
+    }
+  }
+  @media (max-width: 1024px){
+    {%- if item.show_custom_text_1 -%}
+    .prvidsec{{ section.id }} .custom-text-1{
+      margin-top: {{ item.customtext1indet_mob }}px;
+      font-size: {{ item.customtext1fontsize_mob }}px;
+      line-height: {{ item.customtext1lineheight_mob }}px;
+    }
+    {%- endif -%}
+    {%- if item.show_custom_text_2 -%}
+    .prvidsec{{ section.id }} .custom-text-2{
+      margin-top: {{ item.customtext2indet_mob }}px;
+      font-size: {{ item.customtext2fontsize_mob }}px;
+      line-height: {{ item.customtext2lineheight_mob }}px;
+    }
+    {%- endif -%}
+    .prvidsec{{ section.id }} .singleproductinfo .tt-title{
+      margin-top: {{ item.prnameindent_mob }}px;
+      font-size: {{ item.fontsize_mob }}px;
+      line-height: {{ item.lineheight_mob }}px;
+    }
+    .prvidsec{{ section.id }} .singleproductinfo .tt-price{
+      margin-top: {{ item.pricetextindet_mob }}px;
+      font-size: {{ item.pricefontsize_mob }}px;
+      line-height: {{ item.pricelineheight_mob }}px;
+    }
+    .prvidsec{{ section.id }} .singleproductinfo .tt-price .old-price {
+      font-size: {{ item.oldpricefontsize_mob }}px;
+      line-height: {{ item.oldpricelineheight_mob }}px;
+    }
+  }
+  
+  {% if item.showcountdown %}
+  .prvidsec{{ section.id }} .tt-countdown_box_02{
+    margin-top: {{ item.cowndownindet }}px;
+  }
+  .prvidsec{{ section.id }} .tt-countdown_box_02 .countdown-row .countdown-section{
+    padding-top: {{ item.counterpaddingtop }}px;
+    padding-bottom: {{ item.counterpaddingbottom }}px;
+    background: {{ item.countbgcolor }};
+    {% if item.countcustomstyles != '' %}{{ item.countcustomstyles }}{% endif %}
+  }
+  .prvidsec{{ section.id }} .tt-countdown_box_02 .countdown-row .countdown-section .countdown-amount{
+    font-weight: {{ item.countdowndaysfontweight }};
+    color: {{ item.countdowndays }};
+    font-size: {{ item.countdowndaysfontsize }}px;
+    line-height: {{ item.countdowndaysfontsize }}px;
+  }
+  .prvidsec{{ section.id }} .tt-countdown_box_02 .countdown-row .countdown-section .countdown-period{
+    font-weight: {{ item.countdowndayswordfontweight }};
+    color: {{ item.countdowndaysword }};
+    font-size: {{ item.countdowndayswordfontsize }}px;
+    line-height: {{ item.countdowndayswordfontsize }}px;
+  }
+  {% endif %}
+</style>
+
+{% schema %}
+  {
+    "name": "Single Product",
+	"class": "index-section",
+    "settings": [
+      {
+        "type": "select",
+        "id": "top_offset",
+        "label": "Top Offset",
+        "default": "normal",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "normal",
+            "label": "Normal"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "reverse",
+        "label": "Reverse content",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Title"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_title",
+        "label": "Show title",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "title_to_left",
+        "label": "Title to left",
+        "default": false
+      },
+      {
+        "type": "textarea",
+        "id": "titletext1",
+        "label": "Title",
+        "default": "Title"
+      },
+      {
+        "type": "textarea",
+        "id": "titletext2",
+        "label": "Description",
+        "default": "Description"
+      },
+      {
+        "type": "header",
+        "content": "Product settings"
+      },
+      {
+        "type":      "product",
+        "id":        "product",
+        "label":     "Product"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_custom_text_1",
+        "label": "Show custom text 1",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "custom_text_1",
+        "label": "Custom text 1",
+        "default": "Special Offer"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_custom_text_2",
+        "label": "Show custom text 2",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "custom_text_2",
+        "label": "Custom text 2",
+        "default": "Save 50% Off"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_availability",
+        "label": "Show product availability",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_item_show_price",
+        "label": "Show price",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_item_show_small_description",
+        "label": "Show small description",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "product_item_small_description",
+        "label": "Small description",
+        "default": "This is multi-purpose software that can be used for any type of the store."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_variants_field_name",
+        "label": "Show Variants field name",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "variants_field_name",
+        "label": "Variants field name",
+        "default": "Variants field name"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_item_show_button",
+        "label": "Show button add to cart",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_input",
+        "label": "Show counter input",
+        "default": true,
+		"info": "Work with button add to cart"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "loadercolor",
+        "label": "Loader color",
+        "default": "#e5e5e5"
+      },
+      {
+        "type": "header",
+        "content": "Product info settings for screen size > 768px"
+      },
+      {
+        "type": "paragraph",
+        "content": "Custom text 1 settings"
+      },
+      {
+        "type":      "range",
+        "id":        "customtext1indet",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 1 top padding",
+        "default":   0
+      },
+      {
+        "type":      "range",
+        "id":        "customtext1fontsize",
+        "min":       12,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 1 font size",
+        "default":   24
+      },
+      {
+        "type":      "range",
+        "id":        "customtext1lineheight",
+        "min":       12,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 1 line height",
+        "default":   32
+      },
+      {
+        "type":      "range",
+        "id":        "customtext1fontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Custom text 1 font weight",
+        "default":   500
+      },
+      {
+        "type": "paragraph",
+        "content": "Custom text 2 settings"
+      },
+      {
+        "type":      "range",
+        "id":        "customtext2indet",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 2 top padding",
+        "default":   0
+      },
+      {
+        "type":      "range",
+        "id":        "customtext2fontsize",
+        "min":       12,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 2 font size",
+        "default":   48
+      },
+      {
+        "type":      "range",
+        "id":        "customtext2lineheight",
+        "min":       12,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 2 line height",
+        "default":   58
+      },
+      {
+        "type":      "range",
+        "id":        "customtext2fontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Custom text 2 font weight",
+        "default":   600
+      },
+      {
+        "type": "paragraph",
+        "content": "Availability settings"
+      },
+      {
+        "type":      "range",
+        "id":        "avaindent",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Availability top padding",
+        "default":   30,
+		"info": "Can work when countdown active"
+      },
+      {
+        "type":      "range",
+        "id":        "avafontsize",
+        "min":       12,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Availability font size",
+        "default":   18
+      },
+      {
+        "type":      "range",
+        "id":        "avalineheight",
+        "min":       12,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Availability line height",
+        "default":   24
+      },
+      {
+        "type":      "range",
+        "id":        "avafontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Availability font weight",
+        "default":   400
+      },
+      {
+        "type": "paragraph",
+        "content": "Product name settings"
+      },
+      {
+        "type":      "range",
+        "id":        "prnameindent",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Product name top padding",
+        "default":   4
+      },
+      {
+        "type":      "range",
+        "id":        "fontsize",
+        "min":       14,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Product name font size",
+        "default":   30
+      },
+      {
+        "type":      "range",
+        "id":        "lineheight",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Product name line height",
+        "default":   40
+      },
+      {
+        "type":      "range",
+        "id":        "fontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Product name font weight",
+        "default":   500
+      },
+      {
+        "type": "paragraph",
+        "content": "Price settings"
+      },
+      {
+        "type":      "range",
+        "id":        "pricetextindet",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Price top padding",
+        "default":   0
+      },
+      {
+        "type":      "range",
+        "id":        "pricefontsize",
+        "min":       14,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Price name font size",
+        "default":   48
+      },
+      {
+        "type":      "range",
+        "id":        "pricelineheight",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Price line height",
+        "default":   65
+      },
+      {
+        "type":      "range",
+        "id":        "pricefontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Price font weight",
+        "default":   600
+      },
+      {
+        "type": "checkbox",
+        "id": "pricecrossout",
+        "label": "Cross out Old Price",
+        "default": true
+      },
+      {
+        "type":      "range",
+        "id":        "oldpricefontsize",
+        "min":       10,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Old Price name font size",
+        "default":   24
+      },
+      {
+        "type":      "range",
+        "id":        "oldpricelineheight",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Old Price line height",
+        "default":   38
+      },
+      {
+        "type":      "range",
+        "id":        "oldpricefontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Old Price font weight",
+        "default":   400
+      },
+      {
+        "type": "paragraph",
+        "content": "Small description settings"
+      },
+      {
+        "type":      "range",
+        "id":        "smalltextindet",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Small description top padding",
+        "default":   14
+      },
+      {
+        "type":      "range",
+        "id":        "smalltextfontsize",
+        "min":       14,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Small description font size",
+        "default":   18
+      },
+      {
+        "type":      "range",
+        "id":        "smalltextlineheight",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Small description line height",
+        "default":   24
+      },
+      {
+        "type":      "range",
+        "id":        "smalltextfontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Small description font weight",
+        "default":   400
+      },
+      {
+        "type": "paragraph",
+        "content": "Variants settings"
+      },
+      {
+        "type":      "range",
+        "id":        "varindet",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Variants top padding",
+        "default":   28
+      },
+      {
+        "type":      "range",
+        "id":        "varindetbottom",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Variants title bottom padding",
+        "default":   3
+      },
+      {
+        "type":      "range",
+        "id":        "varfontsize",
+        "min":       14,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Variants title font size",
+        "default":   18
+      },
+      {
+        "type":      "range",
+        "id":        "varlineheight",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Variants title line height",
+        "default":   24
+      },
+      {
+        "type":      "range",
+        "id":        "varfontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Variants title font weight",
+        "default":   400
+      },
+      {
+        "type":      "range",
+        "id":        "varfieldfontsize",
+        "min":       10,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Variants field font size",
+        "default":   18
+      },
+      {
+        "type":      "range",
+        "id":        "varfieldfontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Variants field font weight",
+        "default":   400
+      },
+      {
+        "type":      "range",
+        "id":        "formheight",
+        "min":       30,
+        "max":       130,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Form height",
+        "default":   50
+      },
+      {
+        "type":      "range",
+        "id":        "formpaddingtop",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Form internal padding top",
+        "default":   8,
+		"info": "Center text in vertical"
+      },
+      {
+        "type": "paragraph",
+        "content": "Button and counter settings"
+      },
+      {
+        "type":      "range",
+        "id":        "buttonindet",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Button top padding",
+        "default":   30
+      },
+      {
+        "type":      "range",
+        "id":        "buttonheight",
+        "min":       30,
+        "max":       130,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Button and counter height",
+        "default":   50
+      },
+      {
+        "type":      "range",
+        "id":        "countfontsize",
+        "min":       10,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Counter font size",
+        "default":   24
+      },
+      {
+        "type":      "range",
+        "id":        "countfontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Counter font weight",
+        "default":   600
+      },
+      {
+        "type":      "range",
+        "id":        "countpaddingtop",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Counter internal padding top",
+        "default":   4,
+		"info": "Center text in vertical"
+      },
+      {
+        "type":      "range",
+        "id":        "buttonfontsize",
+        "min":       10,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Button font size",
+        "default":   14
+      },
+      {
+        "type":      "range",
+        "id":        "buttonfontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Button font weight",
+        "default":   600
+      },
+      {
+        "type": "header",
+        "content": "Mobile"
+      },
+      {
+        "type": "checkbox",
+        "id": "center_mobile",
+        "label": "Center content on mobile",
+        "default": false,
+		"info": "Will work from screen size lower than 789px"
+      },
+      {
+        "type": "paragraph",
+        "content": "Custom text 1 settings"
+      },
+      {
+        "type":      "range",
+        "id":        "customtext1indet_mob",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 1 top padding",
+        "default":   0
+      },
+      {
+        "type":      "range",
+        "id":        "customtext1fontsize_mob",
+        "min":       12,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 1 font size",
+        "default":   24
+      },
+      {
+        "type":      "range",
+        "id":        "customtext1lineheight_mob",
+        "min":       12,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 1 line height",
+        "default":   32
+      },
+      {
+        "type": "paragraph",
+        "content": "Custom text 2 settings"
+      },
+      {
+        "type":      "range",
+        "id":        "customtext2indet_mob",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 2 top padding",
+        "default":   0
+      },
+      {
+        "type":      "range",
+        "id":        "customtext2fontsize_mob",
+        "min":       12,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 2 font size",
+        "default":   36
+      },
+      {
+        "type":      "range",
+        "id":        "customtext2lineheight_mob",
+        "min":       12,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Custom text 2 line height",
+        "default":   50
+      },
+      {
+        "type": "paragraph",
+        "content": "Product name settings"
+      },
+      {
+        "type":      "range",
+        "id":        "prnameindent_mob",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Product name top padding",
+        "default":   4
+      },
+      {
+        "type":      "range",
+        "id":        "fontsize_mob",
+        "min":       14,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Product name font size",
+        "default":   30
+      },
+      {
+        "type":      "range",
+        "id":        "lineheight_mob",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Product name line height",
+        "default":   40
+      },
+      {
+        "type": "paragraph",
+        "content": "Price settings"
+      },
+      {
+        "type":      "range",
+        "id":        "pricetextindet_mob",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Price top padding",
+        "default":   0
+      },
+      {
+        "type":      "range",
+        "id":        "pricefontsize_mob",
+        "min":       14,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Price name font size",
+        "default":   36
+      },
+      {
+        "type":      "range",
+        "id":        "pricelineheight_mob",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Price line height",
+        "default":   50
+      },
+      {
+        "type":      "range",
+        "id":        "oldpricefontsize_mob",
+        "min":       10,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Old Price name font size",
+        "default":   24
+      },
+      {
+        "type":      "range",
+        "id":        "oldpricelineheight_mob",
+        "min":       14,
+        "max":       101,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Old Price line height",
+        "default":   38
+      },
+      {
+        "type": "header",
+        "content": "Roundness"
+      },
+      {
+        "type": "range",
+        "id": "product_roundness",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Product image roundness",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "customtext1co",
+        "label": "Custom text 1 color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "customtext2co",
+        "label": "Custom text 2 color",
+        "default": "#F8353E"
+      },
+      {
+        "type": "color",
+        "id": "avacot",
+        "label": "Availability title color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "avaco",
+        "label": "Availability color",
+        "default": "#777777"
+      },
+      {
+        "type": "color",
+        "id": "prco",
+        "label": "Product name color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "prcoa",
+        "label": "Product name hover color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "priceco",
+        "label": "Bace price color",
+        "default": "#2879FE"
+      },
+      {
+        "type": "color",
+        "id": "pricecon",
+        "label": "New price color",
+        "default": "#F8353E"
+      },
+      {
+        "type": "color",
+        "id": "pricecoold",
+        "label": "Old price color",
+        "default": "#2879FE"
+      },
+      {
+        "type": "color",
+        "id": "textco",
+        "label": "Text color",
+        "default": "#777777"
+      },
+      {
+        "type": "color",
+        "id": "vartitleco",
+        "label": "Variants title color",
+        "default": "#191919"
+      },
+      {
+        "type": "header",
+        "content": "Form colors"
+      },
+      {
+        "type": "color",
+        "id": "bg_form",
+        "label": "Input background color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "bg_form_bo",
+        "label": "Input border color",
+        "default": "#E9E7E7"
+      },
+      {
+        "type": "range",
+        "id": "bg_form_bo_s",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "label": "Border width",
+        "default": 1
+      },
+      {
+        "type": "color",
+        "id": "bg_form_text",
+        "label": "Input text color",
+        "default": "#777777"
+      },
+      {
+        "type": "color",
+        "id": "bg_forma",
+        "label": "ACTIVE. Input background color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "bg_form_boa",
+        "label": "ACTIVE. Input border color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "range",
+        "id": "bg_form_bo_sa",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "label": "ACTIVE. Border width",
+        "default": 1
+      },
+      {
+        "type": "color",
+        "id": "bg_form_texta",
+        "label": "ACTIVE. Input text color",
+        "default": "#777777"
+      },
+      {
+        "type": "color",
+        "id": "bg_form_text_counter",
+        "label": "Counter input text color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "bg_form_text_counter_sign",
+        "label": "Counter input +/- color",
+        "default": "#777777"
+      },
+      {
+        "type": "color",
+        "id": "bg_form_text_counter_signa",
+        "label": "Counter input +/- hover color",
+        "default": "#d8d8d8"
+      },
+      {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Button background color",
+        "default": "#2879fe"
+      },
+      {
+        "type": "color",
+        "id": "cbtntext",
+        "label": "Button text color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "bg_color_a",
+        "label": "Button background active color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "cbtntext_a",
+        "label": "Button text active color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "textarea",
+        "id": "btn_custom_styles",
+        "label": "Button custom styles"
+      },
+      {
+        "type": "textarea",
+        "id": "btn_custom_styles_hover",
+        "label": "HOVER. Button custom styles"
+      },
+      {
+        "type": "header",
+        "content": "Countdown"
+      },
+      {
+        "type": "paragraph",
+        "content": "To enable countdown you need to use metafield editor with theme documentation"
+      },
+      {
+        "type": "checkbox",
+        "id": "showcountdown",
+        "label": "Show countdown",
+        "default": true
+      },
+      {
+        "type":      "range",
+        "id":        "cowndownindet",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Countdown top padding",
+        "default":   5
+      },
+      {
+        "type":      "range",
+        "id":        "countdowndaysfontsize",
+        "min":       12,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Counting number font size",
+        "default":   24
+      },
+      {
+        "type":      "range",
+        "id":        "countdowndayswordfontsize",
+        "min":       12,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Counting word font size",
+        "default":   16
+      },
+      {
+        "type":      "range",
+        "id":        "countdowndaysfontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Counting number font weight",
+        "default":   600
+      },
+      {
+        "type":      "range",
+        "id":        "countdowndayswordfontweight",
+        "min":       300,
+        "max":       900,
+        "step":      100,
+        "label":     "Counting word font weight",
+        "default":   400
+      },
+      {
+        "type":      "range",
+        "id":        "counterpaddingtop",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Counter internal top padding",
+        "default":   12
+      },
+      {
+        "type":      "range",
+        "id":        "counterpaddingbottom",
+        "min":       0,
+        "max":       100,
+        "step":      1,
+        "unit":      "px",
+        "label":     "Counter internal bottom padding",
+        "default":   11
+      },
+      {
+        "type": "color",
+        "id": "countdowndays",
+        "label": "Counting number color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "countdowndaysword",
+        "label": "Counting word color",
+        "default": "#191919"
+      },
+      {
+        "type": "color",
+        "id": "countbgcolor",
+        "label": "Counting background color",
+        "default": "#f7f8fa"
+      },
+      {
+        "type": "textarea",
+        "id": "countcustomstyles",
+        "label": "Custom styles for background"
+      },
+      {
+        "type": "header",
+        "content": "Background Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "usebgcolor",
+        "label": "Use background color or padding",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "bgco",
+        "label": "Background color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "text",
+        "id": "bgdepad",
+        "label": "Vertical top padding desktop",
+		"default": "80",
+		"info": "integer, in px"
+      },
+      {
+        "type": "text",
+        "id": "bgdepad_2",
+        "label": "Vertical bottom padding desktop",
+		"default": "80",
+		"info": "integer, in px"
+      },
+      {
+        "type": "text",
+        "id": "bgmopad",
+        "label": "Vertical top padding mobile",
+		"default": "80",
+		"info": "integer, in px"
+      },
+      {
+        "type": "text",
+        "id": "bgmopad_2",
+        "label": "Vertical bottom padding mobile",
+		"default": "80",
+		"info": "integer, in px"
+      },
+      {
+        "type": "paragraph",
+        "content": "Background image"
+      },
+      {
+        "type": "checkbox",
+        "id": "showbgimage",
+        "label": "Show background image",
+        "default": false
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+	  {
+		"type": "select",
+		"id": "imagealign",
+		"label": "Image postion",
+		"default": "center",
+		"options": [
+		  {
+			"value": "top",
+			"label": "Top"
+		  },
+		  {
+			"value": "center",
+			"label": "Center"
+		  },
+		  {
+			"value": "bottom",
+			"label": "Bottom"
+		  }
+		]
+	  },
+	  {
+		"type": "select",
+		"id": "imagesize",
+		"label": "Image size",
+		"default": "cover",
+		"options": [
+		  {
+			"value": "cover",
+			"label": "Full background size"
+		  },
+		  {
+			"value": "contain",
+			"label": "Contain"
+		  }
+		]
+	  },
+      {
+        "type": "checkbox",
+        "id": "usemiheight",
+        "label": "Use minimal height",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "backgroundminheight3",
+        "label": "Min height for big screen size",
+		"default": "450",
+		"info": "integer, in px"
+      },
+      {
+        "type": "text",
+        "id": "backgroundminheight2",
+        "label": "Min height for medium screen size",
+		"default": "450",
+		"info": "integer, in px"
+      },
+      {
+        "type": "text",
+        "id": "backgroundminheight1",
+        "label": "Min height for mobile screen size",
+		"default": "200",
+		"info": "integer, in px"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Single Product",
+        "category": "Products"
+      }
+    ]
+  }
+{% endschema %}
