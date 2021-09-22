@@ -1,0 +1,133 @@
+/*
+The GPU License
+Copyright (c) 2021 p-themes
+https://themeforest.net/user/p-themes
+*/
+.scrollwidget{
+  display: block !important;
+}
+.scrollwidget_inputs{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.scrollwidget_inputs input{
+  width: 100%;
+  height: 40px;
+  padding: 0 15px;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+  border: unset;
+  color: {{settings.prrange_input_color}};
+  background: {{settings.prrange_input_background}};
+  border: 1px solid {{settings.prrange_input_border}};
+}
+
+.scrollwidget_inputs input::-webkit-input-placeholder {
+  color: {{ settings.prrange_input_color }};
+}
+.scrollwidget_inputs input::-moz-placeholder {
+  color: {{ settings.prrange_input_color }};
+}
+.scrollwidget_inputs input:-moz-placeholder {
+  color: {{ settings.prrange_input_color }};
+}
+.scrollwidget_inputs input:-ms-input-placeholder {
+  color: {{ settings.prrange_input_color }};
+}
+
+.scrollwidget_inputs input:hover,
+.scrollwidget_inputs input:focus{
+  color: {{settings.prrange_input_color_h}};
+  border-color:{{settings.prrange_input_border_h}};
+  background: {{settings.prrange_input_background_h}};
+}
+.scrollwidget_text{
+  text-align: center;
+  min-width: 30px;
+}
+
+.scrollwidget_scroll{
+  --buttonwidth: {{settings.prrange_size}}px;
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  height: var(--buttonwidth);
+  position: relative;
+}
+.scrollwidget_scroll_active,
+.scrollwidget_scroll_line{
+  height: {{settings.prrange_lineheight}}px;
+}
+.scrollwidget_scroll_line{
+  width: 100%;
+  position: relative;
+  background: {{settings.prrange_line_color}};
+}
+.scrollwidget_scroll_active{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  background: {{settings.prrange_line_color_h}};
+}
+.scrollwidget_inputs input::-webkit-outer-spin-button,
+.scrollwidget_inputs input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.scrollwidget_inputs input[type=number] {
+  -moz-appearance: textfield;
+}
+[class*="scrollwidget_scroll_btn"]{
+  position: absolute;
+  width: var(--buttonwidth);
+  height: var(--buttonwidth);
+  padding: 0;
+  background: {{settings.prrange_button_color}};
+  border: 1px solid {{settings.prrange_border_color}};
+  cursor: pointer;
+  z-index: 1;
+  border-radius: {{settings.prrange_radius}}px;
+}
+.scrollwidget_scroll_btn__left{
+  left: 0;
+}
+.scrollwidget_scroll_btn__right{
+  right: 0;
+}
+[class*="scrollwidget_scroll_btn"]:before{
+  content: "";
+  height: calc(var(--buttonwidth) + var(--buttonwidth));
+  display: block;
+  position: absolute;
+  top: -10px;
+  z-index: 0;
+  cursor: default;
+}
+button.scrollwidget_scroll_btn__left:before {
+  width: calc(var(--buttonwidth) + 10px);
+  left: -10px;
+}
+button.scrollwidget_scroll_btn__right:before {
+  width: calc(var(--buttonwidth) + 10px);
+  right: -10px;
+}
+[class*="scrollwidget_scroll_btn"]:after {
+  content: "";
+  width: var(--buttonwidth);
+  height: var(--buttonwidth);
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  cursor: pointer;
+}
+@media (max-width: 1024px){
+  .aside.leftColumn.withpricerage{
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+  }
+}
